@@ -15,6 +15,7 @@ import { CHEM_SEC2_TOPICS } from './chem-sec2.js';
 import { CHEM_SEC3_TOPICS } from './chem-sec3.js';
 import { CHEM_SEC4_TOPICS } from './chem-sec4.js';
 import { CHEM_SEC5_TOPICS } from './chem-sec5.js';
+import { CHEM_SIM_PROFILES } from './chem-sims-map.js';
 
 export const PHYSICS_SECTIONS = [
   {
@@ -159,12 +160,27 @@ export const PHYSICS_TOPICS = RAW_PHYSICS.map((topic, index) => ({
   questions: buildTopicQuestions(topic),
 }));
 
-export const CHEM_TOPICS = RAW_CHEM.map((topic, index) => ({
-  ...topic,
-  subject: 'chemistry',
-  order: index + 1,
-  questions: buildTopicQuestions(topic),
-}));
+export const CHEM_TOPICS = RAW_CHEM.map((topic, index) => {
+  const profile = CHEM_SIM_PROFILES[topic.id];
+  const merged = profile
+    ? {
+        ...topic,
+        simulation: {
+          ...topic.simulation,
+          title: profile.title,
+          openSourceUrl: profile.openSourceUrl,
+          openSourceSource: profile.openSourceSource,
+          alternateSims: profile.alternateSims,
+        },
+      }
+    : topic;
+  return {
+    ...merged,
+    subject: 'chemistry',
+    order: index + 1,
+    questions: buildTopicQuestions(merged),
+  };
+});
 
 // Backward compatible aliases
 export const SECTIONS = PHYSICS_SECTIONS;

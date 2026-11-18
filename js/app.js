@@ -7,16 +7,17 @@ import {
   ALL_TOPICS,
   getTopicById,
   getSectionById,
-} from './data/curriculum.js?v=4.1';
-import { AtomixParametricSim } from './sim-engine.js?v=4.1';
-import { AtomixTeamGames } from './team-games.js?v=4.1';
+} from './data/curriculum.js?v=5.0';
+import { AtomixParametricSim } from './sim-engine.js?v=5.0';
+import { AtomixTeamGames } from './team-games.js?v=5.0';
 import {
   ATOMIX_MAIN_LOGO_SVG,
   SECTION_LOGOS,
   ENGINE_LOGOS,
   initQuantumAmbientCanvas,
   initHeroAtomCanvas,
-} from './quantum-bg.js?v=4.1';
+  initMiniAcademyCanvases,
+} from './quantum-bg.js?v=5.0';
 
 const STORAGE_KEY = 'atomix_quiz_v2';
 
@@ -477,16 +478,26 @@ function renderSimTab(topic) {
 
     ${
       allSims.length > 1 && show3d
-        ? `<div class="sim-alt-row">
-            <span style="font-size:12.5px;color:var(--text-muted)">Tajriba tanlash:</span>
-            ${allSims
-              .map(
-                (s) => `
-              <button class="alt-chip ${s.url === state.simUrl ? 'active' : ''}" data-sim-url="${s.url}" type="button">
-                ${escapeHtml(s.label)}
-              </button>`
-              )
-              .join('')}
+        ? `<div class="sim-dock-wrap">
+            <div class="sim-dock-head">
+              <span class="tg-tag">MULTI-SIMULYATOR DOK (${allSims.length} TA STEND MAVJUD)</span>
+              <span>Mavzuga mos istalgan 3D laboratoriya yoki apparatni tanlab almashtiring</span>
+            </div>
+            <div class="sim-dock-grid">
+              ${allSims
+                .map((s, idx) => {
+                  const sIcon = ENGINE_LOGOS[s.source] || '';
+                  return `
+                    <button class="sim-dock-card btn-3d ${s.url === state.simUrl ? 'active' : ''}" data-sim-url="${escapeHtml(s.url)}" type="button">
+                      <div class="sdc-top">
+                        <span class="sdc-num">0${idx + 1}</span>
+                        <span class="sdc-src">${sIcon} ${escapeHtml(s.source || '3D Lab')}</span>
+                      </div>
+                      <strong class="sdc-title">${escapeHtml(s.label)}</strong>
+                    </button>`;
+                })
+                .join('')}
+            </div>
           </div>`
         : ''
     }
@@ -923,6 +934,10 @@ if (els.brandLogoSlot) els.brandLogoSlot.innerHTML = ATOMIX_MAIN_LOGO_SVG;
 initQuantumAmbientCanvas(document.getElementById('quantum-bg-canvas'));
 initHeroAtomCanvas(document.getElementById('hero-atom-canvas'));
 initHeroAtomCanvas(document.getElementById('landing-atom-canvas'));
+initMiniAcademyCanvases(
+  document.getElementById('landing-phys-canvas'),
+  document.getElementById('landing-chem-canvas')
+);
 
 // Navigation & Portal Listeners
 els.brandHomeLink?.addEventListener('click', (e) => {

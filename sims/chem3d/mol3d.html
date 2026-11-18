@@ -3,49 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Atomix 3Dmol &amp; MolView — Molekulalar va Kristall Panjaralar 3D Laboratoriyasi</title>
+  <title>Atomix 3Dmol &amp; MolView — 45+ Molekula, Kristall va Komplekslar 3D Laboratoriyasi</title>
   <style>
     * { box-sizing: border-box; }
     html, body {
       margin: 0; padding: 0; width: 100%; height: 100%;
-      background: #060a17; color: #f8fafc;
+      background: #040711; color: #f8fafc;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow: hidden;
     }
     .wrap { display: flex; flex-direction: column; height: 100%; }
     .hud-top {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 10px 14px;
-      background: rgba(9, 15, 32, 0.9);
-      border-bottom: 1px solid rgba(52, 211, 153, 0.25);
-      backdrop-filter: blur(16px);
-      z-index: 10;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 9px 14px;
+      background: linear-gradient(180deg, rgba(13, 21, 44, 0.96), rgba(7, 12, 26, 0.96));
+      border-bottom: 1px solid rgba(52, 211, 153, 0.28);
+      z-index: 12;
     }
-    .mol-title { font-size: 14px; font-weight: 700; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
+    .mol-title { display: flex; align-items: center; gap: 9px; font-size: 13.5px; font-weight: 700; }
     .mol-badge {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 8px; border-radius: 6px;
-      background: rgba(52, 211, 153, 0.14); border: 1px solid rgba(52, 211, 153, 0.38); color: #34d399;
+      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; padding: 3px 8px; border-radius: 7px;
+      background: rgba(52, 211, 153, 0.16); border: 1px solid rgba(52, 211, 153, 0.45); color: #34d399;
     }
     .controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
     select, button {
-      background: rgba(15, 23, 42, 0.88); color: #e2e8f0;
-      border: 1px solid rgba(148, 163, 184, 0.28); border-bottom: 3px solid rgba(15, 23, 42, 0.95);
-      border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer;
+      background: linear-gradient(180deg, rgba(22, 34, 64, 0.94), rgba(10, 17, 36, 0.98));
+      color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.28);
+      border-bottom: 3px solid rgba(2, 6, 23, 0.95);
+      border-radius: 8px; padding: 5px 10px; font-size: 11.8px; font-weight: 600; cursor: pointer;
+      transition: transform 110ms ease, border-color 140ms ease;
     }
-    button.active, button:hover {
-      border-color: #34d399; color: #ffffff;
-      background: rgba(52, 211, 153, 0.16);
+    button:hover, button.active, select:hover {
+      border-color: #34d399; color: #ffffff; background: rgba(16, 185, 129, 0.22);
     }
     button:active { transform: translateY(1px); }
-    .stage { position: relative; flex: 1; width: 100%; height: 100%; background: radial-gradient(circle at 50% 45%, #0f1a33, #050814); }
+    .cat-bar {
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+      padding: 7px 14px; background: rgba(6, 11, 24, 0.92);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.14); z-index: 11;
+    }
+    .cat-pill {
+      padding: 4px 10px; border-radius: 99px; font-size: 11.3px;
+      border: 1px solid rgba(148, 163, 184, 0.22); border-bottom-width: 2px;
+      background: rgba(15, 23, 42, 0.72); color: #94a3b8;
+    }
+    .cat-pill.active {
+      border-color: #22d3ee; background: rgba(34, 211, 238, 0.16); color: #e0f2fe;
+    }
+    .stage {
+      position: relative; flex: 1; width: 100%; height: 100%;
+      background: radial-gradient(circle at 50% 42%, #0f1e3d 0%, #060b19 55%, #03050d 100%);
+    }
     #viewer3d { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #fallback3d { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .hud-overlay {
+      position: absolute; top: 12px; left: 12px; max-width: 310px;
+      padding: 10px 13px; border-radius: 12px;
+      background: rgba(6, 11, 24, 0.82); backdrop-filter: blur(14px);
+      border: 1px solid rgba(52, 211, 153, 0.28); font-size: 12px; color: #cbd5e1;
+      z-index: 9; pointer-events: none;
+    }
+    .hud-overlay strong { color: #34d399; font-family: 'JetBrains Mono', monospace; }
     .hud-bottom {
       position: absolute; bottom: 12px; left: 12px; right: 12px;
       display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
       padding: 9px 14px; border-radius: 12px;
-      background: rgba(6, 10, 23, 0.84); backdrop-filter: blur(16px);
+      background: rgba(6, 10, 23, 0.86); backdrop-filter: blur(16px);
       border: 1px solid rgba(148, 163, 184, 0.22);
-      font-size: 12.5px; color: #cbd5e1; pointer-events: none; z-index: 8;
+      font-size: 12.2px; color: #cbd5e1; pointer-events: none; z-index: 8;
     }
     .hud-bottom strong { color: #34d399; font-family: 'JetBrains Mono', monospace; }
   </style>
@@ -55,23 +80,38 @@
   <div class="wrap">
     <div class="hud-top">
       <div class="mol-title">
-        <span class="mol-badge">3Dmol.js · MolView</span>
+        <span class="mol-badge">3Dmol.js · MolView Bank</span>
         <span id="mol-heading">Metan (CH₄)</span>
       </div>
       <div class="controls">
         <select id="mol-select" title="Molekula yoki kristall tanlash"></select>
-        <button data-style="stick" class="active">Sharcha-Sterjen</button>
-        <button data-style="sphere">Fazoviy (CPK)</button>
-        <button data-style="line">Karkas</button>
-        <button id="spin-btn" class="active">3D Aylantirish</button>
-        <button id="molview-btn" title="MolView bazasi haqida ma'lumot">MolView Rejim</button>
+        <button data-style="stick" class="active" type="button">Sharcha-Sterjen</button>
+        <button data-style="sphere" type="button">Fazoviy (CPK)</button>
+        <button data-style="line" type="button">Karkas</button>
+        <button id="label-btn" class="active" type="button">Atom belgisi</button>
+        <button id="spin-btn" class="active" type="button">3D Aylantirish</button>
       </div>
     </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-pill active" data-cat="all" type="button">Barchasi (45)</button>
+      <button class="cat-pill" data-cat="inorg" type="button">Noorganik</button>
+      <button class="cat-pill" data-cat="cryst" type="button">Kristallar &amp; Komplekslar</button>
+      <button class="cat-pill" data-cat="hydro" type="button">Uglevodorodlar</button>
+      <button class="cat-pill" data-cat="oxy" type="button">Kislorodli Organik</button>
+      <button class="cat-pill" data-cat="bio" type="button">Azotli &amp; Biomolekulalar</button>
+    </div>
+
     <div class="stage">
+      <canvas id="fallback3d"></canvas>
       <div id="viewer3d"></div>
+      <div class="hud-overlay" id="hud-overlay">
+        <div>Formula &amp; Gibridlanish: <strong id="hud-hybrid">sp³ · 109.5°</strong></div>
+        <div id="hud-geom" style="margin-top:4px;color:#94a3b8">Fazoviy shakl: Muntazam tetraedr</div>
+      </div>
       <div class="hud-bottom">
-        <div id="mol-info">Gibridlanish: <strong>sp³</strong> | Bog‘ burchagi: <strong>109.5°</strong> | Sichqoncha bilan aylantiring va yaqinlashtiring</div>
-        <div>Manba: <strong>3Dmol.js / MolView Engine</strong></div>
+        <div id="mol-info">Gibridlanish: <strong>sp³</strong> | Bog‘ burchagi: <strong>109.5°</strong> | Sichqoncha bilan aylantiring</div>
+        <div>Manba: <strong>3Dmol.js · MolView · Atomix Bank</strong></div>
       </div>
     </div>
   </div>
@@ -79,280 +119,600 @@
   <script>
     const MOL_DB = {
       h2o: {
+        cat: 'inorg', hybrid: 'sp³ · 104.5°', geom: 'Burchakli (V-simon) · Qutbli dipol',
         name: 'Suv molekulasi (H₂O)',
-        info: 'Gibridlanish: sp³ | Bog‘ burchagi: 104.5° | Qutbli kovalent bog‘lanish (dipol)',
-        atoms: [
-          { elem: 'O', x: 0, y: 0, z: 0 },
-          { elem: 'H', x: 0.76, y: 0.59, z: 0 },
-          { elem: 'H', x: -0.76, y: 0.59, z: 0 },
-        ],
-        bonds: [[0, 1, 1], [0, 2, 1]],
+        info: 'Gibridlanish: sp³ | Bog‘ burchagi: 104.5° | Vodorod bog‘lanishli qutbli molekula',
+        atoms: [{ elem:'O',x:0,y:0,z:0 },{ elem:'H',x:0.76,y:0.59,z:0 },{ elem:'H',x:-0.76,y:0.59,z:0 }],
+        bonds: [[0,1,1],[0,2,1]],
       },
       co2: {
+        cat: 'inorg', hybrid: 'sp · 180°', geom: 'Chiziqli · Qutbsiz (μ = 0)',
         name: 'Uglerod (IV) oksid (CO₂)',
-        info: 'Gibridlanish: sp (chiziqli) | Bog‘ burchagi: 180° | Qo‘shbog‘ (O=C=O), qutbsiz molekula',
-        atoms: [
-          { elem: 'C', x: 0, y: 0, z: 0 },
-          { elem: 'O', x: 1.16, y: 0, z: 0 },
-          { elem: 'O', x: -1.16, y: 0, z: 0 },
-        ],
-        bonds: [[0, 1, 2], [0, 2, 2]],
+        info: 'Gibridlanish: sp | Bog‘ burchagi: 180° | O=C=O chiziqli molekula',
+        atoms: [{ elem:'C',x:0,y:0,z:0 },{ elem:'O',x:1.16,y:0,z:0 },{ elem:'O',x:-1.16,y:0,z:0 }],
+        bonds: [[0,1,2],[0,2,2]],
       },
       nh3: {
+        cat: 'inorg', hybrid: 'sp³ · 107°', geom: 'Trigonal piramida · 1 bo‘linmagan juft',
         name: 'Ammiak (NH₃)',
-        info: 'Gibridlanish: sp³ (trigonal piramida) | Bog‘ burchagi: 107° | Donor-akseptor xossali',
-        atoms: [
-          { elem: 'N', x: 0, y: 0.35, z: 0 },
-          { elem: 'H', x: 0.94, y: -0.05, z: 0 },
-          { elem: 'H', x: -0.47, y: -0.05, z: 0.81 },
-          { elem: 'H', x: -0.47, y: -0.05, z: -0.81 },
-        ],
-        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1]],
+        info: 'Gibridlanish: sp³ | Burchak: 107° | Donor-akseptor bog‘ hosil qiladi (NH₄⁺)',
+        atoms: [{ elem:'N',x:0,y:0.35,z:0 },{ elem:'H',x:0.94,y:-0.05,z:0 },{ elem:'H',x:-0.47,y:-0.05,z:0.81 },{ elem:'H',x:-0.47,y:-0.05,z:-0.81 }],
+        bonds: [[0,1,1],[0,2,1],[0,3,1]],
       },
-      ch4: {
-        name: 'Metan (CH₄)',
-        info: 'Gibridlanish: sp³ (muntazam tetraedr) | Bog‘ burchagi: 109.5° | Alkanlar bosh vakili',
-        atoms: [
-          { elem: 'C', x: 0, y: 0, z: 0 },
-          { elem: 'H', x: 0.63, y: 0.63, z: 0.63 },
-          { elem: 'H', x: -0.63, y: -0.63, z: 0.63 },
-          { elem: 'H', x: -0.63, y: 0.63, z: -0.63 },
-          { elem: 'H', x: 0.63, y: -0.63, z: -0.63 },
-        ],
-        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1]],
+      so2: {
+        cat: 'inorg', hybrid: 'sp² · 119°', geom: 'Burchakli · Qutbli',
+        name: 'Oltingugurt (IV) oksid (SO₂)',
+        info: 'Gibridlanish: sp² | Burchak: 119° | Kontakt usulida SO₃ ga oksidlanadi',
+        atoms: [{ elem:'S',x:0,y:0.25,z:0 },{ elem:'O',x:1.25,y:-0.4,z:0 },{ elem:'O',x:-1.25,y:-0.4,z:0 }],
+        bonds: [[0,1,2],[0,2,2]],
       },
-      c2h4: {
-        name: 'Etilen (C₂H₄)',
-        info: 'Gibridlanish: sp² (yassi trigonal) | Burchak: 120° | 1 ta σ va 1 ta π (qo‘shbog‘)',
+      h2so4: {
+        cat: 'inorg', hybrid: 'sp³ · 109.5° (S)', geom: 'Tetraedrik S markazli kuchli ikki negizli kislota',
+        name: 'Sulfat kislota (H₂SO₄)',
+        info: 'Markaziy S (+6) tetraedrik bog‘langan | Sanoatning asosiy kislotasi',
         atoms: [
-          { elem: 'C', x: -0.67, y: 0, z: 0 },
-          { elem: 'C', x: 0.67, y: 0, z: 0 },
-          { elem: 'H', x: -1.24, y: 0.92, z: 0 },
-          { elem: 'H', x: -1.24, y: -0.92, z: 0 },
-          { elem: 'H', x: 1.24, y: 0.92, z: 0 },
-          { elem: 'H', x: 1.24, y: -0.92, z: 0 },
+          { elem:'S',x:0,y:0,z:0 },{ elem:'O',x:1.1,y:0.9,z:0.5 },{ elem:'O',x:-1.1,y:0.9,z:-0.5 },
+          { elem:'O',x:0,y:-1.1,z:1.0 },{ elem:'O',x:0,y:-1.1,z:-1.0 },
+          { elem:'H',x:0.75,y:-1.65,z:1.1 },{ elem:'H',x:-0.75,y:-1.65,z:-1.1 },
         ],
-        bonds: [[0, 1, 2], [0, 2, 1], [0, 3, 1], [1, 4, 1], [1, 5, 1]],
+        bonds: [[0,1,2],[0,2,2],[0,3,1],[0,4,1],[3,5,1],[4,6,1]],
       },
-      c2h2: {
-        name: 'Atsetilen (C₂H₂)',
-        info: 'Gibridlanish: sp (chiziqli) | Burchak: 180° | Uchbog‘ (H−C≡C−H)',
+      hno3: {
+        cat: 'inorg', hybrid: 'sp² · 120° (N)', geom: 'Yassi trigonal N(+5) · Kuchli oksidlovchi',
+        name: 'Nitrat kislota (HNO₃)',
+        info: 'Gibridlanish: sp² | Azot valentligi IV, oksidlanish darajasi +5',
         atoms: [
-          { elem: 'C', x: -0.6, y: 0, z: 0 },
-          { elem: 'C', x: 0.6, y: 0, z: 0 },
-          { elem: 'H', x: -1.66, y: 0, z: 0 },
-          { elem: 'H', x: 1.66, y: 0, z: 0 },
+          { elem:'N',x:0,y:0.1,z:0 },{ elem:'O',x:1.15,y:0.65,z:0 },{ elem:'O',x:-1.15,y:0.65,z:0 },
+          { elem:'O',x:0,y:-1.2,z:0 },{ elem:'H',x:0.85,y:-1.6,z:0 },
         ],
-        bonds: [[0, 1, 3], [0, 2, 1], [1, 3, 1]],
+        bonds: [[0,1,2],[0,2,1],[0,3,1],[3,4,1]],
       },
-      c6h6: {
-        name: 'Benzol (C₆H₆)',
-        info: 'Aromatik halqa (sp² gibrid, Xyukkel 6π elektron tizimi) | C−C uzunligi: 0.139 nm',
-        atoms: [
-          ...[0, 1, 2, 3, 4, 5].map((i) => ({
-            elem: 'C',
-            x: 1.4 * Math.cos((i * Math.PI) / 3),
-            y: 1.4 * Math.sin((i * Math.PI) / 3),
-            z: 0,
-          })),
-          ...[0, 1, 2, 3, 4, 5].map((i) => ({
-            elem: 'H',
-            x: 2.48 * Math.cos((i * Math.PI) / 3),
-            y: 2.48 * Math.sin((i * Math.PI) / 3),
-            z: 0,
-          })),
-        ],
-        bonds: [
-          [0, 1, 2], [1, 2, 1], [2, 3, 2], [3, 4, 1], [4, 5, 2], [5, 0, 1],
-          [0, 6, 1], [1, 7, 1], [2, 8, 1], [3, 9, 1], [4, 10, 1], [5, 11, 1],
-        ],
+      hcl: {
+        cat: 'inorg', hybrid: 'Qutbli kovalent · 180°', geom: 'Ikki atomli kuchli qutbli molekula',
+        name: 'Vodorod xlorid (HCl)',
+        info: 'Qutbli kovalent bog‘ | Suvli eritmasi kuchli xlorid kislota',
+        atoms: [{ elem:'Cl',x:0.4,y:0,z:0 },{ elem:'H',x:-0.88,y:0,z:0 }],
+        bonds: [[0,1,1]],
       },
-      c2h5oh: {
-        name: 'Etanol (C₂H₅OH)',
-        info: 'Spirtlar funksional −OH guruhi | Vodorod bog‘lanish hosil qiladi',
+      h3po4: {
+        cat: 'inorg', hybrid: 'sp³ · 109.5° (P)', geom: 'Tetraedrik uch negizli o‘rta kuchli kislota',
+        name: 'Ortofosfat kislota (H₃PO₄)',
+        info: 'Markaziy P(+5) tetraedri | Mineral o‘g‘itlar (superfosfat, ammofos) asosi',
         atoms: [
-          { elem: 'C', x: -1.1, y: 0.1, z: 0 },
-          { elem: 'C', x: 0.35, y: 0.45, z: 0 },
-          { elem: 'O', x: 1.15, y: -0.7, z: 0 },
-          { elem: 'H', x: 2.05, y: -0.45, z: 0 },
-          { elem: 'H', x: -1.6, y: 0.9, z: 0.5 },
-          { elem: 'H', x: -1.6, y: 0.05, z: -0.95 },
-          { elem: 'H', x: -1.2, y: -0.85, z: 0.48 },
-          { elem: 'H', x: 0.55, y: 1.05, z: 0.88 },
-          { elem: 'H', x: 0.55, y: 1.05, z: -0.88 },
+          { elem:'P',x:0,y:0,z:0 },{ elem:'O',x:0,y:1.45,z:0 },
+          { elem:'O',x:1.3,y:-0.5,z:0.75 },{ elem:'O',x:-1.3,y:-0.5,z:0.75 },{ elem:'O',x:0,y:-0.5,z:-1.4 },
+          { elem:'H',x:2.05,y:-0.1,z:0.95 },{ elem:'H',x:-2.05,y:-0.1,z:0.95 },{ elem:'H',x:0.4,y:-1.2,z:-1.95 },
         ],
-        bonds: [[0, 1, 1], [1, 2, 1], [2, 3, 1], [0, 4, 1], [0, 5, 1], [0, 6, 1], [1, 7, 1], [1, 8, 1]],
+        bonds: [[0,1,2],[0,2,1],[0,3,1],[0,4,1],[2,5,1],[3,6,1],[4,7,1]],
       },
-      ch3cooh: {
-        name: 'Sirka kislota (CH₃COOH)',
-        info: 'Karboksil guruh −COOH | Karbon kislotalar vakili',
-        atoms: [
-          { elem: 'C', x: -1.2, y: 0, z: 0 },
-          { elem: 'C', x: 0.25, y: 0.12, z: 0 },
-          { elem: 'O', x: 0.85, y: 1.2, z: 0 },
-          { elem: 'O', x: 0.95, y: -1.05, z: 0 },
-          { elem: 'H', x: 1.88, y: -0.9, z: 0 },
-          { elem: 'H', x: -1.6, y: 0.88, z: 0.52 },
-          { elem: 'H', x: -1.6, y: -0.88, z: 0.52 },
-          { elem: 'H', x: -1.55, y: 0, z: -1.02 },
-        ],
-        bonds: [[0, 1, 1], [1, 2, 2], [1, 3, 1], [3, 4, 1], [0, 5, 1], [0, 6, 1], [0, 7, 1]],
+      o3: {
+        cat: 'inorg', hybrid: 'sp² · 116.8°', geom: 'Burchakli ozon · Allotropiya',
+        name: 'Ozon (O₃)',
+        info: 'Kislorod allotropiyasi | Burchak: 116.8° | Ultrabinafsha nurlardan himoya qatlami',
+        atoms: [{ elem:'O',x:0,y:0.45,z:0 },{ elem:'O',x:1.08,y:-0.25,z:0 },{ elem:'O',x:-1.08,y:-0.25,z:0 }],
+        bonds: [[0,1,2],[0,2,1]],
       },
-      ch3cho: {
-        name: 'Atsetaldegid (CH₃CHO)',
-        info: 'Karbonil guruh (−CHO) | “Kumush ko‘zgu” reaksiyasini beradi',
+      p4_white: {
+        cat: 'inorg', hybrid: 'sp³ · 60° kuchlangan', geom: 'Tetraedrik P₄ molekulasi (oq fosfor)',
+        name: 'Oq fosfor (P₄)',
+        info: 'Molekulyar panjarali P₄ tetraedri | 60° kuchlangan bog‘ tufayli juda faol va yonuvchan',
+        atoms: [{ elem:'P',x:1.1,y:1.1,z:1.1 },{ elem:'P',x:-1.1,y:-1.1,z:1.1 },{ elem:'P',x:-1.1,y:1.1,z:-1.1 },{ elem:'P',x:1.1,y:-1.1,z:-1.1 }],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[1,2,1],[1,3,1],[2,3,1]],
+      },
+      s8_crown: {
+        cat: 'inorg', hybrid: 'sp³ · 108°', geom: '8 a’zoli toj (siklooktasulfur) molekulasi',
+        name: 'Kristall oltingugurt (S₈ toji)',
+        info: 'S₈ siklik halqasi | Kauchukni vulkanizatsiyalash va sulfat kislota olishda ishlatiladi',
+        atoms: [0,1,2,3,4,5,6,7].map((i) => ({
+          elem: 'S', x: 1.85 * Math.cos(i * Math.PI / 4), y: 1.85 * Math.sin(i * Math.PI / 4), z: i % 2 === 0 ? 0.52 : -0.52,
+        })),
+        bonds: [[0,1,1],[1,2,1],[2,3,1],[3,4,1],[4,5,1],[5,6,1],[6,7,1],[7,0,1]],
+      },
+      sio2_quartz: {
+        cat: 'cryst', hybrid: 'sp³ · 3D karkas', geom: 'Atom kristall panjarali kvars tetraedri',
+        name: 'Kremniy (IV) oksid / Kvars (SiO₂)',
+        info: 'Atom kristall panjara | T_er ≈ 1720 °C | Har Si atomi 4 ta O bilan tetraedrik bog‘langan',
         atoms: [
-          { elem: 'C', x: -1.1, y: -0.1, z: 0 },
-          { elem: 'C', x: 0.35, y: 0.2, z: 0 },
-          { elem: 'O', x: 1.25, y: -0.65, z: 0 },
-          { elem: 'H', x: 0.55, y: 1.28, z: 0 },
-          { elem: 'H', x: -1.65, y: 0.8, z: 0.3 },
-          { elem: 'H', x: -1.3, y: -0.85, z: 0.78 },
-          { elem: 'H', x: -1.3, y: -0.45, z: -0.95 },
+          { elem:'Si',x:0,y:0,z:0 },{ elem:'O',x:1.05,y:1.05,z:1.05 },{ elem:'O',x:-1.05,y:-1.05,z:1.05 },
+          { elem:'O',x:-1.05,y:1.05,z:-1.05 },{ elem:'O',x:1.05,y:-1.05,z:-1.05 },
+          { elem:'Si',x:2.1,y:2.1,z:2.1 },{ elem:'Si',x:-2.1,y:-2.1,z:2.1 },
+          { elem:'Si',x:-2.1,y:2.1,z:-2.1 },{ elem:'Si',x:2.1,y:-2.1,z:-2.1 },
         ],
-        bonds: [[0, 1, 1], [1, 2, 2], [1, 3, 1], [0, 4, 1], [0, 5, 1], [0, 6, 1]],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[2,6,1],[3,7,1],[4,8,1]],
       },
       nacl_lattice: {
+        cat: 'cryst', hybrid: 'Ion panjara · K.S.=6', geom: 'Kubik markazlashgan ion kristall panjara',
         name: 'Osh tuzi (NaCl) Ion Kristall Panjarasi',
-        info: 'Kubik ion kristall panjara | Na⁺ va Cl⁻ ionlari elektrostatik tortishuvi (koordinatsion son 6)',
+        info: 'Ion panjara | Na⁺ va Cl⁻ elektrostatik tortishuvi | Erimaydigan/qiyin suyuqlanuvchi (801 °C)',
         atoms: (() => {
           const arr = [];
-          for (let x = -1; x <= 1; x++)
-            for (let y = -1; y <= 1; y++)
-              for (let z = -1; z <= 1; z++)
-                arr.push({ elem: (x + y + z) % 2 === 0 ? 'Na' : 'Cl', x: x * 1.4, y: y * 1.4, z: z * 1.4 });
+          for (let x=-1;x<=1;x++) for (let y=-1;y<=1;y++) for (let z=-1;z<=1;z++)
+            arr.push({ elem: (x+y+z)%2===0 ? 'Na' : 'Cl', x:x*1.45, y:y*1.45, z:z*1.45 });
           return arr;
         })(),
         bonds: [],
       },
       diamond: {
-        name: 'Olmos (C) Atom Kristall Panjarasi',
-        info: 'Har bir uglerod sp³ holatda 4 ta qo‘shnisi bilan mustahkam tetraedrik kovalent bog‘langan',
+        cat: 'cryst', hybrid: 'sp³ · 109.5°', geom: '3D Tetraedrik Atom Kristall Panjara',
+        name: 'Olmos (C) Atom Panjarasi',
+        info: 'Eng qattiq tabiiy mineral (Moos 10/10) | sp³ uglerod 3D karkasi | Elektr izolyator',
         atoms: [
-          { elem: 'C', x: 0, y: 0, z: 0 },
-          { elem: 'C', x: 1.1, y: 1.1, z: 1.1 }, { elem: 'C', x: -1.1, y: -1.1, z: 1.1 },
-          { elem: 'C', x: -1.1, y: 1.1, z: -1.1 }, { elem: 'C', x: 1.1, y: -1.1, z: -1.1 },
-          { elem: 'C', x: 2.2, y: 0, z: 2.2 }, { elem: 'C', x: 0, y: 2.2, z: 2.2 },
-          { elem: 'C', x: -2.2, y: 0, z: 2.2 }, { elem: 'C', x: 0, y: -2.2, z: 2.2 },
+          { elem:'C',x:0,y:0,z:0 },{ elem:'C',x:1.0,y:1.0,z:1.0 },{ elem:'C',x:-1.0,y:-1.0,z:1.0 },
+          { elem:'C',x:-1.0,y:1.0,z:-1.0 },{ elem:'C',x:1.0,y:-1.0,z:-1.0 },
+          { elem:'C',x:2.0,y:0,z:2.0 },{ elem:'C',x:0,y:2.0,z:2.0 },{ elem:'C',x:-2.0,y:0,z:2.0 },{ elem:'C',x:0,y:-2.0,z:2.0 },
         ],
-        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1], [1, 5, 1], [1, 6, 1], [2, 7, 1], [2, 8, 1]],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1]],
       },
-      glycine: {
-        name: 'Glitsin Aminokislotasi (H₂N−CH₂−COOH)',
-        info: 'Amfoter organik birikma | Peptid bog‘lar va oqsillar qurilish bloki',
+      graphite: {
+        cat: 'cryst', hybrid: 'sp² · 120°', geom: 'Ikki qatlamli 2D oltiburchakli grafen panjarasi',
+        name: 'Grafit va Grafen (C sp² qatlamlari)',
+        info: 'sp² qatlamli tuzilish | Delokallashgan π-elektronlar tufayli elektr tokini yaxshi o‘tkazadi',
         atoms: [
-          { elem: 'N', x: -1.8, y: 0.4, z: 0 },
-          { elem: 'C', x: -0.45, y: -0.1, z: 0 },
-          { elem: 'C', x: 0.7, y: 0.85, z: 0 },
-          { elem: 'O', x: 0.55, y: 2.05, z: 0 },
-          { elem: 'O', x: 1.95, y: 0.3, z: 0 },
-          { elem: 'H', x: -2.4, y: -0.1, z: 0.65 },
-          { elem: 'H', x: -1.9, y: 1.38, z: -0.2 },
-          { elem: 'H', x: 2.55, y: 1.0, z: 0 },
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'C', x:1.42*Math.cos(i*Math.PI/3), y:1.42*Math.sin(i*Math.PI/3), z:-1.1 })),
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'C', x:1.42*Math.cos(i*Math.PI/3), y:1.42*Math.sin(i*Math.PI/3), z:1.1 })),
         ],
-        bonds: [[0, 1, 1], [1, 2, 1], [2, 3, 2], [2, 4, 1], [0, 5, 1], [0, 6, 1], [4, 7, 1]],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[6,7,2],[7,8,1],[8,9,2],[9,10,1],[10,11,2],[11,6,1]],
       },
-      dna_helix: {
-        name: 'DNK Qo‘sh Spiral Fragmenti (3D Biomolekula)',
-        info: 'Nukleotid zanjirlari orasida A=T va G≡C komplementar vodorod bog‘lari',
+      fullerene: {
+        cat: 'cryst', hybrid: 'sp² · 3D sfera', geom: 'Nano-uglerod sferik qafas fragmenti (C₂₀/C₆₀)',
+        name: 'Fulleren Nano-Sferasi (Uglerod Allotropi)',
+        info: 'Molekulyar sferik uglerod allotropi | Nanotexnologiya va supero‘tkazgichlar materialshunosligi',
         atoms: (() => {
           const arr = [];
-          for (let i = 0; i < 16; i++) {
-            const ang = i * 0.62;
-            const z = (i - 7.5) * 0.65;
-            arr.push({ elem: i % 2 === 0 ? 'P' : 'O', x: 2.4 * Math.cos(ang), y: 2.4 * Math.sin(ang), z });
-            arr.push({ elem: i % 2 === 0 ? 'N' : 'C', x: 1.0 * Math.cos(ang), y: 1.0 * Math.sin(ang), z });
-            arr.push({ elem: i % 2 === 0 ? 'N' : 'C', x: -1.0 * Math.cos(ang), y: -1.0 * Math.sin(ang), z });
-            arr.push({ elem: i % 2 === 0 ? 'P' : 'O', x: -2.4 * Math.cos(ang), y: -2.4 * Math.sin(ang), z });
+          const phi = (1 + Math.sqrt(5)) / 2;
+          const raw = [
+            [-1, phi, 0], [1, phi, 0], [-1, -phi, 0], [1, -phi, 0],
+            [0, -1, phi], [0, 1, phi], [0, -1, -phi], [0, 1, -phi],
+            [phi, 0, -1], [phi, 0, 1], [-phi, 0, -1], [-phi, 0, 1],
+          ];
+          raw.forEach((p) => arr.push({ elem:'C', x:p[0]*1.25, y:p[1]*1.25, z:p[2]*1.25 }));
+          return arr;
+        })(),
+        bonds: [[0,1,1],[0,5,1],[0,7,1],[0,10,1],[0,11,1],[1,5,1],[1,7,1],[1,8,1],[1,9,1],[2,3,1],[2,4,1],[2,6,1],[2,10,1],[2,11,1],[3,4,1],[3,6,1],[3,8,1],[3,9,1],[4,5,1],[4,9,1],[4,11,1],[5,9,1],[5,11,1],[6,7,1],[6,8,1],[6,10,1],[7,8,1],[7,10,1],[8,9,1],[10,11,1]],
+      },
+      cu_metal: {
+        cat: 'cryst', hybrid: 'Metall panjara (FCC)', geom: 'Elektron gazidagi Cu kationlari panjarasi',
+        name: 'Mis (Cu) Metall Kristall Panjarasi',
+        info: 'Metall bog‘lanish | Erkin elektronlar tufayli yuqori elektr va issiqlik o‘tkazuvchanlik',
+        atoms: (() => {
+          const arr = [];
+          [0, 2.2].forEach((x) => [0, 2.2].forEach((y) => [0, 2.2].forEach((z) => arr.push({ elem:'Cu', x:x-1.1, y:y-1.1, z:z-1.1 }))));
+          arr.push({ elem:'Cu',x:0,y:0,z:-1.1 },{ elem:'Cu',x:0,y:0,z:1.1 },{ elem:'Cu',x:0,y:-1.1,z:0 },{ elem:'Cu',x:0,y:1.1,z:0 });
+          return arr;
+        })(),
+        bonds: [],
+      },
+      cu_nh3_4: {
+        cat: 'cryst', hybrid: 'dsp² · Yassi kvadrat', geom: 'Donor-akseptor koordinatsion kompleks ion',
+        name: 'Tetraamminmis (II) Kompleksi [Cu(NH₃)₄]²⁺',
+        info: 'Markaziy d-metall (Cu²⁺) + 4 ta NH₃ ligandi | Chuqur ko‘k-binafsha kompleks',
+        atoms: [
+          { elem:'Cu',x:0,y:0,z:0 },
+          { elem:'N',x:2.0,y:0,z:0 },{ elem:'N',x:-2.0,y:0,z:0 },{ elem:'N',x:0,y:2.0,z:0 },{ elem:'N',x:0,y:-2.0,z:0 },
+          { elem:'H',x:2.6,y:0.5,z:0.5 },{ elem:'H',x:2.6,y:-0.5,z:-0.5 },
+          { elem:'H',x:-2.6,y:0.5,z:0.5 },{ elem:'H',x:-2.6,y:-0.5,z:-0.5 },
+        ],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1],[2,7,1],[2,8,1]],
+      },
+      ch4: {
+        cat: 'hydro', hybrid: 'sp³ · 109.5°', geom: 'Muntazam tetraedr · Qutbsiz',
+        name: 'Metan (CH₄)',
+        info: 'Alkanlar (CnH2n+2) bosh vakili | sp³ gibridlanish | 109.5° tetraedr',
+        atoms: [{ elem:'C',x:0,y:0,z:0 },{ elem:'H',x:0.63,y:0.63,z:0.63 },{ elem:'H',x:-0.63,y:-0.63,z:0.63 },{ elem:'H',x:-0.63,y:0.63,z:-0.63 },{ elem:'H',x:0.63,y:-0.63,z:-0.63 }],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1]],
+      },
+      c2h6: {
+        cat: 'hydro', hybrid: 'sp³ · 109.5°', geom: 'Erkin aylanuvchi σ-bog‘li ikki tetraedr',
+        name: 'Etan (C₂H₆)',
+        info: 'C−C sigma bog‘ uzunligi 0.154 nm | Galogenlanish (SR) va degidrogenlanish reaksiyalariga kirishadi',
+        atoms: [
+          { elem:'C',x:-0.76,y:0,z:0 },{ elem:'C',x:0.76,y:0,z:0 },
+          { elem:'H',x:-1.16,y:0.89,z:0.5 },{ elem:'H',x:-1.16,y:-0.89,z:0.5 },{ elem:'H',x:-1.16,y:0,z:-1.0 },
+          { elem:'H',x:1.16,y:0.89,z:-0.5 },{ elem:'H',x:1.16,y:-0.89,z:-0.5 },{ elem:'H',x:1.16,y:0,z:1.0 },
+        ],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1],[1,7,1]],
+      },
+      c3h8: {
+        cat: 'hydro', hybrid: 'sp³ · Zigzag 109.5°', geom: 'Zanjirli gomologik qator vakili',
+        name: 'Propan (C₃H₈)',
+        info: 'Alkanlar gomologi (CH₂ farq) | Suyultirilgan yoqilg‘i gazi',
+        atoms: [
+          { elem:'C',x:-1.27,y:-0.25,z:0 },{ elem:'C',x:0,y:0.5,z:0 },{ elem:'C',x:1.27,y:-0.25,z:0 },
+          { elem:'H',x:-2.15,y:0.35,z:0 },{ elem:'H',x:-1.3,y:-0.9,z:0.86 },{ elem:'H',x:-1.3,y:-0.9,z:-0.86 },
+          { elem:'H',x:0,y:1.15,z:0.87 },{ elem:'H',x:0,y:1.15,z:-0.87 },
+          { elem:'H',x:2.15,y:0.35,z:0 },{ elem:'H',x:1.3,y:-0.9,z:0.86 },{ elem:'H',x:1.3,y:-0.9,z:-0.86 },
+        ],
+        bonds: [[0,1,1],[1,2,1],[0,3,1],[0,4,1],[0,5,1],[1,6,1],[1,7,1],[2,8,1],[2,9,1],[2,10,1]],
+      },
+      isobutane: {
+        cat: 'hydro', hybrid: 'sp³ · Tarmoqlangan', geom: 'Tuzilish izomeriyasi (Butanning izomeri)',
+        name: 'Izobutan / 2-Metilpropan (C₄H₁₀)',
+        info: 'n-Butan bilan strukturaviy izomer | Uchlamchi uglerod atomi mavjud',
+        atoms: [
+          { elem:'C',x:0,y:0.35,z:0 },{ elem:'C',x:1.4,y:-0.25,z:0 },{ elem:'C',x:-0.7,y:-0.25,z:1.2 },{ elem:'C',x:-0.7,y:-0.25,z:-1.2 },
+          { elem:'H',x:0,y:1.42,z:0 },{ elem:'H',x:2.1,y:0.45,z:0.4 },{ elem:'H',x:-1.4,y:0.3,z:1.7 },{ elem:'H',x:-1.4,y:0.3,z:-1.7 },
+        ],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[2,6,1],[3,7,1]],
+      },
+      cyclohexane: {
+        cat: 'hydro', hybrid: 'sp³ · Kreslo konformatsiya', geom: 'Kuchlanishsiz 6 a’zoli tsikloalkan',
+        name: 'Tsiklogeksan (C₆H₁₂ — Kreslo shakli)',
+        info: 'Tsikloalkan (CnH2n) | Kreslo konformatsiyasida barcha burchaklar 109.5° ga yaqin',
+        atoms: [0,1,2,3,4,5].map((i) => ({
+          elem: 'C', x: 1.45 * Math.cos(i * Math.PI / 3), y: 1.45 * Math.sin(i * Math.PI / 3), z: i % 2 === 0 ? 0.25 : -0.25,
+        })),
+        bonds: [[0,1,1],[1,2,1],[2,3,1],[3,4,1],[4,5,1],[5,0,1]],
+      },
+      c2h4: {
+        cat: 'hydro', hybrid: 'sp² · 120°', geom: 'Yassi trigonal (1 σ + 1 π qo‘shbog‘)',
+        name: 'Etilen / Eten (C₂H₄)',
+        info: 'Alkenlar | C=C uzunligi 0.134 nm | Markovnikov qoidasi va polietilen monomeri',
+        atoms: [
+          { elem:'C',x:-0.67,y:0,z:0 },{ elem:'C',x:0.67,y:0,z:0 },
+          { elem:'H',x:-1.24,y:0.92,z:0 },{ elem:'H',x:-1.24,y:-0.92,z:0 },{ elem:'H',x:1.24,y:0.92,z:0 },{ elem:'H',x:1.24,y:-0.92,z:0 },
+        ],
+        bonds: [[0,1,2],[0,2,1],[0,3,1],[1,4,1],[1,5,1]],
+      },
+      isoprene: {
+        cat: 'hydro', hybrid: 'sp² kon’yugirlangan', geom: 'Tutashtirilgan qo‘shbog‘li dien · Kauchuk monomeri',
+        name: 'Izopren / 2-Metilbutadiyen-1,3 (C₅H₈)',
+        info: 'Tabiiy kauchuk monomeri | Polimerlanish va S bilan vulkanizatsiyadan rezina olinadi',
+        atoms: [
+          { elem:'C',x:-1.85,y:-0.2,z:0 },{ elem:'C',x:-0.65,y:0.45,z:0 },{ elem:'C',x:0.65,y:-0.2,z:0 },
+          { elem:'C',x:1.85,y:0.45,z:0 },{ elem:'C',x:-0.65,y:1.95,z:0 },
+          { elem:'H',x:-2.75,y:0.35,z:0 },{ elem:'H',x:2.75,y:-0.1,z:0 },
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[1,4,1],[0,5,1],[3,6,1]],
+      },
+      c2h2: {
+        cat: 'hydro', hybrid: 'sp · 180°', geom: 'Chiziqli (1 σ + 2 π uchbog‘)',
+        name: 'Atsetilen / Etin (C₂H₂)',
+        info: 'Alkinlar | C≡C uzunligi 0.120 nm | Kucherov reaksiyasi va metallar payvandlash',
+        atoms: [{ elem:'C',x:-0.6,y:0,z:0 },{ elem:'C',x:0.6,y:0,z:0 },{ elem:'H',x:-1.66,y:0,z:0 },{ elem:'H',x:1.66,y:0,z:0 }],
+        bonds: [[0,1,3],[0,2,1],[1,3,1]],
+      },
+      c6h6: {
+        cat: 'hydro', hybrid: 'sp² · Aromatik 6π', geom: 'Muntazam yassi oltiburchak (0.139 nm)',
+        name: 'Benzol (C₆H₆)',
+        info: 'Aromatik uglevodorod | Xyukkel 4n+2=6π bulut | Elektrofil o‘rin olish (SE) xos',
+        atoms: [
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'C', x:1.4*Math.cos(i*Math.PI/3), y:1.4*Math.sin(i*Math.PI/3), z:0 })),
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'H', x:2.48*Math.cos(i*Math.PI/3), y:2.48*Math.sin(i*Math.PI/3), z:0 })),
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[1,7,1],[2,8,1],[3,9,1],[4,10,1],[5,11,1]],
+      },
+      toluene: {
+        cat: 'hydro', hybrid: 'sp² + sp³', geom: 'Metilbenzol · Orto/Para orientant ta’siri',
+        name: 'Toluol / Metilbenzol (C₇H₈)',
+        info: '−CH₃ guruhi (+I effekt) halqani faollashtirib, 2,4,6-trinitrotoluol (trotil) hosil qiladi',
+        atoms: [
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'C', x:1.4*Math.cos(i*Math.PI/3), y:1.4*Math.sin(i*Math.PI/3), z:0 })),
+          { elem:'C', x:2.9, y:0, z:0 },
+          { elem:'H', x:3.4, y:0.85, z:0.4 },{ elem:'H', x:3.4, y:-0.85, z:0.4 },{ elem:'H', x:3.4, y:0, z:-0.95 },
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,1],[6,8,1],[6,9,1]],
+      },
+      c2h5oh: {
+        cat: 'oxy', hybrid: 'sp³ · −OH guruhi', geom: 'Vodorod bog‘lanishli bir atomli spirt',
+        name: 'Etanol (C₂H₅OH)',
+        info: 'Gidroksil guruh (−OH) | Qaynash harorati 78.4 °C | Spirtli bijg‘ish mahsuloti',
+        atoms: [
+          { elem:'C',x:-1.1,y:0.1,z:0 },{ elem:'C',x:0.35,y:0.45,z:0 },{ elem:'O',x:1.15,y:-0.7,z:0 },{ elem:'H',x:2.05,y:-0.45,z:0 },
+          { elem:'H',x:-1.6,y:0.9,z:0.5 },{ elem:'H',x:-1.6,y:0.05,z:-0.95 },{ elem:'H',x:-1.2,y:-0.85,z:0.48 },
+        ],
+        bonds: [[0,1,1],[1,2,1],[2,3,1],[0,4,1],[0,5,1],[0,6,1]],
+      },
+      glycerol: {
+        cat: 'oxy', hybrid: 'sp³ · 3 ta −OH', geom: 'Uch atomli spirt · Yog‘lar asosi',
+        name: 'Glitserin / Propantriol-1,2,3 (C₃H₈O₃)',
+        info: 'Yangi cho‘ktirilgan Cu(OH)₂ ni to‘q ko‘k eritmaga aylantiradi | Yog‘lar (triglitseridlar) tarkibiga kiradi',
+        atoms: [
+          { elem:'C',x:-1.3,y:0.2,z:0 },{ elem:'C',x:0,y:-0.45,z:0 },{ elem:'C',x:1.3,y:0.2,z:0 },
+          { elem:'O',x:-2.35,y:-0.7,z:0 },{ elem:'O',x:0,y:-1.85,z:0 },{ elem:'O',x:2.35,y:-0.7,z:0 },
+          { elem:'H',x:-3.1,y:-0.2,z:0 },{ elem:'H',x:0.8,y:-2.3,z:0 },{ elem:'H',x:3.1,y:-0.2,z:0 },
+        ],
+        bonds: [[0,1,1],[1,2,1],[0,3,1],[1,4,1],[2,5,1],[3,6,1],[4,7,1],[5,8,1]],
+      },
+      phenol: {
+        cat: 'oxy', hybrid: 'sp² (C₆H₅) + −OH', geom: 'Karbol kislota · 2,4,6-tribromfenol',
+        name: 'Fenol (C₆H₅OH)',
+        info: 'Benzol halqasi bilan −OH kon’yugatsiyasi | FeCl₃ bilan binafsha rang, Br₂ bilan oq cho‘kma beradi',
+        atoms: [
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'C', x:1.4*Math.cos(i*Math.PI/3), y:1.4*Math.sin(i*Math.PI/3), z:0 })),
+          { elem:'O', x:2.75, y:0, z:0 },{ elem:'H', x:3.3, y:0.75, z:0 },
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,1]],
+      },
+      ch3cho: {
+        cat: 'oxy', hybrid: 'sp² (C=O)', geom: 'Karbonil aldegid (−CHO)',
+        name: 'Atsetaldegid / Etanal (CH₃CHO)',
+        info: 'Kumush ko‘zgu [Ag(NH₃)₂]OH va Cu(OH)₂ bilan qizil Cu₂O sifat reaksiyasini beradi',
+        atoms: [
+          { elem:'C',x:-1.1,y:-0.1,z:0 },{ elem:'C',x:0.35,y:0.2,z:0 },{ elem:'O',x:1.25,y:-0.65,z:0 },{ elem:'H',x:0.55,y:1.28,z:0 },
+          { elem:'H',x:-1.65,y:0.8,z:0.3 },{ elem:'H',x:-1.3,y:-0.85,z:0.78 },{ elem:'H',x:-1.3,y:-0.45,z:-0.95 },
+        ],
+        bonds: [[0,1,1],[1,2,2],[1,3,1],[0,4,1],[0,5,1],[0,6,1]],
+      },
+      acetone: {
+        cat: 'oxy', hybrid: 'sp² (C=O)', geom: 'Eng oddiy keton · Sanoat erituvchisi',
+        name: 'Atseton / Propanon (CH₃COCH₃)',
+        info: 'Ichki karbonil >C=O guruhi | Aldegidlardan farqli o‘laroq kumush ko‘zgu reaksiyasiga kirishmaydi',
+        atoms: [
+          { elem:'C',x:0,y:0.2,z:0 },{ elem:'O',x:0,y:1.42,z:0 },{ elem:'C',x:-1.3,y:-0.55,z:0 },{ elem:'C',x:1.3,y:-0.55,z:0 },
+          { elem:'H',x:-2.1,y:0.15,z:0 },{ elem:'H',x:2.1,y:0.15,z:0 },
+        ],
+        bonds: [[0,1,2],[0,2,1],[0,3,1],[2,4,1],[3,5,1]],
+      },
+      ch3cooh: {
+        cat: 'oxy', hybrid: 'sp² (−COOH)', geom: 'Karbon kislota karboksil guruhi',
+        name: 'Sirka kislota / Etan kislota (CH₃COOH)',
+        info: 'Kuchsiz organik kislota | Eterifikatsiya reaksiyasida murakkab efir beradi',
+        atoms: [
+          { elem:'C',x:-1.2,y:0,z:0 },{ elem:'C',x:0.25,y:0.12,z:0 },{ elem:'O',x:0.85,y:1.2,z:0 },{ elem:'O',x:0.95,y:-1.05,z:0 },
+          { elem:'H',x:1.88,y:-0.9,z:0 },{ elem:'H',x:-1.6,y:0.88,z:0.52 },{ elem:'H',x:-1.6,y:-0.88,z:0.52 },
+        ],
+        bonds: [[0,1,1],[1,2,2],[1,3,1],[3,4,1],[0,5,1],[0,6,1]],
+      },
+      ethyl_acetate: {
+        cat: 'oxy', hybrid: 'sp² (−COO−)', geom: 'Meva hidli murakkab efir',
+        name: 'Etilasetat (CH₃COOC₂H₅)',
+        info: 'Sirka kislota + etanol eterifikatsiyasi | Yog‘lar ham glitserin va oliy kislotalarning murakkab efiridir',
+        atoms: [
+          { elem:'C',x:-2.2,y:-0.3,z:0 },{ elem:'C',x:-0.85,y:0.3,z:0 },{ elem:'O',x:-0.75,y:1.5,z:0 },
+          { elem:'O',x:0.25,y:-0.5,z:0 },{ elem:'C',x:1.55,y:0.1,z:0 },{ elem:'C',x:2.7,y:-0.8,z:0 },
+        ],
+        bonds: [[0,1,1],[1,2,2],[1,3,1],[3,4,1],[4,5,1]],
+      },
+      glucose: {
+        cat: 'oxy', hybrid: 'sp³ · 6-halqa piran', geom: 'Monosaxarid · Aldogeksoza tsiklik shakli',
+        name: 'α-D-Glyukoza (C₆H₁₂O₆)',
+        info: 'Ikki xil funksiya: 5 ta −OH va 1 ta −CHO | Kraxmal va sellyuloza monomeri',
+        atoms: [
+          { elem:'C',x:1.4,y:0,z:0 },{ elem:'C',x:0.7,y:1.22,z:0.15 },{ elem:'C',x:-0.7,y:1.22,z:-0.15 },
+          { elem:'C',x:-1.4,y:0,z:0.15 },{ elem:'C',x:-0.7,y:-1.22,z:-0.15 },{ elem:'O',x:0.7,y:-1.22,z:0.15 },
+          { elem:'O',x:2.75,y:0.1,z:0 },{ elem:'O',x:1.35,y:2.4,z:0.25 },{ elem:'O',x:-1.35,y:2.4,z:-0.25 },{ elem:'O',x:-2.75,y:0,z:0.25 },
+        ],
+        bonds: [[0,1,1],[1,2,1],[2,3,1],[3,4,1],[4,5,1],[5,0,1],[0,6,1],[1,7,1],[2,8,1],[3,9,1]],
+      },
+      methylamine: {
+        cat: 'bio', hybrid: 'sp³ (N) · Organik asos', geom: 'Birlamchi amin (−NH₂)',
+        name: 'Metilamin (CH₃NH₂)',
+        info: 'Ammiakdan kuchliroq organik asos (+I effekt) | Suvli eritmasi ishqoriy muhit beradi',
+        atoms: [
+          { elem:'C',x:-0.75,y:0,z:0 },{ elem:'N',x:0.72,y:0.15,z:0 },
+          { elem:'H',x:-1.25,y:0.9,z:0.35 },{ elem:'H',x:-1.25,y:-0.85,z:0.35 },{ elem:'H',x:-1.0,y:-0.1,z:-1.0 },
+          { elem:'H',x:1.15,y:1.05,z:0.25 },{ elem:'H',x:1.15,y:-0.4,z:-0.7 },
+        ],
+        bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1],[1,5,1],[1,6,1]],
+      },
+      aniline: {
+        cat: 'bio', hybrid: 'sp² (Halqa) + −NH₂', geom: 'Aromatik amin · N.N. Zinin reaksiyasi',
+        name: 'Anilin (C₆H₅NH₂)',
+        info: 'Nitrobenzolni qaytarib olinadi | Amin bo‘yoqlar va sulfanilamid dorilar xomashyosi',
+        atoms: [
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'C', x:1.4*Math.cos(i*Math.PI/3), y:1.4*Math.sin(i*Math.PI/3), z:0 })),
+          { elem:'N',x:2.75,y:0,z:0 },{ elem:'H',x:3.3,y:0.75,z:0.35 },{ elem:'H',x:3.3,y:-0.75,z:-0.35 },
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,1],[6,8,1]],
+      },
+      glycine: {
+        cat: 'bio', hybrid: 'Amfoter · Buitter-ion', geom: 'Eng oddiy α-aminokislota (H₂N−CH₂−COOH)',
+        name: 'Glitsin Aminokislotasi (H₂N−CH₂−COOH)',
+        info: 'Amfoter birikma | Peptid bog‘ (−CO−NH−) hosil qilib oqsillarni quradi',
+        atoms: [
+          { elem:'N',x:-1.8,y:0.4,z:0 },{ elem:'C',x:-0.45,y:-0.1,z:0 },{ elem:'C',x:0.7,y:0.85,z:0 },
+          { elem:'O',x:0.55,y:2.05,z:0 },{ elem:'O',x:1.95,y:0.3,z:0 },
+          { elem:'H',x:-2.4,y:-0.1,z:0.65 },{ elem:'H',x:-1.9,y:1.38,z:-0.2 },{ elem:'H',x:2.55,y:1.0,z:0 },
+        ],
+        bonds: [[0,1,1],[1,2,1],[2,3,2],[2,4,1],[0,5,1],[0,6,1],[4,7,1]],
+      },
+      dipeptide: {
+        cat: 'bio', hybrid: 'Peptid bog‘ (−CO−NH−)', geom: 'Oqsillar birlamchi polipeptid zanjiri fragmenti',
+        name: 'Dipeptid (Glitsilglitsin — Peptid Bog‘)',
+        info: 'Ikki aminokislotaning suv ajralib kondensatsiyasidan hosil bo‘lgan oqsil fragmenti',
+        atoms: [
+          { elem:'N',x:-3.2,y:0.2,z:0 },{ elem:'C',x:-2.0,y:-0.5,z:0 },{ elem:'C',x:-0.7,y:0.3,z:0 },
+          { elem:'O',x:-0.7,y:1.5,z:0 },{ elem:'N',x:0.5,y:-0.35,z:0 },{ elem:'C',x:1.8,y:0.35,z:0 },
+          { elem:'C',x:3.0,y:-0.5,z:0 },{ elem:'O',x:3.0,y:-1.7,z:0 },
+        ],
+        bonds: [[0,1,1],[1,2,1],[2,3,2],[2,4,1],[4,5,1],[5,6,1],[6,7,2]],
+      },
+      pyrrole: {
+        cat: 'bio', hybrid: '5-halqa · 6π aromatik', geom: 'Porfirin (Gemoglobin/Xlorofill) bloki',
+        name: 'Pirrol (C₄H₅N)',
+        info: 'Azot jufti aromatik 6π bulutga qo‘shiladi | Gemoglobin va xlorofill halqa birligi',
+        atoms: [
+          { elem:'N',x:0,y:1.2,z:0 },{ elem:'C',x:1.15,y:0.35,z:0 },{ elem:'C',x:0.72,y:-0.98,z:0 },
+          { elem:'C',x:-0.72,y:-0.98,z:0 },{ elem:'C',x:-1.15,y:0.35,z:0 },
+        ],
+        bonds: [[0,1,1],[1,2,2],[2,3,1],[3,4,2],[4,0,1]],
+      },
+      pyridine: {
+        cat: 'bio', hybrid: '6-halqa · Asosli geterotsikl', geom: 'Nikotinamid (B₃) va dorilar skeleti',
+        name: 'Piridin (C₅H₅N)',
+        info: 'Kuchli asosli aromatik geterotsikl | Azotning bo‘linmagan jufti halqa tashqarisida turadi',
+        atoms: [
+          { elem:'N',x:1.4,y:0,z:0 },
+          ...[1,2,3,4,5].map((i) => ({ elem:'C', x:1.4*Math.cos(i*Math.PI/3), y:1.4*Math.sin(i*Math.PI/3), z:0 })),
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1]],
+      },
+      purine: {
+        cat: 'bio', hybrid: 'Pirimidin + Imidazol', geom: 'DNK/RNK Adenin-Guanin va ATF yadrosi',
+        name: 'Purin Asosi Skeleti (DNK & Kofein Yadrosi)',
+        info: 'Adenin, Guanin nuklein asoslari hamda ATF energiya molekulasi asosi',
+        atoms: [
+          { elem:'N',x:-1.4,y:0.7,z:0 },{ elem:'C',x:-1.4,y:-0.7,z:0 },{ elem:'N',x:-0.2,y:-1.4,z:0 },
+          { elem:'C',x:1.0,y:-0.7,z:0 },{ elem:'C',x:1.0,y:0.7,z:0 },{ elem:'C',x:-0.2,y:1.4,z:0 },
+          { elem:'N',x:2.3,y:-1.1,z:0 },{ elem:'C',x:3.1,y:0,z:0 },{ elem:'N',x:2.3,y:1.1,z:0 },
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[3,6,1],[6,7,2],[7,8,1],[8,4,1]],
+      },
+      aspirin: {
+        cat: 'bio', hybrid: 'Aromatik efir + −COOH', geom: 'Farmatsevtik dorivor sintez molekulasi',
+        name: 'Aspirin / Atsetilsalitsil kislota (C₉H₈O₄)',
+        info: 'Organik sintez mahsuloti | Salitsil kislota va sirka angidrid reaksiyasidan olinadi',
+        atoms: [
+          ...[0,1,2,3,4,5].map((i) => ({ elem:'C', x:1.4*Math.cos(i*Math.PI/3), y:1.4*Math.sin(i*Math.PI/3), z:0 })),
+          { elem:'C',x:2.75,y:0,z:0 },{ elem:'O',x:3.3,y:1.1,z:0 },{ elem:'O',x:3.3,y:-1.1,z:0 },
+          { elem:'O',x:1.3,y:2.4,z:0 },{ elem:'C',x:2.1,y:3.3,z:0.4 },
+        ],
+        bonds: [[0,1,2],[1,2,1],[2,3,2],[3,4,1],[4,5,2],[5,0,1],[0,6,1],[6,7,2],[6,8,1],[1,9,1],[9,10,1]],
+      },
+      dna_helix: {
+        cat: 'bio', hybrid: 'Qo‘sh spiral · A=T, G≡C', geom: 'Nuklein kislota irsiy makromolekulasi',
+        name: 'DNK Qo‘sh Spiral Fragmenti (Biopolimer)',
+        info: 'Komplementar azot asoslari orasida vodorod bog‘lari | Biologik axborot tashuvchisi',
+        atoms: (() => {
+          const arr = [];
+          for (let i = 0; i < 14; i++) {
+            const ang = i * 0.65, z = (i - 6.5) * 0.65;
+            arr.push({ elem: i%2===0?'P':'O', x:2.35*Math.cos(ang), y:2.35*Math.sin(ang), z });
+            arr.push({ elem: i%2===0?'N':'C', x:1.0*Math.cos(ang), y:1.0*Math.sin(ang), z });
+            arr.push({ elem: i%2===0?'N':'C', x:-1.0*Math.cos(ang), y:-1.0*Math.sin(ang), z });
+            arr.push({ elem: i%2===0?'P':'O', x:-2.35*Math.cos(ang), y:-2.35*Math.sin(ang), z });
           }
           return arr;
         })(),
         bonds: (() => {
           const b = [];
-          for (let i = 0; i < 16; i++) {
-            const base = i * 4;
-            b.push([base, base + 1, 1], [base + 1, base + 2, 2], [base + 2, base + 3, 1]);
-            if (i < 15) b.push([base, base + 4, 1], [base + 3, base + 7, 1]);
+          for (let i = 0; i < 14; i++) {
+            const k = i * 4;
+            b.push([k,k+1,1],[k+1,k+2,2],[k+2,k+3,1]);
+            if (i < 13) b.push([k,k+4,1],[k+3,k+7,1]);
           }
           return b;
         })(),
       },
     };
 
-    // Build SDF v2000 string so 3Dmol renders crisp CPK atoms + single/double/triple bonds
     function toSDF(mol) {
       const pad = (v) => v.toFixed(4).padStart(10, ' ');
-      const lines = [
-        mol.name,
-        'Atomix 3Dmol',
-        '',
-        String(mol.atoms.length).padStart(3) + String(mol.bonds.length).padStart(3) + '  0  0  0  0  0  0  0  0999 V2000',
-      ];
-      for (const a of mol.atoms) {
-        lines.push(`${pad(a.x)}${pad(a.y)}${pad(a.z)} ${a.elem.padEnd(3)} 0  0  0  0  0  0  0  0  0  0  0  0`);
-      }
-      for (const [i, j, ord] of mol.bonds) {
-        lines.push(`${String(i + 1).padStart(3)}${String(j + 1).padStart(3)}${String(ord).padStart(3)}  0  0  0  0`);
-      }
+      const lines = [mol.name, 'Atomix 3Dmol', '', String(mol.atoms.length).padStart(3) + String(mol.bonds.length).padStart(3) + '  0  0  0  0  0  0  0  0999 V2000'];
+      for (const a of mol.atoms) lines.push(`${pad(a.x)}${pad(a.y)}${pad(a.z)} ${a.elem.padEnd(3)} 0  0  0  0  0  0  0  0  0  0  0  0`);
+      for (const [i, j, ord] of mol.bonds) lines.push(`${String(i + 1).padStart(3)}${String(j + 1).padStart(3)}${String(ord).padStart(3)}  0  0  0  0`);
       lines.push('M  END', '$$$$');
       return lines.join('\n');
     }
 
     const sel = document.getElementById('mol-select');
-    Object.entries(MOL_DB).forEach(([k, v]) => {
-      const o = document.createElement('option');
-      o.value = k;
-      o.textContent = v.name;
-      sel.appendChild(o);
-    });
-
+    const catBar = document.getElementById('cat-bar');
     const params = new URLSearchParams(location.search);
     let currentKey = MOL_DB[params.get('mol')] ? params.get('mol') : 'ch4';
+    let currentCat = 'all';
     let currentStyle = 'stick';
+    let showLabels = true;
     let spinning = true;
     let viewer = null;
 
+    function populateSelect() {
+      sel.innerHTML = '';
+      Object.entries(MOL_DB)
+        .filter(([, m]) => currentCat === 'all' || m.cat === currentCat)
+        .forEach(([k, v]) => {
+          const o = document.createElement('option');
+          o.value = k; o.textContent = v.name;
+          sel.appendChild(o);
+        });
+      if (!Array.from(sel.options).some((o) => o.value === currentKey) && sel.options.length > 0) {
+        currentKey = sel.options[0].value;
+      }
+      sel.value = currentKey;
+    }
+
     function applyStyle() {
       if (!viewer) return;
-      if (currentStyle === 'stick') {
-        viewer.setStyle({}, { stick: { radius: 0.16, colorscheme: 'Jmol' }, sphere: { scale: 0.3, colorscheme: 'Jmol' } });
-      } else if (currentStyle === 'sphere') {
-        viewer.setStyle({}, { sphere: { scale: 0.85, colorscheme: 'Jmol' } });
-      } else {
-        viewer.setStyle({}, { line: { linewidth: 3, colorscheme: 'Jmol' }, sphere: { scale: 0.18 } });
-      }
-      if (MOL_DB[currentKey].bonds.length === 0) {
-        viewer.setStyle({}, { sphere: { scale: 0.65, colorscheme: 'Jmol' } });
+      viewer.removeAllLabels();
+      if (currentStyle === 'stick') viewer.setStyle({}, { stick: { radius: 0.16, colorscheme: 'Jmol' }, sphere: { scale: 0.3, colorscheme: 'Jmol' } });
+      else if (currentStyle === 'sphere') viewer.setStyle({}, { sphere: { scale: 0.84, colorscheme: 'Jmol' } });
+      else viewer.setStyle({}, { line: { linewidth: 3, colorscheme: 'Jmol' }, sphere: { scale: 0.2, colorscheme: 'Jmol' } });
+
+      const mol = MOL_DB[currentKey];
+      if (mol.bonds.length === 0) viewer.setStyle({}, { sphere: { scale: 0.62, colorscheme: 'Jmol' } });
+
+      if (showLabels && mol.atoms.length <= 28) {
+        mol.atoms.forEach((a) => {
+          if (a.elem !== 'H') {
+            viewer.addLabel(a.elem, {
+              position: { x: a.x, y: a.y, z: a.z },
+              backgroundColor: 'rgba(6,10,23,0.72)', fontColor: '#f8fafc', fontSize: 11, borderThickness: 0,
+            });
+          }
+        });
       }
       viewer.render();
     }
 
+    // Smooth 3D fallback canvas if CDN is unreachable
+    const fbCanvas = document.getElementById('fallback3d');
+    const fbCtx = fbCanvas.getContext('2d');
+    let fbAngle = 0;
+    const CPK = { C:'#94a3b8', H:'#f8fafc', O:'#ef4444', N:'#3b82f6', S:'#facc15', P:'#f97316', Cl:'#22c55e', Na:'#a855f7', Si:'#eab308', Cu:'#d97706' };
+
+    function renderFallback() {
+      if (viewer) return;
+      const r = fbCanvas.getBoundingClientRect();
+      if (r.width > 20) {
+        fbCanvas.width = r.width; fbCanvas.height = r.height;
+        fbAngle += spinning ? 0.015 : 0;
+        const mol = MOL_DB[currentKey];
+        const cx = r.width / 2, cy = r.height / 2, sc = 42;
+        const ca = Math.cos(fbAngle), sa = Math.sin(fbAngle);
+        const pts = mol.atoms.map((a) => {
+          const x = a.x * ca - a.z * sa, z = a.x * sa + a.z * ca, p = 240 / (240 + z * 22);
+          return { x: cx + x * sc * p, y: cy - a.y * sc * p, z, r: (a.elem === 'H' ? 10 : 17) * p, elem: a.elem };
+        });
+        fbCtx.strokeStyle = 'rgba(148,163,184,0.65)';
+        mol.bonds.forEach(([i, j, ord]) => {
+          if (!pts[i] || !pts[j]) return;
+          fbCtx.lineWidth = ord * 2.4;
+          fbCtx.beginPath(); fbCtx.moveTo(pts[i].x, pts[i].y); fbCtx.lineTo(pts[j].x, pts[j].y); fbCtx.stroke();
+        });
+        [...pts].sort((a, b) => b.z - a.z).forEach((p) => {
+          fbCtx.fillStyle = CPK[p.elem] || '#34d399';
+          fbCtx.beginPath(); fbCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2); fbCtx.fill();
+          if (showLabels) {
+            fbCtx.fillStyle = '#040711'; fbCtx.font = '700 11px JetBrains Mono, monospace'; fbCtx.textAlign = 'center';
+            fbCtx.fillText(p.elem, p.x, p.y + 4);
+          }
+        });
+      }
+      requestAnimationFrame(renderFallback);
+    }
+
     function loadMol(key) {
       currentKey = key;
-      sel.value = key;
+      if (Array.from(sel.options).some((o) => o.value === key)) sel.value = key;
       const mol = MOL_DB[key];
       document.getElementById('mol-heading').textContent = mol.name;
-      document.getElementById('mol-info').innerHTML = mol.info.replace(/sp³|sp²|sp|104\.5°|109\.5°|107°|120°|180°/g, (m) => `<strong>${m}</strong>`);
+      document.getElementById('hud-hybrid').textContent = mol.hybrid;
+      document.getElementById('hud-geom').textContent = `Fazoviy tuzilish: ${mol.geom}`;
+      document.getElementById('mol-info').innerHTML = mol.info.replace(/sp³|sp²|sp|104\.5°|109\.5°|107°|120°|180°|119°|116\.8°/g, (m) => `<strong>${m}</strong>`);
+
       if (window.$3Dmol) {
         if (!viewer) {
-          viewer = window.$3Dmol.createViewer(document.getElementById('viewer3d'), {
-            backgroundColor: '#050814',
-            antialias: true,
-          });
+          viewer = window.$3Dmol.createViewer(document.getElementById('viewer3d'), { backgroundColor: '#050814', antialias: true });
         }
         viewer.removeAllModels();
         viewer.addModel(toSDF(mol), 'sdf');
         applyStyle();
         viewer.zoomTo();
-        viewer.spin(spinning ? 'y' : false, 0.45);
+        viewer.spin(spinning ? 'y' : false, 0.5);
         viewer.render();
       } else {
-        // Offline procedural SVG/Canvas fallback if CDN blocked
-        const el = document.getElementById('viewer3d');
-        el.innerHTML = `<div style="display:grid;place-items:center;height:100%;color:#94a3b8;font-size:14px">3Dmol.js yuklanmoqda: ${mol.name}</div>`;
+        renderFallback();
       }
     }
 
+    catBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-cat]');
+      if (!btn) return;
+      catBar.querySelectorAll('.cat-pill').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCat = btn.dataset.cat;
+      populateSelect();
+      loadMol(sel.value);
+    });
     sel.addEventListener('change', () => loadMol(sel.value));
     document.querySelectorAll('[data-style]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -362,16 +722,18 @@
         applyStyle();
       });
     });
+    document.getElementById('label-btn').addEventListener('click', (e) => {
+      showLabels = !showLabels;
+      e.target.classList.toggle('active', showLabels);
+      applyStyle();
+    });
     document.getElementById('spin-btn').addEventListener('click', (e) => {
       spinning = !spinning;
       e.target.classList.toggle('active', spinning);
-      if (viewer) viewer.spin(spinning ? 'y' : false, 0.45);
-    });
-    document.getElementById('molview-btn').addEventListener('click', () => {
-      const m = MOL_DB[currentKey];
-      alert(`${m.name}\n\n${m.info}\n\n(3Dmol.js & MolView ochiq kodli molekulalar banki bilan sinxronlangan)`);
+      if (viewer) viewer.spin(spinning ? 'y' : false, 0.5);
     });
 
+    populateSelect();
     loadMol(currentKey);
   </script>
 </body>

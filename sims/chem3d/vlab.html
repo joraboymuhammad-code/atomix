@@ -3,51 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Atomix Kimyo Virtual Laboratoriyasi (PhET / ChemCollective / Amrita OLabs)</title>
+  <title>Atomix Kimyo Virtual Laboratoriyasi — 25 ta Maxsus Tajriba Stendi</title>
   <style>
     * { box-sizing: border-box; }
     html, body {
       margin: 0; padding: 0; width: 100%; height: 100%;
-      background: #060a17; color: #f8fafc;
+      background: #040711; color: #f8fafc;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow: hidden;
     }
     .shell { display: flex; flex-direction: column; height: 100%; }
     .bar {
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 10px 14px; background: rgba(9, 15, 32, 0.92);
-      border-bottom: 1px solid rgba(52, 211, 153, 0.25);
+      padding: 9px 14px;
+      background: linear-gradient(180deg, rgba(13, 21, 44, 0.96), rgba(7, 12, 26, 0.96));
+      border-bottom: 1px solid rgba(52, 211, 153, 0.28);
     }
     .tag {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 8px; border-radius: 6px;
-      background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; padding: 3px 8px; border-radius: 7px;
+      background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.38); color: #38bdf8;
     }
-    .bar-left { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 700; }
+    .bar-left { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; }
     .controls { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
     select, button {
-      background: rgba(15, 23, 42, 0.9); color: #e2e8f0;
-      border: 1px solid rgba(148, 163, 184, 0.28); border-bottom: 3px solid #020617;
-      border-radius: 8px; padding: 6px 11px; font-size: 12px; font-weight: 600; cursor: pointer;
+      background: linear-gradient(180deg, rgba(22, 34, 64, 0.94), rgba(10, 17, 36, 0.98));
+      color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.28);
+      border-bottom: 3px solid #020617;
+      border-radius: 8px; padding: 6px 11px; font-size: 11.8px; font-weight: 600; cursor: pointer;
     }
-    button.active, button:hover { border-color: #34d399; background: rgba(52, 211, 153, 0.15); color: #fff; }
-    .main { position: relative; flex: 1; display: grid; grid-template-columns: 1fr 270px; overflow: hidden; }
+    button.active, button:hover { border-color: #34d399; background: rgba(52, 211, 153, 0.18); color: #fff; }
+    .main { position: relative; flex: 1; display: grid; grid-template-columns: 1fr 278px; overflow: hidden; }
     canvas { width: 100%; height: 100%; display: block; background: #050814; }
     .side {
-      background: rgba(8, 13, 27, 0.92); border-left: 1px solid rgba(148, 163, 184, 0.18);
-      padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+      background: rgba(8, 13, 27, 0.94); border-left: 1px solid rgba(148, 163, 184, 0.18);
+      padding: 13px; overflow-y: auto; display: flex; flex-direction: column; gap: 11px;
     }
     .ctrl-box {
-      padding: 10px 12px; border-radius: 10px; background: rgba(15, 23, 42, 0.72);
-      border: 1px solid rgba(148, 163, 184, 0.16);
+      padding: 10px 12px; border-radius: 11px; background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.18); border-bottom: 3px solid rgba(2, 6, 23, 0.85);
     }
-    .ctrl-box label { display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1; margin-bottom: 6px; }
-    .ctrl-box strong { color: #34d399; font-family: 'JetBrains Mono', monospace; }
+    .ctrl-box label { display: flex; justify-content: space-between; font-size: 11.8px; color: #cbd5e1; margin-bottom: 6px; gap: 6px; }
+    .ctrl-box strong { color: #34d399; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
     input[type="range"] { width: 100%; accent-color: #34d399; }
     .readout {
-      padding: 12px; border-radius: 10px; background: rgba(52, 211, 153, 0.1);
-      border: 1px solid rgba(52, 211, 153, 0.32); font-size: 12.5px; line-height: 1.55;
+      padding: 12px; border-radius: 11px; background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.35); font-size: 12.2px; line-height: 1.55;
     }
-    .readout h4 { margin: 0 0 6px; color: #34d399; font-size: 12.5px; }
+    .readout h4 { margin: 0 0 6px; color: #34d399; font-size: 12.4px; }
     iframe.phet-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 20; background: #050814; }
     @media (max-width: 720px) { .main { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } }
   </style>
@@ -56,12 +58,12 @@
   <div class="shell">
     <div class="bar">
       <div class="bar-left">
-        <span class="tag">ChemCollective · PhET · OLabs</span>
+        <span class="tag">ChemCollective · PhET · Amrita OLabs</span>
         <span id="lab-title">Kimyo Virtual Laboratoriyasi</span>
       </div>
       <div class="controls">
         <select id="lab-select"></select>
-        <button id="phet-toggle" type="button">PhET HTML5 Rejim</button>
+        <button id="phet-toggle" type="button">PhET Jonli Rejim</button>
       </div>
     </div>
     <div class="main">
@@ -72,146 +74,282 @@
   </div>
 
   <script>
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
     const LABS = {
-      ph_scale: {
-        title: 'PhET pH Shkalasi va Gidroliz Laboratoriyasi',
-        phetUrl: 'https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_uz.html',
+      lab_safety: {
+        title: '1. Kimyo Laboratoriya Stendi va Xavfsizlik Qoidalari',
+        phetUrl: 'https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html',
         controls: [
-          { key: 'pH', label: 'Eritma pH', min: 1, max: 14, step: 0.2, val: 3.0, unit: '' },
-          { key: 'ind', label: 'Indikator (1:Lakmus 2:Fenolft 3:Metil)', min: 1, max: 3, step: 1, val: 1, unit: '' },
+          { key: 'flame', label: 'Bunsen gorelkasi quvvati', min: 0, max: 100, step: 5, val: 55, unit: '%' },
+          { key: 'mode', label: 'Tajriba (1:Isitish 2:Kislota suyultirish)', min: 1, max: 2, step: 1, val: 1, unit: '' },
+        ],
+        summary: (v) => v.mode === 1
+          ? `Kolba qizdirilmoqda (${(20 + v.flame * 0.85).toFixed(0)} °C)\nSuyuqlik qaynash tezligi: ${v.flame}%`
+          : `XAVFSIZLIK QOIDASI: Kislota (H₂SO₄) har doim suvga oz-ozdan quyiladi!\nAks holda issiqlik sachrashi yuz beradi.`,
+      },
+      separation: {
+        title: '2. Distillyatsiya va Xromatografiya Stendi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html',
+        controls: [
+          { key: 'temp', label: 'Haydash harorati', min: 25, max: 115, step: 1, val: 82, unit: '°C' },
+          { key: 'rf', label: 'Xromatografiya vaqti', min: 10, max: 100, step: 5, val: 65, unit: '%' },
         ],
         summary: (v) => {
-          const hConc = Math.pow(10, -v.pH).toExponential(1);
-          const muhit = v.pH < 6.8 ? 'Kislotali muhit ([H⁺] > 10⁻⁷)' : v.pH > 7.2 ? 'Ishqoriy muhit ([OH⁻] > 10⁻⁷)' : 'Neytral muhit (pH = 7)';
-          return `${muhit}\n[H⁺] = ${hConc} mol/L\npOH = ${(14 - v.pH).toFixed(1)}`;
+          const st = v.temp < 78 ? 'Qizish davri' : v.temp < 100 ? 'Etanol (78.4°C) Libix sovutkichida kondensatsiyalanmoqda!' : 'Suv ham qaynamoqda (100°C)!';
+          return `${st}\nRf(A)=0.42 | Rf(B)=0.78 (${v.rf}% ajraldi)`;
         },
       },
-      titration: {
-        title: 'ChemCollective Kislota-Asosli Titrlash',
-        phetUrl: 'https://phet.colorado.edu/sims/html/acid-base-solutions/latest/acid-base-solutions_en.html',
+      filtration: {
+        title: '3. Filtrlash va Bug‘latib Kristallash Stendi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/concentration/latest/concentration_en.html',
         controls: [
-          { key: 'volNaOH', label: 'Qo‘shilgan NaOH (0.1M)', min: 0, max: 50, step: 1, val: 20, unit: 'mL' },
-          { key: 'acidVol', label: 'HCl (0.1M) hajmi', min: 15, max: 35, step: 5, val: 25, unit: 'mL' },
+          { key: 'pore', label: 'Filtr g‘ovakligi / Tezlik', min: 1, max: 10, step: 1, val: 6, unit: '' },
+          { key: 'evap', label: 'Bug‘latish kosachasi qizishi', min: 20, max: 100, step: 5, val: 75, unit: '°C' },
         ],
-        summary: (v) => {
-          const diff = v.volNaOH - v.acidVol;
-          const ph = Math.abs(diff) < 0.5 ? 7.0 : diff < 0 ? clamp(1.3 + (v.volNaOH / v.acidVol) * 2.4, 1, 6.5) : clamp(10.5 + (diff / 25) * 2.3, 7.5, 13);
-          return `Ekvivalent nuqta: ${v.acidVol} mL\nJoriy pH = ${ph.toFixed(2)}\n${Math.abs(diff) < 1 ? 'NEUTRALIZATSIYA NUQTASI!' : diff < 0 ? 'Kislota ortiqcha' : 'Ishqor ortiqcha (Fenolftalein pushti)'}`;
-        },
-      },
-      flame_test: {
-        title: 'Amrita OLabs Sifat Analizi: Alanga Rangi Testi',
-        phetUrl: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html',
-        controls: [
-          { key: 'cation', label: 'Kation (1:Li⁺ 2:Na⁺ 3:K⁺ 4:Cu²⁺ 5:Ba²⁺ 6:Ca²⁺)', min: 1, max: 6, step: 1, val: 4, unit: '' },
-          { key: 'temp', label: 'Alanga harorati', min: 800, max: 1800, step: 50, val: 1300, unit: '°C' },
-        ],
-        summary: (v) => {
-          const map = [
-            ['Li⁺', 'Qirmizi-qizil (671 nm)'],
-            ['Na⁺', 'Yorqin sariq (589 nm)'],
-            ['K⁺', 'Binafsha (766 nm)'],
-            ['Cu²⁺', 'Zumrad-yashil (515 nm)'],
-            ['Ba²⁺', 'Sariq-yashil (524 nm)'],
-            ['Ca²⁺', 'G‘isht-qizil (622 nm)'],
-          ];
-          const [ion, desc] = map[(Math.round(v.cation) - 1) % 6];
-          return `Tekshirilayotgan kation: ${ion}\nSpektral alanga rangi: ${desc}`;
-        },
-      },
-      redox_galvanic: {
-        title: 'Daniel-Yakobi Galvanik Elementi va Elektroliz',
-        phetUrl: 'https://phet.colorado.edu/sims/html/Faradays-electromagnetic-lab/latest/faradays-electromagnetic-lab_en.html',
-        controls: [
-          { key: 'anod', label: 'Anod (1:Zn −0.76V, 2:Mg −2.37V, 3:Fe −0.44V)', min: 1, max: 3, step: 1, val: 1, unit: '' },
-          { key: 'katod', label: 'Katod (1:Cu +0.34V, 2:Ag +0.80V)', min: 1, max: 2, step: 1, val: 1, unit: '' },
-        ],
-        summary: (v) => {
-          const anodes = [['Zn', -0.76], ['Mg', -2.37], ['Fe', -0.44]];
-          const cathodes = [['Cu', 0.34], ['Ag', 0.80]];
-          const [aN, aE] = anodes[Math.round(v.anod) - 1];
-          const [kN, kE] = cathodes[Math.round(v.katod) - 1];
-          return `Juftlik: ${aN} (−) | ${kN} (+)\nEYUK = ${(kE - aE).toFixed(2)} V\nAnodda oksidlanish, katodda qaytarilish!`;
-        },
-      },
-      periodic: {
-        title: 'PhET Davriy Jadval va Atom Radiuslari',
-        phetUrl: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html',
-        controls: [
-          { key: 'Z', label: 'Tartib raqam Z', min: 1, max: 20, step: 1, val: 11, unit: '' },
-        ],
-        summary: (v) => {
-          const els = ['H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca'];
-          const sym = els[Math.round(v.Z) - 1] || 'Na';
-          const period = v.Z <= 2 ? 1 : v.Z <= 10 ? 2 : v.Z <= 18 ? 3 : 4;
-          return `Element: ${sym} (Z = ${Math.round(v.Z)})\nDavr: ${period} | Protonlar: ${Math.round(v.Z)} ta`;
-        },
+        summary: (v) => `Getereogen cho‘kma qog‘oz filtrda ushlab qolindi.\nTiniq filtratdan ${v.evap}°C da kristallar ajralmoqda.`,
       },
       stoichiometry: {
-        title: 'PhET Tenglamalar va Mol Stoxiometriyasi',
+        title: '4. Evdiometr va Stexiometrik Mol Tarozisi',
         phetUrl: 'https://phet.colorado.edu/sims/html/balancing-chemical-equations/latest/balancing-chemical-equations_en.html',
         controls: [
           { key: 'nH2', label: 'H₂ miqdori (mol)', min: 1, max: 10, step: 1, val: 4, unit: 'mol' },
           { key: 'nO2', label: 'O₂ miqdori (mol)', min: 1, max: 6, step: 1, val: 2, unit: 'mol' },
         ],
         summary: (v) => {
-          const reactedPairs = Math.min(Math.floor(v.nH2 / 2), v.nO2);
-          const water = reactedPairs * 2;
-          return `Reaksiya: 2H₂ + O₂ → 2H₂O\nHosil bo‘lgan suv: ${water} mol (${water * 18} g)`;
+          const rx = Math.min(v.nH2 / 2, v.nO2);
+          const water = rx * 2;
+          const lim = v.nH2 / 2 < v.nO2 ? 'H₂ tugadi (O₂ ortib qoldi)' : v.nH2 / 2 > v.nO2 ? 'O₂ tugadi (H₂ ortib qoldi)' : 'To‘liq stexiometrik nisbat!';
+          return `2H₂ + O₂ → 2H₂O\nHosil bo‘lgan suv: ${water.toFixed(1)} mol (${(water * 18).toFixed(0)} g)\n${lim}`;
+        },
+      },
+      periodic: {
+        title: '5. Mendeleyev Davriy Jadvali va Elektron Qobiqlar',
+        phetUrl: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html',
+        controls: [
+          { key: 'Z', label: 'Element tartib raqami Z', min: 1, max: 20, step: 1, val: 11, unit: '' },
+        ],
+        summary: (v) => {
+          const els = ['H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca'];
+          const z = Math.round(v.Z);
+          const per = z <= 2 ? 1 : z <= 10 ? 2 : z <= 18 ? 3 : 4;
+          const rad = (50 + per * 32 - (z - (per===1?1:per===2?3:per===3?11:19)) * 7).toFixed(0);
+          return `Element: ${els[z - 1]} (Z = ${z}) · ${per}-davr\nTaxminiy atom radiusi: ~${rad} pm`;
+        },
+      },
+      bonding: {
+        title: '6. Elektron Bulut Qoplashuvi va Dipol (Morze Egri)',
+        phetUrl: 'https://phet.colorado.edu/sims/html/molecule-polarity/latest/molecule-polarity_en.html',
+        controls: [
+          { key: 'dEN', label: 'Elektromanfiylik farqi Δχ', min: 0, max: 3.2, step: 0.2, val: 1.0, unit: '' },
+          { key: 'dist', label: 'Atomlararo masofa r', min: 0.6, max: 3.0, step: 0.1, val: 1.3, unit: 'Å' },
+        ],
+        summary: (v) => {
+          const typ = v.dEN < 0.4 ? 'Qutbsiz kovalent' : v.dEN < 1.8 ? 'Qutbli kovalent' : 'Ion bog‘lanish';
+          return `Bog‘ turi: ${typ} (Δχ = ${v.dEN.toFixed(1)})\nMasofa r = ${v.dist.toFixed(1)} Å`;
+        },
+      },
+      calorimetry: {
+        title: '7. Kalorimetr va Entalpiya (ΔH) Diagrammasi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html',
+        controls: [
+          { key: 'dH', label: 'Reaksiya issiqligi ΔH', min: -120, max: 120, step: 10, val: -70, unit: 'kJ' },
+          { key: 'mass', label: 'Suv massasi kalorimetrda', min: 100, max: 500, step: 50, val: 200, unit: 'g' },
+        ],
+        summary: (v) => {
+          const dT = (-v.dH * 1000) / (4.184 * v.mass);
+          return `${v.dH < 0 ? 'EKZOTERMIK (+Q)' : v.dH > 0 ? 'ENDOTERMIK (−Q)' : 'Termoneytral'}\nHarorat o‘zgarishi: ΔT = ${dT > 0 ? '+' : ''}${dT.toFixed(1)} °C`;
         },
       },
       kinetics: {
-        title: 'PhET Reaksiyalar Tezligi va Kataliz',
+        title: '8. To‘qnashuvlar va Maksvell-Bolsman Egri Chizig‘i',
         phetUrl: 'https://phet.colorado.edu/sims/html/reactions-and-rates/latest/reactions-and-rates_en.html',
         controls: [
-          { key: 'T', label: 'Harorat T', min: 280, max: 420, step: 10, val: 320, unit: 'K' },
-          { key: 'cat', label: 'Katalizator (0:Yo‘q 1:Bor)', min: 0, max: 1, step: 1, val: 1, unit: '' },
+          { key: 'T', label: 'Harorat T', min: 270, max: 450, step: 10, val: 330, unit: 'K' },
+          { key: 'conc', label: 'Konsentratsiya', min: 1, max: 5, step: 0.5, val: 2.5, unit: 'M' },
         ],
         summary: (v) => {
-          const vg = Math.pow(2.2, (v.T - 300) / 10) * (v.cat ? 4.5 : 1);
-          return `Nisbiy tezlik: ${vg.toFixed(1)}×\n${v.cat ? 'Katalizator faollanish energiyasini Ea kamaytirdi!' : 'Katalizatorsiz yuqori energetik to‘siq'}`;
+          const rate = v.conc * Math.pow(2.1, (v.T - 298) / 10);
+          return `Vant-Goff bo‘yicha tezlik: ${rate.toFixed(1)}×\nFaol molekulalar (E ≥ Ea) ulushi ortmoqda!`;
         },
+      },
+      catalysis: {
+        title: '9. Geterogen Kataliz Sirti va Fermentlar',
+        phetUrl: 'https://phet.colorado.edu/sims/html/reactions-and-rates/latest/reactions-and-rates_en.html',
+        controls: [
+          { key: 'cat', label: 'Katalizator (0:Yo‘q 1:Pt/V₂O₅)', min: 0, max: 1, step: 1, val: 1, unit: '' },
+          { key: 'Ea', label: 'Boshlang‘ich Ea', min: 40, max: 100, step: 5, val: 75, unit: 'kJ' },
+        ],
+        summary: (v) => `Energetik to‘siq: ${v.cat ? (v.Ea * 0.48).toFixed(0) : v.Ea} kJ/mol\nΔH o‘zgarmaydi, faqat muvozanatga kelish tezlashadi!`,
       },
       equilibrium: {
-        title: 'Le Shatelye Prinsipi va Kimyoviy Muvozanat',
+        title: '10. Porshenli Reaktor — Le Shatelye Prinsipi',
         phetUrl: 'https://phet.colorado.edu/sims/html/reversible-reactions/latest/reversible-reactions_en.html',
         controls: [
-          { key: 'P', label: 'Bosim (atm)', min: 1, max: 10, step: 1, val: 5, unit: 'atm' },
-          { key: 'T', label: 'Harorat (°C)', min: 200, max: 600, step: 25, val: 400, unit: '°C' },
+          { key: 'P', label: 'Porshen bosimi P', min: 1, max: 12, step: 1, val: 6, unit: 'atm' },
+          { key: 'T', label: 'Harorat T', min: 250, max: 600, step: 25, val: 400, unit: '°C' },
         ],
         summary: (v) => {
-          const nh3 = clamp(15 + v.P * 4.5 - (v.T - 200) * 0.05, 5, 85);
-          return `N₂ + 3H₂ ⇌ 2NH₃ (−92 kJ)\nAmmiak unumi: ${nh3.toFixed(1)}%\nYuqori bosim → o‘ngga siljiydi!`;
+          const y = clamp(18 + v.P * 4.8 - (v.T - 250) * 0.06, 8, 88);
+          return `N₂ + 3H₂ ⇌ 2NH₃ (−92 kJ)\nNH₃ muvozanat unumi: ${y.toFixed(1)}%`;
         },
       },
-      separation: {
-        title: 'Aralashmalarni Ajratish va Distillyatsiya (OLabs)',
+      solutions: {
+        title: '11. Kristall Erishi, Gidratlanish va Eruvchanlik',
+        phetUrl: 'https://phet.colorado.edu/sims/html/salts-and-solubility/latest/salts-and-solubility_en.html',
+        controls: [
+          { key: 'salt', label: 'Qo‘shilgan tuz (g/100g suv)', min: 10, max: 90, step: 5, val: 45, unit: 'g' },
+          { key: 'T', label: 'Eritma harorati', min: 10, max: 90, step: 5, val: 35, unit: '°C' },
+        ],
+        summary: (v) => {
+          const cap = 22 + v.T * 0.65;
+          const st = v.salt < cap - 3 ? 'To‘yinmagan eritma' : v.salt <= cap + 3 ? 'To‘yingan eritma' : 'O‘ta to‘yingan — tubida cho‘kma bor!';
+          return `Maksimal eruvchanlik (${v.T}°C): ${cap.toFixed(1)} g\nHolat: ${st}`;
+        },
+      },
+      dissociation: {
+        title: '12. Elektrolitik Dissotsilanish va Lampochka Sinovi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/sugar-and-salt-solutions/latest/sugar-and-salt-solutions_en.html',
+        controls: [
+          { key: 'type', label: 'Modda (1:Shakar 2:CH₃COOH 3:NaCl)', min: 1, max: 3, step: 1, val: 3, unit: '' },
+          { key: 'conc', label: 'Konsentratsiya', min: 0.1, max: 2.0, step: 0.1, val: 1.0, unit: 'M' },
+        ],
+        summary: (v) => {
+          const t = Math.round(v.type);
+          const names = ['Noelektrolit (C₁₂H₂₂O₁₁, α=0)', 'Kuchsiz elektrolit (CH₃COOH, α≈3%)', 'Kuchli elektrolit (NaCl, α≈100%)'];
+          return `${names[t - 1]}\nTok o‘tkazuvchanlik kuchi: ${t === 1 ? '0%' : t === 2 ? 'Past' : 'Yorqin (Maksimal)!'}`;
+        },
+      },
+      ph_scale: {
+        title: '13. Raqamli pH-Metr va 3 ta Indikator Stendi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_en.html',
+        controls: [
+          { key: 'pH', label: 'Eritma pH qiymati', min: 0.5, max: 13.5, step: 0.5, val: 3.0, unit: '' },
+        ],
+        summary: (v) => `Muhit: ${v.pH < 6.5 ? 'Kislotali' : v.pH > 7.5 ? 'Ishqoriy' : 'Neytral'}\n[H⁺] = ${Math.pow(10, -v.pH).toExponential(1)} mol/L | pOH = ${(14 - v.pH).toFixed(1)}`,
+      },
+      titration: {
+        title: '14. Byuretka Titrlash va pH S-Egri Chizig‘i',
+        phetUrl: 'https://phet.colorado.edu/sims/html/acid-base-solutions/latest/acid-base-solutions_en.html',
+        controls: [
+          { key: 'vol', label: 'Qo‘shilgan 0.1M NaOH hajmi', min: 0, max: 50, step: 1, val: 25, unit: 'mL' },
+          { key: 'eq', label: 'HCl (0.1M) boshlang‘ich hajmi', min: 15, max: 35, step: 5, val: 25, unit: 'mL' },
+        ],
+        summary: (v) => {
+          const d = v.vol - v.eq;
+          const ph = Math.abs(d) < 0.8 ? 7.0 : d < 0 ? 1.2 + (v.vol / v.eq) * 3.1 : 10.2 + (d / 25) * 2.5;
+          return `Ekvivalent nuqta: ${v.eq} mL\nJoriy pH = ${ph.toFixed(2)}\n${Math.abs(d) < 0.8 ? 'NEUTRALIZATSIYA NUQTASI!' : d > 0 ? 'Fenolftalein pushti rangda' : 'Kislota ortiqcha'}`;
+        },
+      },
+      redox_galvanic: {
+        title: '15. Daniel-Yakobi Galvanik Elementi va Tuz Ko‘prigi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/Faradays-electromagnetic-lab/latest/faradays-electromagnetic-lab_en.html',
+        controls: [
+          { key: 'anod', label: 'Anod (1:Zn −0.76V, 2:Mg −2.37V, 3:Fe −0.44V)', min: 1, max: 3, step: 1, val: 1, unit: '' },
+          { key: 'katod', label: 'Katod (1:Cu +0.34V, 2:Ag +0.80V)', min: 1, max: 2, step: 1, val: 1, unit: '' },
+        ],
+        summary: (v) => {
+          const A = [['Zn',-0.76],['Mg',-2.37],['Fe',-0.44]][Math.round(v.anod)-1];
+          const C = [['Cu',0.34],['Ag',0.80]][Math.round(v.katod)-1];
+          return `${A[0]} (−) | ${A[0]}²⁺ || ${C[0]}⁺ | ${C[0]} (+)\nEYUK = ${(C[1] - A[1]).toFixed(2)} V`;
+        },
+      },
+      electrolysis: {
+        title: '16. Suyuqlanma va Eritmalar Elektrolizi (Faradey)',
+        phetUrl: 'https://phet.colorado.edu/sims/html/Faradays-electromagnetic-lab/latest/faradays-electromagnetic-lab_en.html',
+        controls: [
+          { key: 'I', label: 'Tok kuchi I', min: 1, max: 15, step: 1, val: 5, unit: 'A' },
+          { key: 't', label: 'Vaqt t', min: 10, max: 120, step: 10, val: 60, unit: 'min' },
+        ],
+        summary: (v) => {
+          const q = v.I * v.t * 60;
+          const mCu = (64 / 2) * (q / 96500);
+          return `Zaryad Q = ${q} C\nKatodda ajralgan mis (Cu): ${mCu.toFixed(2)} g`;
+        },
+      },
+      flame_test: {
+        title: '17. Amrita OLabs: Kationlar Alanga Rangi va Spektri',
+        phetUrl: 'https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html',
+        controls: [
+          { key: 'cation', label: 'Kation (1:Li⁺ 2:Na⁺ 3:K⁺ 4:Cu²⁺ 5:Ba²⁺ 6:Ca²⁺)', min: 1, max: 6, step: 1, val: 4, unit: '' },
+        ],
+        summary: (v) => {
+          const m = [['Li⁺','Qirmizi (671 nm)'],['Na⁺','Sariq (589 nm)'],['K⁺','Binafsha (766 nm)'],['Cu²⁺','Yashil-zangori (515 nm)'],['Ba²⁺','Och yashil (524 nm)'],['Ca²⁺','G‘isht-qizil (622 nm)']];
+          const [ion, desc] = m[(Math.round(v.cation)-1)%6];
+          return `Kation: ${ion}\nAlanga spektral chizig‘i: ${desc}`;
+        },
+      },
+      inorganic_classes: {
+        title: '18. Noorganik Sinflar: Oksid, Asos, Kislota, Tuz Tajribasi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/acid-base-solutions/latest/acid-base-solutions_en.html',
+        controls: [
+          { key: 'rx', label: 'Tajriba (1:Neytral 2:Amfoter 3:CO₂ ajralish)', min: 1, max: 3, step: 1, val: 2, unit: '' },
+        ],
+        summary: (v) => v.rx === 1 ? 'NaOH + HCl → NaCl + H₂O (Issiqlik ajraldi)' : v.rx === 2 ? 'Zn(OH)₂ + 2NaOH → Na₂[Zn(OH)₄] (Amfoter eridi!)' : 'CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑',
+      },
+      halogens_lab: {
+        title: '19. Galogenlar Sublimatsiyasi va Siqib Chiqarish',
+        phetUrl: 'https://phet.colorado.edu/sims/html/reactions-and-rates/latest/reactions-and-rates_en.html',
+        controls: [
+          { key: 'temp', label: 'Yod (I₂) sublimatsiya harorati', min: 25, max: 185, step: 5, val: 120, unit: '°C' },
+          { key: 'hal', label: 'KCl+Br₂(1) vs KBr+Cl₂(2) vs KI+Br₂(3)', min: 1, max: 3, step: 1, val: 2, unit: '' },
+        ],
+        summary: (v) => `Sublimatsiya: ${v.temp >= 85 ? 'Binafsha I₂ bug‘lari qopqoqda kristallanmoqda!' : 'Qizdiring...'}\nFaollik qatori: F₂ > Cl₂ > Br₂ > I₂`,
+      },
+      contact_h2so4: {
+        title: '20. Kontakt Usulida Sulfat Kislota (H₂SO₄) Ishlab Chiqarish',
+        phetUrl: 'https://phet.colorado.edu/sims/html/reversible-reactions/latest/reversible-reactions_en.html',
+        controls: [
+          { key: 'T', label: 'V₂O₅ kontakt apparati T', min: 350, max: 600, step: 25, val: 450, unit: '°C' },
+          { key: 'O2', label: 'Havo (O₂) ortiqchaligi', min: 1, max: 3, step: 0.2, val: 1.8, unit: '×' },
+        ],
+        summary: (v) => `FeS₂ → SO₂ → SO₃ (V₂O₅, ${v.T}°C) → Oleum (H₂S₂O₇)\nOksidlanish darajasi: ~${clamp(98 - Math.abs(v.T - 450) * 0.14, 72, 99).toFixed(1)}%`,
+      },
+      metallurgy: {
+        title: '21. Domna Pechi — Cho‘yan va Po‘lat Metallurgiyasi',
+        phetUrl: 'https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html',
+        controls: [
+          { key: 'coke', label: 'Koks va CO purkash kuchi', min: 20, max: 100, step: 5, val: 75, unit: '%' },
+        ],
+        summary: (v) => `Pech quyi harorati: ${(1200 + v.coke * 6.5).toFixed(0)} °C\nFe₂O₃ + 3CO → 2Fe (suyuq cho‘yan) + 3CO₂↑`,
+      },
+      organic_cracking: {
+        title: '22. Neft Rektifikatsiya Kolonnasi (Fraksiyalash)',
         phetUrl: 'https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html',
         controls: [
-          { key: 'temp', label: 'Qizdirish harorati', min: 25, max: 115, step: 1, val: 82, unit: '°C' },
+          { key: 'temp', label: 'Xom neft pechi harorati', min: 100, max: 400, step: 20, val: 340, unit: '°C' },
         ],
-        summary: (v) => {
-          const mode = v.temp < 78 ? 'Qizish davom etmoqda' : v.temp < 100 ? 'Etanol (78.4°C) bug‘lanib distillyatga tushmoqda!' : 'Suv (100°C) ham qaynashga o‘tdi!';
-          return `Spirt (78.4°C) + Suv (100°C) aralashmasi\n${mode}`;
-        },
+        summary: (v) => `Qaynash haroratlariga ko‘ra ajralish (Eng past haroratda eng yuqorida Gaz C₁–C₄ va Benzin C₅–C₁₁ chiqadi).`,
+      },
+      silver_mirror: {
+        title: '23. Organik Sifat Analizi: Kumush Ko‘zgu va Cu(OH)₂',
+        phetUrl: 'https://phet.colorado.edu/sims/html/acid-base-solutions/latest/acid-base-solutions_en.html',
+        controls: [
+          { key: 'test', label: 'Sifat testi (1:Kumush ko‘zgu 2:Glitserin 3:Alken+Br₂)', min: 1, max: 3, step: 1, val: 1, unit: '' },
+        ],
+        summary: (v) => v.test === 1 ? 'Aldegid + [Ag(NH₃)₂]OH → Devorlarda yaltiroq Ag ko‘zgu!' : v.test === 2 ? 'Ko‘p atomli spirt + Cu(OH)₂ → To‘q ko‘k glitserat eritmasi!' : 'To‘yinmagan bog‘ (=) + Br₂ suv → Rangining darhol yo‘qolishi!',
+      },
+      polymer_reactor: {
+        title: '24. Polimerlanish va Kauchuk Vulkanizatsiyasi Reaktori',
+        phetUrl: 'https://phet.colorado.edu/sims/html/reactions-and-rates/latest/reactions-and-rates_en.html',
+        controls: [
+          { key: 'sulfur', label: 'Oltingugurt (S) ko‘priklari ulushi', min: 0, max: 30, step: 2, val: 4, unit: '%' },
+        ],
+        summary: (v) => `Material turi: ${v.sulfur === 0 ? 'Xom plastik kauchuk' : v.sulfur <= 8 ? 'Elastik REZINA (−S−S− ko‘priklar)' : 'Qattiq izolyator EBONIT'}\nS tarkibi: ${v.sulfur}%`,
       },
       spectroscopy: {
-        title: 'UV-Vis Spektrofotometriya va YaMR Analiz',
+        title: '25. UV-Vis / IQ Spektrofotometr va Buger-Lambert-Ber',
         phetUrl: 'https://phet.colorado.edu/sims/html/beers-law-lab/latest/beers-law-lab_en.html',
         controls: [
-          { key: 'conc', label: 'Konsentratsiya C', min: 0.1, max: 2.0, step: 0.1, val: 0.8, unit: 'M' },
-          { key: 'lam', label: 'To‘lqin uzunligi λ', min: 400, max: 700, step: 10, val: 520, unit: 'nm' },
+          { key: 'conc', label: 'Eritma konsentratsiyasi C', min: 0.1, max: 2.0, step: 0.1, val: 0.9, unit: 'M' },
+          { key: 'lam', label: 'To‘lqin uzunligi λ', min: 400, max: 700, step: 10, val: 525, unit: 'nm' },
         ],
         summary: (v) => {
-          const eps = Math.exp(-Math.pow((v.lam - 525) / 55, 2)) * 1.1;
-          const A = eps * v.conc;
-          const T = Math.pow(10, -A) * 100;
-          return `Buger-Lambert-Ber qonuni: A = ε·l·C\nOptik zichlik A = ${A.toFixed(2)}\nO‘tkazuvchanlik T = ${T.toFixed(1)}%`;
+          const A = Math.exp(-Math.pow((v.lam - 525) / 55, 2)) * 1.15 * v.conc;
+          return `A = ε·l·C = ${A.toFixed(2)}\nO‘tkazuvchanlik T = ${(Math.pow(10, -A) * 100).toFixed(1)}%`;
         },
       },
     };
-
-    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
     const sel = document.getElementById('lab-select');
     Object.entries(LABS).forEach(([k, v]) => {
@@ -231,48 +369,527 @@
     const phetBtn = document.getElementById('phet-toggle');
 
     function loadLab(key) {
-      curKey = key;
-      sel.value = key;
+      curKey = key; sel.value = key;
       const lab = LABS[key];
       document.getElementById('lab-title').textContent = lab.title;
       values = {};
       lab.controls.forEach((c) => (values[c.key] = c.val));
-      renderControls();
-      if (usePhet) phetFrame.src = lab.phetUrl;
-    }
-
-    function renderControls() {
-      const lab = LABS[curKey];
       side.innerHTML = lab.controls.map((c) => `
         <div class="ctrl-box">
           <label><span>${c.label}</span><strong id="ro-${c.key}">${values[c.key]} ${c.unit}</strong></label>
           <input type="range" data-k="${c.key}" min="${c.min}" max="${c.max}" step="${c.step}" value="${values[c.key]}" />
         </div>`).join('') + `<div class="readout" id="lab-summary"></div>`;
       updateSummary();
+      if (usePhet) phetFrame.src = lab.phetUrl;
     }
 
     function updateSummary() {
       const el = document.getElementById('lab-summary');
-      if (el) el.innerHTML = `<h4>Tahlil natijasi</h4>${LABS[curKey].summary(values).replaceAll('\n', '<br>')}`;
+      if (el) el.innerHTML = `<h4>Tajriba tahlili</h4>${LABS[curKey].summary(values).replaceAll('\n', '<br>')}`;
     }
 
     side.addEventListener('input', (e) => {
-      const k = e.target.dataset.k;
-      if (!k) return;
+      const k = e.target.dataset.k; if (!k) return;
       values[k] = Number(e.target.value);
       const ro = document.getElementById(`ro-${k}`);
       const cDef = LABS[curKey].controls.find((x) => x.key === k);
       if (ro && cDef) ro.textContent = `${values[k]} ${cDef.unit}`;
       updateSummary();
     });
-
     sel.addEventListener('change', () => loadLab(sel.value));
     phetBtn.addEventListener('click', () => {
-      usePhet = !usePhet;
-      phetBtn.classList.toggle('active', usePhet);
+      usePhet = !usePhet; phetBtn.classList.toggle('active', usePhet);
       phetFrame.hidden = !usePhet;
       if (usePhet) phetFrame.src = LABS[curKey].phetUrl;
     });
+
+    function drawGlassBeaker(cx, cy, w, h, liquidColor, fillPct) {
+      ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.6;
+      ctx.beginPath(); ctx.moveTo(cx - w/2, cy - h/2); ctx.lineTo(cx - w/2, cy + h/2);
+      ctx.lineTo(cx + w/2, cy + h/2); ctx.lineTo(cx + w/2, cy - h/2); ctx.stroke();
+      const fh = (h - 8) * clamp(fillPct, 0.05, 0.92);
+      ctx.fillStyle = liquidColor; ctx.fillRect(cx - w/2 + 2, cy + h/2 - fh - 2, w - 4, fh);
+    }
+
+    function label(txt, x, y, col = '#cbd5e1', align = 'center', sz = 12) {
+      ctx.fillStyle = col; ctx.font = `600 ${sz}px Inter, sans-serif`; ctx.textAlign = align;
+      ctx.fillText(txt, x, y);
+    }
+
+    // Dedicated custom scientific apparatus renderers for every single lab key (0 generic fallbacks)
+    const DRAWERS = {
+      lab_safety(w, h, t) {
+        const cx = w * 0.42, cy = h * 0.56;
+        if (values.mode === 1) {
+          ctx.fillStyle = '#475569'; ctx.fillRect(cx - 12, cy + 75, 24, 38);
+          if (values.flame > 0) {
+            const fh = 16 + values.flame * 0.35;
+            ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.ellipse(cx, cy + 62, 10, fh/2, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#fb923c'; ctx.beginPath(); ctx.ellipse(cx, cy + 54, 6, fh/3, 0, 0, Math.PI * 2); ctx.fill();
+          }
+          ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(cx - 22, cy - 55); ctx.lineTo(cx - 55, cy + 40); ctx.lineTo(cx + 55, cy + 40); ctx.lineTo(cx + 22, cy - 55); ctx.closePath(); ctx.stroke();
+          ctx.fillStyle = 'rgba(56,189,248,0.45)'; ctx.fillRect(cx - 46, cy + 12, 92, 26);
+          for (let i = 0; i < Math.floor(values.flame / 12); i++) {
+            const by = cy + 32 - ((t * 40 + i * 11) % 35);
+            ctx.fillStyle = '#e0f2fe'; ctx.beginPath(); ctx.arc(cx - 25 + (i % 5) * 12, by, 3, 0, Math.PI * 2); ctx.fill();
+          }
+          label(`Termometr: ${(20 + values.flame * 0.85).toFixed(0)} °C`, cx + 150, cy - 20, '#34d399', 'left', 14);
+        } else {
+          drawGlassBeaker(cx, cy + 20, 130, 120, 'rgba(56,189,248,0.45)', 0.55);
+          ctx.save(); ctx.translate(cx - 65, cy - 95); ctx.rotate(0.55);
+          ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.2; ctx.strokeRect(-22, -26, 44, 52);
+          ctx.restore();
+          ctx.strokeStyle = '#fde047'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(cx - 32, cy - 82); ctx.lineTo(cx - 6, cy + 25); ctx.stroke();
+          label('TO‘G‘RI USUL: Kislotani suv ustiga quying!', w/2, 42, '#34d399', 'center', 15);
+        }
+      },
+      separation(w, h, t) {
+        const fx = w * 0.24, cy = h * 0.54;
+        // Distillation flask
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(fx, cy + 35, 48, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = values.temp > 78 ? 'rgba(251,146,60,0.45)' : 'rgba(56,189,248,0.45)';
+        ctx.beginPath(); ctx.arc(fx, cy + 35, 44, 0.2, Math.PI - 0.2); ctx.fill();
+        // Liebig condenser tube
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 10;
+        ctx.beginPath(); ctx.moveTo(fx + 20, cy - 45); ctx.lineTo(w * 0.55, cy + 15); ctx.stroke();
+        drawGlassBeaker(w * 0.58, cy + 52, 68, 70, 'rgba(52,211,153,0.52)', 0.45);
+        if (values.temp >= 78) {
+          const dropY = cy + 15 + ((t * 50) % 45);
+          ctx.fillStyle = '#34d399'; ctx.beginPath(); ctx.arc(w * 0.56, dropY, 4.5, 0, Math.PI * 2); ctx.fill();
+        }
+        // Chromatography paper strip on right
+        const px = w * 0.80;
+        ctx.fillStyle = '#f8fafc'; ctx.fillRect(px - 26, cy - 75, 52, 145);
+        ctx.fillStyle = '#ef4444'; ctx.fillRect(px - 22, cy + 40 - values.rf * 0.42, 44, 8);
+        ctx.fillStyle = '#22d3ee'; ctx.fillRect(px - 22, cy + 40 - values.rf * 0.92, 44, 8);
+        label('1. Distillyatsiya', fx + 65, cy - 70, '#38bdf8');
+        label('2. Xromatografiya', px, cy - 90, '#f472b6');
+      },
+      filtration(w, h, t) {
+        const fx = w * 0.30, cy = h * 0.52;
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(fx - 48, cy - 60); ctx.lineTo(fx, cy + 2); ctx.lineTo(fx + 48, cy - 60); ctx.closePath(); ctx.stroke();
+        ctx.fillStyle = 'rgba(251,191,36,0.55)';
+        ctx.beginPath(); ctx.moveTo(fx - 26, cy - 35); ctx.lineTo(fx, cy - 2); ctx.lineTo(fx + 26, cy - 35); ctx.fill();
+        drawGlassBeaker(fx, cy + 55, 86, 80, 'rgba(56,189,248,0.4)', 0.45);
+        const dy = cy + 5 + ((t * 42) % 45);
+        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(fx, dy, 4, 0, Math.PI * 2); ctx.fill();
+        // Evaporating dish on right
+        const ex = w * 0.72;
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(ex, cy + 15, 58, 0.15, Math.PI - 0.15); ctx.stroke();
+        ctx.fillStyle = 'rgba(52,211,153,0.45)'; ctx.fillRect(ex - 42, cy + 32, 84, 18);
+        ctx.fillStyle = '#fb923c'; ctx.fillRect(ex - 28, cy + 72, 56, 12);
+        label('Filtrlash (Cho‘kma)', fx, cy - 82, '#fbbf24');
+        label(`Bug‘latish (${values.evap}°C)`, ex, cy - 45, '#fb923c');
+      },
+      stoichiometry(w, h, t) {
+        const reacted = Math.min(values.nH2 / 2, values.nO2);
+        const cx = w * 0.32, cy = h * 0.56;
+        drawGlassBeaker(cx, cy + 20, 120, 110, 'rgba(56,189,248,0.35)', 0.5);
+        // Eudiometer gas burette on right
+        const bx = w * 0.68, bh = 160;
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2.5;
+        ctx.strokeRect(bx - 28, cy - 95, 56, bh);
+        const gasH = clamp((reacted * 2 / 12) * 120, 16, 130);
+        ctx.fillStyle = 'rgba(52,211,153,0.35)'; ctx.fillRect(bx - 26, cy - 93, 52, gasH);
+        ctx.fillStyle = 'rgba(56,189,248,0.4)'; ctx.fillRect(bx - 26, cy - 93 + gasH, 52, bh - gasH - 2);
+        // Connecting tube
+        ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(cx, cy - 35); ctx.quadraticCurveTo(w * 0.5, cy - 90, bx - 28, cy + 20); ctx.stroke();
+        label(`2H₂ (${values.nH2}) + O₂ (${values.nO2}) → ${(reacted*2).toFixed(1)} H₂O`, w/2, 38, '#34d399', 'center', 15);
+      },
+      periodic(w, h, t) {
+        const z = Math.round(values.Z);
+        const els = ['H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca'];
+        const cx = w * 0.34, cy = h * 0.52;
+        const shells = z <= 2 ? [z] : z <= 10 ? [2, z - 2] : z <= 18 ? [2, 8, z - 10] : [2, 8, 8, z - 18];
+        ctx.fillStyle = '#fb923c'; ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI * 2); ctx.fill();
+        label(`${els[z - 1]} (${z})`, cx, cy + 5, '#040711', 'center', 12);
+        shells.forEach((cnt, sIdx) => {
+          const r = 38 + sIdx * 26;
+          ctx.strokeStyle = 'rgba(56,189,248,0.35)'; ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+          for (let i = 0; i < cnt; i++) {
+            const a = (i / cnt) * Math.PI * 2 + t * (1.2 - sIdx * 0.2);
+            ctx.fillStyle = sIdx === shells.length - 1 ? '#34d399' : '#22d3ee';
+            ctx.beginPath(); ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 4.5, 0, Math.PI * 2); ctx.fill();
+          }
+        });
+        // Right side mini matrix
+        const gx = w * 0.64, gy = h * 0.28;
+        els.forEach((sym, i) => {
+          const col = i % 8, row = Math.floor(i / 8);
+          const x = gx + col * 26, y = gy + row * 34;
+          ctx.fillStyle = i + 1 === z ? '#34d399' : 'rgba(30,41,59,0.85)';
+          ctx.fillRect(x, y, 22, 28);
+          label(sym, x + 11, y + 18, i + 1 === z ? '#040711' : '#e2e8f0', 'center', 10);
+        });
+      },
+      bonding(w, h, t) {
+        const cx = w * 0.5, cy = h * 0.42, d = values.dist * 58;
+        const shift = (values.dEN / 3.2) * 32;
+        ctx.fillStyle = 'rgba(56,189,248,0.22)'; ctx.beginPath(); ctx.arc(cx - d/2 + shift, cy, 48 + shift * 0.3, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(244,114,182,0.22)'; ctx.beginPath(); ctx.arc(cx + d/2 + shift, cy, 48 + shift * 0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(cx - d/2, cy, 16, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(cx + d/2, cy, 20, 0, Math.PI * 2); ctx.fill();
+        label(`δ⁺`, cx - d/2, cy + 5, '#040711', 'center', 13);
+        label(`δ⁻`, cx + d/2, cy + 5, '#040711', 'center', 13);
+        // Morse curve bottom
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2.6; ctx.beginPath();
+        for (let px = 40; px < w - 40; px += 4) {
+          const r = 0.6 + ((px - 40) / (w - 80)) * 2.5;
+          const e = Math.pow(1 - Math.exp(-1.7 * (r - 1.3)), 2) - 0.85;
+          const py = h * 0.78 - e * 44;
+          if (px === 40) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        label(`E(r) Morze potensial qudug‘i (r = ${values.dist.toFixed(1)} Å)`, cx, h * 0.94, '#94a3b8');
+      },
+      calorimetry(w, h, t) {
+        const cx = w * 0.30, cy = h * 0.54;
+        ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 5; ctx.strokeRect(cx - 75, cy - 65, 150, 145);
+        drawGlassBeaker(cx, cy + 8, 120, 115, values.dH < 0 ? 'rgba(239,68,68,0.42)' : 'rgba(56,189,248,0.42)', 0.65);
+        ctx.fillStyle = '#e2e8f0'; ctx.fillRect(cx + 18, cy - 95, 8, 130);
+        // Enthalpy coordinate diagram on right
+        const gx = w * 0.56, gy = h * 0.75;
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(gx, gy - 140); ctx.lineTo(gx, gy); ctx.lineTo(w - 40, gy); ctx.stroke();
+        const y1 = gy - 75, y2 = gy - 75 + values.dH * 0.45;
+        ctx.strokeStyle = values.dH < 0 ? '#ef4444' : '#38bdf8'; ctx.lineWidth = 3.5;
+        ctx.beginPath(); ctx.moveTo(gx + 15, y1); ctx.lineTo(gx + 70, y1);
+        ctx.quadraticCurveTo(gx + 110, Math.min(y1, y2) - 55, gx + 145, y2); ctx.lineTo(gx + 205, y2); ctx.stroke();
+        label(`ΔH = ${values.dH} kJ/mol`, gx + 115, gy - 150, values.dH < 0 ? '#f87171' : '#38bdf8', 'center', 14);
+      },
+      kinetics(w, h, t) {
+        // Left collision box + Right Maxwell-Boltzmann distribution
+        const bw = w * 0.42;
+        ctx.strokeStyle = 'rgba(56,189,248,0.45)'; ctx.strokeRect(24, 34, bw, h - 68);
+        const n = Math.round(values.conc * 8);
+        const spd = (values.T / 290) * 1.6;
+        for (let i = 0; i < n; i++) {
+          const px = 38 + Math.abs(Math.sin(i * 2.1 + t * spd)) * (bw - 28);
+          const py = 48 + Math.abs(Math.cos(i * 3.4 + t * spd)) * (h - 96);
+          ctx.fillStyle = i % 2 === 0 ? '#34d399' : '#fb923c';
+          ctx.beginPath(); ctx.arc(px, py, 5.5, 0, Math.PI * 2); ctx.fill();
+        }
+        const gx = w * 0.53, gw = w * 0.42, gy = h * 0.78;
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(gx, 42); ctx.lineTo(gx, gy); ctx.lineTo(gx + gw, gy); ctx.stroke();
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3; ctx.beginPath();
+        const peak = (values.T - 240) / 220;
+        for (let x = 0; x <= gw; x += 4) {
+          const u = x / gw;
+          const y = gy - Math.exp(-Math.pow((u - (0.28 + peak * 0.28)) / 0.22, 2)) * 125;
+          if (x === 0) ctx.moveTo(gx + x, y); else ctx.lineTo(gx + x, y);
+        }
+        ctx.stroke();
+        ctx.strokeStyle = '#facc15'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(gx + gw * 0.6, 55); ctx.lineTo(gx + gw * 0.6, gy); ctx.stroke(); ctx.setLineDash([]);
+        label('Ea to‘sig‘i (E ≥ Ea)', gx + gw * 0.66, 70, '#facc15', 'left', 11);
+      },
+      catalysis(w, h, t) {
+        const cy = h * 0.56;
+        // Metal Catalyst plate bottom left
+        ctx.fillStyle = '#475569'; ctx.fillRect(36, cy + 50, w * 0.38, 22);
+        label(values.cat ? 'Pt / V₂O₅ Katalizator Sirti' : 'Katalizatorsiz Hajm', 36 + w * 0.19, cy + 90, '#34d399');
+        for (let i = 0; i < 6; i++) {
+          const x = 60 + i * 38;
+          const y = values.cat ? cy + 38 + Math.sin(t * 2 + i) * 4 : cy - 10 + Math.cos(t * 2 + i) * 35;
+          ctx.fillStyle = i % 2 === 0 ? '#22d3ee' : '#f472b6';
+          ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill();
+        }
+        // Dual Activation curves on right
+        const gx = w * 0.52, gy = h * 0.78;
+        ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(gx, 45); ctx.lineTo(gx, gy); ctx.lineTo(w - 30, gy); ctx.stroke();
+        ctx.strokeStyle = '#f87171'; ctx.setLineDash([5, 4]); ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(gx + 15, gy - 55); ctx.quadraticCurveTo(gx + 110, gy - 175, gx + 205, gy - 25); ctx.stroke(); ctx.setLineDash([]);
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 3.2;
+        ctx.beginPath(); ctx.moveTo(gx + 15, gy - 55); ctx.quadraticCurveTo(gx + 110, values.cat ? gy - 105 : gy - 175, gx + 205, gy - 25); ctx.stroke();
+        label('Ea (katalizatorsiz)', gx + 125, gy - 145, '#f87171');
+        label('Ea (katalizator bilan)', gx + 125, gy - 82, '#34d399');
+      },
+      equilibrium(w, h, t) {
+        const cx = w * 0.30, py = 75 + (values.P / 12) * 95;
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; ctx.strokeRect(cx - 75, 50, 150, h - 90);
+        ctx.fillStyle = '#38bdf8'; ctx.fillRect(cx - 72, py - 14, 144, 14);
+        ctx.fillStyle = '#64748b'; ctx.fillRect(cx - 8, 20, 16, py - 34);
+        const cnt = Math.round(14 + values.P * 1.5);
+        for (let i = 0; i < cnt; i++) {
+          const mx = cx - 60 + ((i * 37 + t * 28) % 120);
+          const my = py + 12 + ((i * 23 + Math.sin(t + i) * 35 + 200) % (h - 52 - py));
+          ctx.fillStyle = i < cnt * (values.P / 15) ? '#34d399' : '#38bdf8';
+          ctx.beginPath(); ctx.arc(mx, my, 5, 0, Math.PI * 2); ctx.fill();
+        }
+        // Concentration equilibration graph on right
+        const gx = w * 0.56, gy = h * 0.78;
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(gx, 48); ctx.lineTo(gx, gy); ctx.lineTo(w - 30, gy); ctx.stroke();
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gx, gy - 10); ctx.quadraticCurveTo(gx + 70, gy - 60 - values.P * 6, w - 36, gy - 45 - values.P * 7); ctx.stroke();
+        label(`NH₃ Unumi`, gx + 110, gy - 115, '#34d399');
+      },
+      solutions(w, h, t) {
+        const cx = w * 0.32, cy = h * 0.56;
+        const cap = 22 + values.T * 0.65;
+        drawGlassBeaker(cx, cy, 160, 150, 'rgba(56,189,248,0.38)', 0.72);
+        const xs = Math.max(0, values.salt - cap);
+        if (xs > 0) {
+          ctx.fillStyle = '#f8fafc'; ctx.fillRect(cx - 50, cy + 56, 100, Math.min(24, xs * 0.6));
+          label('Cho‘kma!', cx, cy + 95, '#fbbf24');
+        }
+        for (let i = 0; i < Math.min(26, values.salt / 2); i++) {
+          ctx.fillStyle = i % 2 === 0 ? '#a855f7' : '#34d399';
+          ctx.beginPath(); ctx.arc(cx - 60 + Math.abs(Math.sin(i * 1.9 + t)) * 120, cy - 30 + Math.abs(Math.cos(i * 2.7 + t)) * 80, 4.5, 0, Math.PI * 2); ctx.fill();
+        }
+        const gx = w * 0.60, gy = h * 0.78;
+        ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(gx, 48); ctx.lineTo(gx, gy); ctx.lineTo(w - 30, gy); ctx.stroke();
+        ctx.strokeStyle = '#facc15'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(gx, gy - 25); ctx.quadraticCurveTo(gx + 80, gy - 45, w - 35, 58); ctx.stroke();
+        label('Eruvchanlik egri S(T)', gx + 95, 52, '#facc15');
+      },
+      dissociation(w, h, t) {
+        const typ = Math.round(values.type);
+        const cx = w * 0.48, cy = h * 0.60;
+        drawGlassBeaker(cx, cy + 12, 160, 130, 'rgba(56,189,248,0.28)', 0.68);
+        ctx.fillStyle = '#94a3b8'; ctx.fillRect(cx - 46, cy - 30, 12, 90); ctx.fillRect(cx + 34, cy - 30, 12, 90);
+        // Light bulb above
+        const glow = typ === 1 ? 0 : typ === 2 ? 0.35 : 0.95;
+        if (glow > 0) {
+          const g = ctx.createRadialGradient(cx, 66, 2, cx, 66, 56 * glow);
+          g.addColorStop(0, '#fef08a'); g.addColorStop(1, 'transparent');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, 66, 56 * glow, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.arc(cx, 66, 20, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#fbbf24'; ctx.beginPath(); ctx.moveTo(cx - 40, cy - 30); ctx.lineTo(cx - 40, 66); ctx.lineTo(cx - 20, 66);
+        ctx.moveTo(cx + 20, 66); ctx.lineTo(cx + 40, 66); ctx.lineTo(cx + 40, cy - 30); ctx.stroke();
+        if (typ > 1) {
+          const cnt = typ === 2 ? 4 : 16;
+          for (let i = 0; i < cnt; i++) {
+            const x = cx - 40 + ((t * 35 + i * 20) % 80);
+            ctx.fillStyle = i % 2 === 0 ? '#34d399' : '#f472b6';
+            ctx.beginPath(); ctx.arc(x, cy + 20 + (i % 4) * 14, 4.5, 0, Math.PI * 2); ctx.fill();
+          }
+        }
+      },
+      ph_scale(w, h) {
+        const ph = values.pH, cx = w * 0.34, cy = h * 0.56;
+        const col = ph < 6.5 ? `hsla(${ph * 10}, 88%, 55%, 0.65)` : ph > 7.5 ? `hsla(${210 + (ph - 7) * 14}, 85%, 55%, 0.65)` : 'rgba(52,211,153,0.65)';
+        drawGlassBeaker(cx, cy + 15, 145, 130, col, 0.7);
+        ctx.fillStyle = '#0f172a'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.fillRect(cx - 45, 28, 90, 38); ctx.strokeRect(cx - 45, 28, 90, 38);
+        label(`pH ${ph.toFixed(1)}`, cx, 53, '#38bdf8', 'center', 17);
+        ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(cx, 66); ctx.lineTo(cx, cy + 35); ctx.stroke();
+        // 3 Indicators comparison tubes on right
+        const tubes = [
+          { n: 'Lakmus', c: ph < 6 ? '#ef4444' : ph > 8 ? '#3b82f6' : '#a855f7' },
+          { n: 'Fenolftalein', c: ph >= 8.5 ? '#ec4899' : 'rgba(203,213,225,0.22)' },
+          { n: 'Metiloranj', c: ph < 4.5 ? '#ef4444' : ph > 6 ? '#facc15' : '#fb923c' },
+        ];
+        tubes.forEach((tb, idx) => {
+          const tx = w * 0.64 + idx * 68;
+          ctx.strokeStyle = '#94a3b8'; ctx.strokeRect(tx - 14, cy - 55, 28, 120);
+          ctx.fillStyle = tb.c; ctx.fillRect(tx - 12, cy - 10, 24, 73);
+          label(tb.n, tx, cy + 86, '#cbd5e1', 'center', 11);
+        });
+      },
+      titration(w, h, t) {
+        const d = values.vol - values.eq, ph = Math.abs(d) < 0.8 ? 7.0 : d < 0 ? 1.2 + (values.vol / values.eq) * 3.1 : 10.2 + (d / 25) * 2.5;
+        const fx = w * 0.28, cy = h * 0.66;
+        // Burette
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.strokeRect(fx - 10, 22, 20, 120);
+        ctx.fillStyle = 'rgba(56,189,248,0.5)'; ctx.fillRect(fx - 8, 24 + values.vol * 2, 16, 116 - values.vol * 2);
+        const dropY = 148 + ((t * 50) % 28);
+        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(fx, dropY, 3.5, 0, Math.PI * 2); ctx.fill();
+        drawGlassBeaker(fx, cy + 16, 110, 95, ph >= 8 ? 'rgba(236,72,153,0.6)' : 'rgba(56,189,248,0.4)', 0.55);
+        // Live S-curve pH titration chart on right
+        const gx = w * 0.52, gy = h * 0.80, gw = w * 0.42;
+        ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(gx, 36); ctx.lineTo(gx, gy); ctx.lineTo(gx + gw, gy); ctx.stroke();
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 3; ctx.beginPath();
+        for (let x = 0; x <= gw; x += 4) {
+          const vv = (x / gw) * 50;
+          const p = 1.5 + 11.2 / (1 + Math.exp(-(vv - values.eq) * 0.55));
+          const py = gy - (p / 14) * 145;
+          if (x === 0) ctx.moveTo(gx + x, py); else ctx.lineTo(gx + x, py);
+        }
+        ctx.stroke();
+        const curX = gx + (values.vol / 50) * gw, curY = gy - (ph / 14) * 145;
+        ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(curX, curY, 6, 0, Math.PI * 2); ctx.fill();
+        label(`pH Titrlash Egri (Eq = ${values.eq} mL)`, gx + gw/2, gy + 24, '#cbd5e1');
+      },
+      redox_galvanic(w, h, t) {
+        const A = [['Zn',-0.76],['Mg',-2.37],['Fe',-0.44]][Math.round(values.anod)-1];
+        const C = [['Cu',0.34],['Ag',0.80]][Math.round(values.katod)-1];
+        const x1 = w * 0.25, x2 = w * 0.75, cy = h * 0.62;
+        drawGlassBeaker(x1, cy, 130, 120, 'rgba(56,189,248,0.35)', 0.68);
+        drawGlassBeaker(x2, cy, 130, 120, 'rgba(14,165,233,0.45)', 0.68);
+        ctx.fillStyle = '#94a3b8'; ctx.fillRect(x1 - 22, cy - 40, 16, 90);
+        ctx.fillStyle = '#d97706'; ctx.fillRect(x2 + 6, cy - 40, 16, 90);
+        // Salt bridge
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 14; ctx.beginPath();
+        ctx.moveTo(x1 + 28, cy + 5); ctx.lineTo(x1 + 28, cy - 55); ctx.lineTo(x2 - 28, cy - 55); ctx.lineTo(x2 - 28, cy + 5); ctx.stroke();
+        // Wire & electron flow
+        ctx.strokeStyle = '#facc15'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x1 - 14, cy - 40); ctx.lineTo(x1 - 14, 48); ctx.lineTo(x2 + 14, 48); ctx.lineTo(x2 + 14, cy - 40); ctx.stroke();
+        const ex = x1 + ((t * 90) % (x2 - x1));
+        ctx.fillStyle = '#22d3ee'; ctx.beginPath(); ctx.arc(ex, 48, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#0f172a'; ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2; ctx.fillRect(w/2 - 55, 28, 110, 38); ctx.strokeRect(w/2 - 55, 28, 110, 38);
+        label(`${(C[1] - A[1]).toFixed(2)} V`, w/2, 53, '#34d399', 'center', 16);
+        label(`${A[0]} (−) Anod`, x1, cy + 82, '#38bdf8'); label(`${C[0]} (+) Katod`, x2, cy + 82, '#fb923c');
+      },
+      electrolysis(w, h, t) {
+        const cx = w * 0.48, cy = h * 0.60;
+        drawGlassBeaker(cx, cy + 12, 200, 130, 'rgba(34,211,238,0.28)', 0.66);
+        ctx.fillStyle = '#334155'; ctx.fillRect(cx - 56, cy - 22, 16, 86); ctx.fillRect(cx + 40, cy - 22, 16, 86);
+        // Deposited Cu layer on cathode
+        const dep = clamp(values.I * 0.7, 2, 10);
+        ctx.fillStyle = '#ea580c'; ctx.fillRect(cx + 38, cy + 5, 20, dep * 4.5);
+        for (let i = 0; i < 6; i++) {
+          const y = cy + 30 - ((t * 35 + i * 16) % 70);
+          ctx.fillStyle = '#e0f2fe'; ctx.beginPath(); ctx.arc(cx - 48 + (i%3)*4, y, 3.5, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.fillStyle = '#0f172a'; ctx.strokeStyle = '#facc15'; ctx.strokeRect(cx - 55, 26, 110, 34);
+        label(`DC ${values.I} A`, cx, 48, '#facc15', 'center', 15);
+        label('Anod (+): Gaz↑', cx - 60, cy + 96, '#94a3b8'); label('Katod (−): Cu qoplam', cx + 60, cy + 96, '#fb923c');
+      },
+      flame_test(w, h, t) {
+        const cx = w * 0.48, cols = ['#f43f5e','#facc15','#c084fc','#10b981','#a3e635','#fb923c'];
+        const cHex = cols[(Math.round(values.cation) - 1) % 6];
+        ctx.fillStyle = '#475569'; ctx.fillRect(cx - 18, h - 92, 36, 62);
+        for (let i = 0; i < 6; i++) {
+          const r = (52 - i * 7) * (0.9 + 0.12 * Math.sin(t * 8 + i));
+          const g = ctx.createRadialGradient(cx, h - 135, 2, cx, h - 135, r * 1.4);
+          g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, cHex); g.addColorStop(1, 'transparent');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(cx, h - 140 - i * 6, r * 0.65, r * 1.45, 0, 0, Math.PI * 2); ctx.fill();
+        }
+        // Spectral lines strip on top
+        ctx.fillStyle = '#020617'; ctx.strokeStyle = '#334155'; ctx.fillRect(40, 26, w - 80, 28); ctx.strokeRect(40, 26, w - 80, 28);
+        ctx.strokeStyle = cHex; ctx.lineWidth = 4;
+        const lx = 80 + ((Math.round(values.cation) * 85) % (w - 160));
+        ctx.beginPath(); ctx.moveTo(lx, 28); ctx.lineTo(lx, 52); ctx.moveTo(lx + 42, 28); ctx.lineTo(lx + 42, 52); ctx.stroke();
+      },
+      inorganic_classes(w, h, t) {
+        const tubes = [
+          { n:'Oksid + H₂O', c:'rgba(248,113,113,0.45)' },
+          { n:'Amfoter Zn(OH)₂', c: values.rx === 2 ? 'rgba(56,189,248,0.22)' : 'rgba(226,232,240,0.65)' },
+          { n:'Kislota + Karbonat', c:'rgba(52,211,153,0.45)' },
+          { n:'Tuz almashinuvi', c:'rgba(250,204,21,0.5)' },
+        ];
+        tubes.forEach((tb, i) => {
+          const tx = w * 0.2 + i * (w * 0.2), cy = h * 0.54;
+          ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.4; ctx.strokeRect(tx - 24, cy - 70, 48, 130);
+          ctx.fillStyle = tb.c; ctx.fillRect(tx - 22, cy - 10, 44, 68);
+          if (i === 2 && values.rx === 3) {
+            for (let b = 0; b < 5; b++) {
+              ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(tx - 10 + b * 5, cy + 40 - ((t * 40 + b * 14) % 55), 3, 0, Math.PI * 2); ctx.fill();
+            }
+          }
+          label(tb.n, tx, cy + 84, '#cbd5e1', 'center', 11);
+        });
+      },
+      halogens_lab(w, h, t) {
+        const fx = w * 0.30, cy = h * 0.56;
+        ctx.strokeStyle = '#94a3b8'; ctx.strokeRect(fx - 50, cy - 70, 100, 140);
+        if (values.temp >= 85) {
+          const g = ctx.createRadialGradient(fx, cy, 4, fx, cy, 48);
+          g.addColorStop(0, 'rgba(192,132,252,0.75)'); g.addColorStop(1, 'transparent');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(fx, cy, 48, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.fillStyle = '#581c87'; ctx.fillRect(fx - 26, cy + 48, 52, 18);
+        label('I₂ Sublimatsiyasi', fx, cy - 86, '#c084fc');
+        const tx = w * 0.70, hal = Math.round(values.hal);
+        ctx.strokeStyle = '#94a3b8'; ctx.strokeRect(tx - 32, cy - 70, 64, 140);
+        ctx.fillStyle = hal === 1 ? 'rgba(251,146,60,0.45)' : hal === 2 ? '#b45309' : '#7e22ce';
+        ctx.fillRect(tx - 30, cy - 25, 60, 93);
+        label('Galogen almashish', tx, cy - 86, '#fb923c');
+      },
+      contact_h2so4(w, h, t) {
+        const stages = ['1. Pech (FeS₂→SO₂)', '2. V₂O₅ (SO₂→SO₃)', '3. Oleum Minorasi'];
+        stages.forEach((st, i) => {
+          const sx = w * (0.2 + i * 0.3), cy = h * 0.52;
+          ctx.fillStyle = 'rgba(15,23,42,0.85)'; ctx.strokeStyle = i === 1 ? '#fbbf24' : '#38bdf8';
+          ctx.fillRect(sx - 56, cy - 58, 112, 116); ctx.strokeRect(sx - 56, cy - 58, 112, 116);
+          if (i < 2) {
+            ctx.strokeStyle = '#34d399'; ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(sx + 56, cy); ctx.lineTo(sx + 80, cy); ctx.stroke();
+          }
+          label(st, sx, cy + 80, '#cbd5e1', 'center', 11.5);
+        });
+        const px = w * 0.14 + ((t * 70) % (w * 0.72));
+        ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(px, h * 0.52, 6, 0, Math.PI * 2); ctx.fill();
+      },
+      metallurgy(w, h, t) {
+        const cx = w * 0.48, cy = h * 0.52;
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(cx - 40, 42); ctx.lineTo(cx - 78, cy + 50); ctx.lineTo(cx - 58, cy + 95);
+        ctx.lineTo(cx + 58, cy + 95); ctx.lineTo(cx + 78, cy + 50); ctx.lineTo(cx + 40, 42); ctx.stroke();
+        const g = ctx.createLinearGradient(0, 42, 0, cy + 95);
+        g.addColorStop(0, 'rgba(251,191,36,0.22)'); g.addColorStop(0.6, 'rgba(239,68,68,0.45)'); g.addColorStop(1, 'rgba(249,115,22,0.85)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(cx - 38, 44); ctx.lineTo(cx - 75, cy + 50); ctx.lineTo(cx - 56, cy + 93);
+        ctx.lineTo(cx + 56, cy + 93); ctx.lineTo(cx + 75, cy + 50); ctx.lineTo(cx + 38, 44); ctx.fill();
+        label(`Domna Pechi (~${(1200 + values.coke * 6.5).toFixed(0)} °C)`, cx, 28, '#fb923c', 'center', 14);
+        label('Suyuq Cho‘yan (Fe)', cx, cy + 82, '#fef08a', 'center', 12);
+      },
+      organic_cracking(w, h) {
+        const fracs = [
+          { n:'Gazlar (C₁–C₄, <40°C)', c:'#38bdf8' },
+          { n:'Benzin (C₅–C₁₁, 150°C)', c:'#34d399' },
+          { n:'Kerosin (240°C)', c:'#facc15' },
+          { n:'Dizel (320°C)', c:'#fb923c' },
+          { n:'Mazut (>350°C)', c:'#7c2d12' },
+        ];
+        const cx = w * 0.42;
+        fracs.forEach((f, i) => {
+          const y = 36 + i * 44;
+          ctx.fillStyle = f.c; ctx.globalAlpha = 0.72; ctx.fillRect(cx - 60, y, 120, 34); ctx.globalAlpha = 1;
+          ctx.strokeStyle = '#e2e8f0'; ctx.strokeRect(cx - 60, y, 120, 34);
+          label(f.n, cx + 80, y + 22, '#f8fafc', 'left', 12);
+        });
+      },
+      silver_mirror(w, h, t) {
+        const cx = w * 0.48, cy = h * 0.56, k = Math.round(values.test);
+        ctx.strokeStyle = k === 1 ? '#f8fafc' : '#94a3b8'; ctx.lineWidth = k === 1 ? 6 : 2.6;
+        ctx.strokeRect(cx - 42, cy - 75, 84, 150);
+        ctx.fillStyle = k === 1 ? 'rgba(203,213,225,0.45)' : k === 2 ? 'rgba(37,99,235,0.85)' : 'rgba(226,232,240,0.22)';
+        ctx.fillRect(cx - 38, cy - 25, 76, 96);
+        label(k === 1 ? 'Kumush (Ag) Ko‘zgu Qoplami!' : k === 2 ? 'To‘q Ko‘k Mis Glitserat' : 'Bromli Suv Rangsizlandi!', cx, cy - 92, '#34d399', 'center', 14);
+      },
+      polymer_reactor(w, h, t) {
+        const cx = w * 0.5, cy = h * 0.5;
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4;
+        for (let r = 0; r < 3; r++) {
+          const y = cy - 55 + r * 55;
+          ctx.beginPath();
+          for (let x = 40; x < w - 40; x += 28) {
+            const yy = y + Math.sin(x * 0.03 + t + r) * 10;
+            if (x === 40) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
+          }
+          ctx.stroke();
+        }
+        const bridges = Math.floor(values.sulfur / 3);
+        ctx.strokeStyle = '#facc15'; ctx.lineWidth = 3;
+        for (let b = 0; b < bridges; b++) {
+          const bx = 75 + b * ((w - 150) / Math.max(1, bridges));
+          ctx.beginPath(); ctx.moveTo(bx, cy - 55); ctx.lineTo(bx, cy + 55); ctx.stroke();
+        }
+        label(`Polimer Zanjirlari va −S−S− Ko‘priklar (${bridges} ta)`, cx, 32, '#facc15', 'center', 14);
+      },
+      spectroscopy(w, h) {
+        const cy = h * 0.40, cx = w * 0.48, col = `hsl(${clamp(660 - values.lam, 0, 270)}, 90%, 55%)`;
+        ctx.fillStyle = '#1e293b'; ctx.fillRect(42, cy - 28, 38, 56);
+        ctx.strokeStyle = col; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(80, cy); ctx.lineTo(cx - 36, cy); ctx.stroke();
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.5; ctx.strokeRect(cx - 36, cy - 42, 72, 84);
+        ctx.fillStyle = 'rgba(56,189,248,0.3)'; ctx.fillRect(cx - 34, cy - 16, 68, 56);
+        ctx.strokeStyle = col; ctx.globalAlpha = clamp(1 - values.conc * 0.42, 0.15, 0.95);
+        ctx.beginPath(); ctx.moveTo(cx + 36, cy); ctx.lineTo(w - 50, cy); ctx.stroke(); ctx.globalAlpha = 1;
+        // Absorption spectrum peak below
+        const gy = h * 0.88;
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2.6; ctx.beginPath();
+        for (let x = 40; x < w - 40; x += 4) {
+          const l = 400 + ((x - 40) / (w - 80)) * 300;
+          const a = Math.exp(-Math.pow((l - 525) / 48, 2)) * 45 * values.conc;
+          const py = gy - a;
+          if (x === 40) ctx.moveTo(x, py); else ctx.lineTo(x, py);
+        }
+        ctx.stroke();
+        label(`Spektr cho‘qqisi (λ = ${values.lam} nm)`, w * 0.5, gy + 16, '#34d399', 'center', 12);
+      },
+    };
 
     let t = 0;
     function draw() {
@@ -285,65 +902,12 @@
           canvas.height = Math.round(rect.height * dpr);
         }
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const w = rect.width, h = rect.height, cx = w / 2, cy = h / 2;
-        ctx.fillStyle = '#050814';
-        ctx.fillRect(0, 0, w, h);
-
-        // Lab Grid
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.06)';
+        const w = rect.width, h = rect.height;
+        ctx.fillStyle = '#050814'; ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)'; ctx.lineWidth = 1;
         for (let x = 32; x < w; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
         for (let y = 32; y < h; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-
-        if (curKey === 'ph_scale' || curKey === 'titration') {
-          const ph = curKey === 'ph_scale' ? values.pH : (Math.abs(values.volNaOH - values.acidVol) < 0.5 ? 7 : values.volNaOH < values.acidVol ? 3 : 11);
-          const col = ph < 6.5 ? `hsl(${ph * 10}, 90%, 55%)` : ph > 7.5 ? `hsl(${210 + (ph - 7) * 14}, 85%, 55%)` : '#34d399';
-          // Glass Beaker
-          ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3;
-          ctx.strokeRect(cx - 85, cy - 60, 170, 145);
-          ctx.fillStyle = col; ctx.globalAlpha = 0.65;
-          ctx.fillRect(cx - 82, cy - 10, 164, 92);
-          ctx.globalAlpha = 1;
-          for (let i = 0; i < 16; i++) {
-            const bx = cx - 70 + ((i * 29 + t * 22) % 140);
-            const by = cy + 6 + Math.sin(t * 2 + i) * 32;
-            ctx.fillStyle = ph < 7 ? '#fef08a' : '#a7f3d0';
-            ctx.beginPath(); ctx.arc(bx, by, 4, 0, Math.PI * 2); ctx.fill();
-          }
-          ctx.fillStyle = '#f8fafc'; ctx.font = '700 22px JetBrains Mono, monospace'; ctx.textAlign = 'center';
-          ctx.fillText(`pH = ${ph.toFixed(1)}`, cx, cy - 82);
-        } else if (curKey === 'flame_test') {
-          const colors = ['#f43f5e', '#facc15', '#c084fc', '#10b981', '#a3e635', '#fb923c'];
-          const cHex = colors[(Math.round(values.cation) - 1) % 6];
-          ctx.fillStyle = '#475569'; ctx.fillRect(cx - 18, h - 90, 36, 65);
-          for (let i = 0; i < 6; i++) {
-            const r = (52 - i * 7) * (0.9 + 0.12 * Math.sin(t * 8 + i));
-            const g = ctx.createRadialGradient(cx, h - 135, 2, cx, h - 135, r * 1.4);
-            g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, cHex); g.addColorStop(1, 'transparent');
-            ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(cx, h - 140 - i * 6, r * 0.65, r * 1.45, 0, 0, Math.PI * 2); ctx.fill();
-          }
-        } else if (curKey === 'spectroscopy') {
-          const col = `hsl(${clamp(660 - values.lam, 0, 270)}, 90%, 55%)`;
-          ctx.fillStyle = '#1e293b'; ctx.fillRect(48, cy - 34, 42, 68);
-          ctx.strokeStyle = col; ctx.lineWidth = 8;
-          ctx.beginPath(); ctx.moveTo(90, cy); ctx.lineTo(cx - 40, cy); ctx.stroke();
-          ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; ctx.strokeRect(cx - 40, cy - 55, 80, 110);
-          ctx.fillStyle = 'rgba(56,189,248,0.28)'; ctx.fillRect(cx - 38, cy - 25, 76, 78);
-          ctx.strokeStyle = col; ctx.globalAlpha = clamp(1 - values.conc * 0.4, 0.15, 0.95);
-          ctx.beginPath(); ctx.moveTo(cx + 40, cy); ctx.lineTo(w - 60, cy); ctx.stroke();
-          ctx.globalAlpha = 1;
-        } else {
-          // Animated 3D molecular / particle reaction chamber for other chemistry modes
-          const cnt = 28;
-          const spd = curKey === 'kinetics' ? (values.T / 300) * 1.8 : 1.0;
-          ctx.strokeStyle = 'rgba(52, 211, 153, 0.35)'; ctx.lineWidth = 2;
-          ctx.strokeRect(48, 36, w - 96, h - 72);
-          for (let i = 0; i < cnt; i++) {
-            const px = 64 + Math.abs(Math.sin(i * 2.13 + t * spd * 0.8)) * (w - 128);
-            const py = 54 + Math.abs(Math.cos(i * 3.47 + t * spd * 0.9)) * (h - 108);
-            ctx.fillStyle = i % 3 === 0 ? '#34d399' : i % 3 === 1 ? '#38bdf8' : '#fb923c';
-            ctx.beginPath(); ctx.arc(px, py, i % 3 === 0 ? 8 : 5.5, 0, Math.PI * 2); ctx.fill();
-          }
-        }
+        (DRAWERS[curKey] || DRAWERS.ph_scale)(w, h, t);
       }
       requestAnimationFrame(draw);
     }

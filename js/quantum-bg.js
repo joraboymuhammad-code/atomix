@@ -284,11 +284,34 @@ export function initQuantumAmbientCanvas(canvas) {
 
     ctx.clearRect(0, 0, w, h);
 
-    // Three slow atmospheric nebula washes for frosted glass layers to refract
+    // 1. Perspective 3D cyber-laboratory floor grid fading toward horizon
+    const horY = h * 0.48;
+    ctx.save();
+    ctx.strokeStyle = accentHex;
+    ctx.globalAlpha = 0.055;
+    ctx.lineWidth = 1;
+    const vanishX = w * 0.5 + (mouseX - 0.5) * 90;
+    for (let i = -10; i <= 10; i++) {
+      ctx.beginPath();
+      ctx.moveTo(vanishX + i * 28, horY);
+      ctx.lineTo(w * 0.5 + i * (w * 0.14), h + 40);
+      ctx.stroke();
+    }
+    for (let r = 1; r <= 7; r++) {
+      const p = Math.pow(r / 7, 1.85);
+      const ry = horY + p * (h - horY);
+      ctx.beginPath();
+      ctx.moveTo(0, ry);
+      ctx.lineTo(w, ry);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // 2. Three atmospheric volumetric aurora orbs for frosted folio refraction
     const orbs = [
-      { x: w * (0.78 + (mouseX - 0.5) * 0.08), y: h * (0.14 + (mouseY - 0.5) * 0.08), r: Math.max(w, h) * 0.42, c: accentHex, a: 0.14 },
-      { x: w * (0.16 - (mouseX - 0.5) * 0.06), y: h * (0.82 - (mouseY - 0.5) * 0.06), r: Math.max(w, h) * 0.38, c: '#818cf8', a: 0.11 },
-      { x: w * (0.52 + Math.sin(t * 0.25) * 0.05), y: h * (0.48 + Math.cos(t * 0.2) * 0.05), r: Math.max(w, h) * 0.3, c: '#f472b6', a: 0.055 },
+      { x: w * (0.78 + (mouseX - 0.5) * 0.09), y: h * (0.14 + (mouseY - 0.5) * 0.09), r: Math.max(w, h) * 0.45, c: accentHex, a: 0.16 },
+      { x: w * (0.16 - (mouseX - 0.5) * 0.07), y: h * (0.82 - (mouseY - 0.5) * 0.07), r: Math.max(w, h) * 0.40, c: '#818cf8', a: 0.13 },
+      { x: w * (0.50 + Math.sin(t * 0.25) * 0.06), y: h * (0.46 + Math.cos(t * 0.2) * 0.06), r: Math.max(w, h) * 0.34, c: '#10b981', a: 0.08 },
     ];
     for (const o of orbs) {
       const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
@@ -303,19 +326,47 @@ export function initQuantumAmbientCanvas(canvas) {
       ctx.restore();
     }
 
-    // Subtle quantum particles & weak neighbor links
+    // 3. Flowing quantum wave ribbon across horizon
+    ctx.save();
+    ctx.strokeStyle = accentHex;
+    ctx.globalAlpha = 0.08;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    for (let x = 0; x <= w; x += 24) {
+      const y = horY + Math.sin(x * 0.008 + t * 1.1) * 26 + Math.cos(x * 0.015 - t * 0.7) * 14;
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. Quantum depth particles & constellation links
+    const coords = [];
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
       p.x = (p.x + p.vx + 1) % 1;
       p.y = (p.y + p.vy + 1) % 1;
-      const px = p.x * w + (mouseX - 0.5) * (16 + p.r * 5);
-      const py = p.y * h + (mouseY - 0.5) * (16 + p.r * 5);
+      const px = p.x * w + (mouseX - 0.5) * (18 + p.r * 6);
+      const py = p.y * h + (mouseY - 0.5) * (18 + p.r * 6);
+      coords.push([px, py]);
 
-      ctx.fillStyle = i % 3 === 0 ? accentHex : 'rgba(226, 232, 240, 0.5)';
-      ctx.globalAlpha = 0.22 + 0.18 * Math.sin(t * 1.4 + p.phase);
+      ctx.fillStyle = i % 3 === 0 ? accentHex : i % 3 === 1 ? '#34d399' : 'rgba(226, 232, 240, 0.55)';
+      ctx.globalAlpha = 0.28 + 0.2 * Math.sin(t * 1.4 + p.phase);
       ctx.beginPath();
       ctx.arc(px, py, p.r, 0, Math.PI * 2);
       ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.06)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < coords.length; i += 2) {
+      const [x1, y1] = coords[i];
+      const [x2, y2] = coords[(i + 7) % coords.length];
+      if (Math.hypot(x2 - x1, y2 - y1) < 210) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
     }
     ctx.globalAlpha = 1;
 
@@ -331,7 +382,7 @@ export function initQuantumAmbientCanvas(canvas) {
   };
 }
 
-// Interactive 3D Projected Quantum Hologram inside Hero Observatory Deck
+// Interactive 3D Projected Quantum Hologram inside Hero & Landing Decks
 export function initHeroAtomCanvas(canvas) {
   if (!canvas) return () => {};
   const ctx = canvas.getContext('2d');
@@ -357,8 +408,8 @@ export function initHeroAtomCanvas(canvas) {
 
   canvas.addEventListener('pointermove', (e) => {
     const r = canvas.getBoundingClientRect();
-    targetTiltY = ((e.clientX - r.left) / r.width - 0.5) * 1.2;
-    targetTiltX = ((e.clientY - r.top) / r.height - 0.5) * 1.0;
+    targetTiltY = ((e.clientX - r.left) / r.width - 0.5) * 1.4;
+    targetTiltX = ((e.clientY - r.top) / r.height - 0.5) * 1.1;
   });
 
   function project3D(x, y, z, rx, ry) {
@@ -380,40 +431,65 @@ export function initHeroAtomCanvas(canvas) {
     { rx: 1.35, rz: 0.52, col: '#34d399', speed: 2.1, phase: 1.1 },
   ];
 
+  // Outer 3D geodesic ring vertices for depth cage
+  const cagePts = Array.from({ length: 12 }, (_, i) => {
+    const a = (i / 12) * Math.PI * 2;
+    return [Math.cos(a), Math.sin(a) * 0.55, Math.sin(a * 2) * 0.45];
+  });
+
   let t = 0;
   function frame() {
     t += 0.016;
-    tiltX += (targetTiltX + Math.sin(t * 0.5) * 0.14 - tiltX) * 0.06;
+    tiltX += (targetTiltX + Math.sin(t * 0.5) * 0.16 - tiltX) * 0.06;
     tiltY += (targetTiltY + t * 0.38 - tiltY) * 0.05;
 
     ctx.clearRect(0, 0, cw, ch);
     const R = Math.min(cw, ch) * 0.39;
 
-    // Outer calibrated holographic rings
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.14)';
+    // Outer calibrated holographic rings + tick marks
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.22)';
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.arc(cw * 0.5, ch * 0.5, R * 1.18, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(52, 211, 153, 0.16)';
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    ctx.arc(cw * 0.5, ch * 0.5, R * 1.28, -t * 0.25, Math.PI * 1.6 - t * 0.25);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Geodesic outer polygon wireframe
+    ctx.strokeStyle = 'rgba(167, 139, 250, 0.18)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(cw * 0.5, ch * 0.5, R * 1.15, 0, Math.PI * 2);
+    cagePts.forEach((pt, idx) => {
+      const p = project3D(pt[0] * R * 1.12, pt[1] * R * 1.12, pt[2] * R * 1.12, tiltX * 0.7, -tiltY * 0.7);
+      if (idx === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    });
+    ctx.closePath();
     ctx.stroke();
 
     // Central relativistic core glow
-    const grad = ctx.createRadialGradient(cw * 0.5, ch * 0.5, 2, cw * 0.5, ch * 0.5, R * 0.65);
-    grad.addColorStop(0, 'rgba(255,255,255,0.9)');
-    grad.addColorStop(0.22, 'rgba(34,211,238,0.48)');
-    grad.addColorStop(0.55, 'rgba(129,140,248,0.18)');
+    const grad = ctx.createRadialGradient(cw * 0.5, ch * 0.5, 2, cw * 0.5, ch * 0.5, R * 0.68);
+    grad.addColorStop(0, 'rgba(255,255,255,0.92)');
+    grad.addColorStop(0.22, 'rgba(34,211,238,0.52)');
+    grad.addColorStop(0.55, 'rgba(129,140,248,0.20)');
     grad.addColorStop(1, 'transparent');
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(cw * 0.5, ch * 0.5, R * 0.65, 0, Math.PI * 2);
+    ctx.arc(cw * 0.5, ch * 0.5, R * 0.68, 0, Math.PI * 2);
     ctx.fill();
 
     // Nucleus protons/neutrons cluster
-    for (let i = 0; i < 6; i++) {
-      const a = t * 1.2 + (i * Math.PI) / 3;
-      const np = project3D(Math.cos(a) * 8, Math.sin(a * 1.3) * 8, Math.sin(a) * 8, tiltX, tiltY);
+    for (let i = 0; i < 8; i++) {
+      const a = t * 1.25 + (i * Math.PI) / 4;
+      const np = project3D(Math.cos(a) * 9, Math.sin(a * 1.3) * 9, Math.sin(a) * 9, tiltX, tiltY);
       ctx.fillStyle = i % 2 === 0 ? '#38bdf8' : '#f472b6';
       ctx.beginPath();
-      ctx.arc(np.x, np.y, 4.2 * np.s, 0, Math.PI * 2);
+      ctx.arc(np.x, np.y, 4.4 * np.s, 0, Math.PI * 2);
       ctx.fill();
     }
 
@@ -433,8 +509,8 @@ export function initHeroAtomCanvas(canvas) {
       };
 
       ctx.strokeStyle = orb.col;
-      ctx.globalAlpha = 0.34;
-      ctx.lineWidth = 1.4;
+      ctx.globalAlpha = 0.38;
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
       for (let s = 0; s <= 64; s++) {
         const p = ptAt((s / 64) * Math.PI * 2);
@@ -443,10 +519,9 @@ export function initHeroAtomCanvas(canvas) {
       }
       ctx.stroke();
 
-      // Electron + glowing comet wake
       const theta = t * orb.speed + orb.phase;
-      ctx.globalAlpha = 0.72;
-      ctx.lineWidth = 2.6;
+      ctx.globalAlpha = 0.82;
+      ctx.lineWidth = 2.8;
       ctx.beginPath();
       for (let k = 0; k <= 12; k++) {
         const p = ptAt(theta - k * 0.07);
@@ -459,7 +534,7 @@ export function initHeroAtomCanvas(canvas) {
       ctx.globalAlpha = 1;
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(ep.x, ep.y, 3.8 * ep.s, 0, Math.PI * 2);
+      ctx.arc(ep.x, ep.y, 4 * ep.s, 0, Math.PI * 2);
       ctx.fill();
     });
 
@@ -471,4 +546,98 @@ export function initHeroAtomCanvas(canvas) {
     cancelAnimationFrame(raf);
     ro?.disconnect();
   };
+}
+
+// Live 3D Mini-Canvases embedded inside Physics & Chemistry Academy Cards on Landing Page
+export function initMiniAcademyCanvases(physCanvas, chemCanvas) {
+  let raf = 0;
+  let t = 0;
+
+  function setup(c) {
+    if (!c) return null;
+    const r = c.getBoundingClientRect();
+    if (r.width < 20) return null;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (c.width !== Math.round(r.width * dpr)) {
+      c.width = Math.round(r.width * dpr);
+      c.height = Math.round(r.height * dpr);
+    }
+    const ctx = c.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w: r.width, h: r.height };
+  }
+
+  function frame() {
+    t += 0.03;
+
+    // Physics 3D Gyroscope + Harmonic Wavefront
+    const p = setup(physCanvas);
+    if (p) {
+      const { ctx, w, h } = p;
+      ctx.clearRect(0, 0, w, h);
+      const cx = w * 0.25, cy = h * 0.5;
+      for (let i = 0; i < 3; i++) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(t * (0.6 + i * 0.35) + i);
+        ctx.strokeStyle = i === 0 ? '#38bdf8' : i === 1 ? '#818cf8' : '#22d3ee';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 34, 14 + i * 5, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, Math.PI * 2); ctx.fill();
+
+      // Standing wave beam
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      for (let x = w * 0.44; x < w - 16; x += 4) {
+        const u = (x - w * 0.44) / (w * 0.52);
+        const y = cy + Math.sin(u * Math.PI * 4 - t * 2) * Math.sin(u * Math.PI) * 26;
+        if (x === Math.ceil(w * 0.44)) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    // Chemistry 3D Spinning Benzene Ring + Lattice Nodes
+    const ch = setup(chemCanvas);
+    if (ch) {
+      const { ctx, w, h } = ch;
+      ctx.clearRect(0, 0, w, h);
+      const cx = w * 0.30, cy = h * 0.5;
+      const ca = Math.cos(t * 0.7), sa = Math.sin(t * 0.7);
+      const ring = [0, 1, 2, 3, 4, 5].map((i) => {
+        const a = (i * Math.PI) / 3;
+        const x0 = Math.cos(a) * 32, y0 = Math.sin(a) * 32;
+        return { x: cx + x0 * ca, y: cy + y0, z: x0 * sa };
+      });
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      ring.forEach((pt, idx) => (idx === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)));
+      ctx.closePath();
+      ctx.stroke();
+      ring.forEach((pt) => {
+        ctx.fillStyle = '#6ee7b7';
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, 4.5, 0, Math.PI * 2); ctx.fill();
+      });
+
+      // Titration / Molecular bond pulse on right
+      const rx = w * 0.74;
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(rx - 22, cy - 26, 44, 54);
+      ctx.fillStyle = `rgba(16, 185, 129, ${0.4 + 0.25 * Math.sin(t * 2)})`;
+      ctx.fillRect(rx - 20, cy - 2, 40, 28);
+      ctx.fillStyle = '#f472b6';
+      ctx.beginPath(); ctx.arc(rx, cy - 30 + ((t * 18) % 24), 3.2, 0, Math.PI * 2); ctx.fill();
+    }
+
+    raf = requestAnimationFrame(frame);
+  }
+  raf = requestAnimationFrame(frame);
+  return () => cancelAnimationFrame(raf);
 }

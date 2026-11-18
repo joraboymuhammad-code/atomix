@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="css/atomix.css?v=4.1" />
+  <link rel="stylesheet" href="css/atomix.css?v=5.0" />
 </head>
 <body>
   <canvas id="quantum-bg-canvas" class="quantum-bg-canvas" aria-hidden="true"></canvas>
@@ -27,7 +27,7 @@
       <a id="brand-home-link" class="brand" href="#landing">
         <span id="brand-logo-slot" class="brand-logo-wrap" aria-hidden="true"></span>
         <span class="brand-text">
-          <strong class="brand-wordmark">ATOMIX <span class="brand-version">4.0</span></strong>
+          <strong class="brand-wordmark">ATOMIX <span class="brand-version">5.0</span></strong>
           <span class="brand-sub">ETHITH Solutions · Oliy Fan Akademiyasi</span>
         </span>
       </a>
@@ -147,33 +147,59 @@
       </div>
     </section>
 
-    <!-- Dual Subject Book-Portals -->
+    <!-- Dual Subject 3D Holobook-Portals -->
     <section class="landing-academies-grid">
-      <article class="academy-book-card book-folio phys-card">
-        <div class="ac-top-tag">1-YO‘NALISH · FIZIKA KOINOTI</div>
-        <h2>Fizika Akademiyasi</h2>
-        <p>Kinematika, dinamika, termodinamika, elektr va magnetizm, optika, nisbiylik nazariyasi, kvant va astrofizikaning barcha 67 ta mavzusi.</p>
+      <article class="academy-book-card book-folio holo-card phys-card">
+        <div class="holo-corner tl"></div><div class="holo-corner br"></div>
+        <div class="ac-header-split">
+          <div>
+            <div class="ac-top-tag">1-YO‘NALISH · FIZIKA KOINOTI</div>
+            <h2>Fizika Akademiyasi</h2>
+          </div>
+          <span class="ac-count-badge tabular">67 MAVZU</span>
+        </div>
+        <div class="ac-canvas-frame">
+          <canvas id="landing-phys-canvas" class="ac-mini-canvas"></canvas>
+          <span class="ac-canvas-label">3D Giroskop &amp; Garmonik To‘lqinlar</span>
+        </div>
+        <p>Kinematika, dinamika, termodinamika, elektr va magnetizm, optika, nisbiylik nazariyasi, kvant va astrofizika bo‘limlari.</p>
+        <div class="ac-chips-row">
+          <span>1. Kirish &amp; SI</span><span>2. Mexanika</span><span>3. Akustika</span><span>4. Termodinamika</span>
+          <span>5. Elektr</span><span>6. Optika</span><span>7. Kvant</span><span>8. Astrofizika</span>
+        </div>
         <ul class="ac-specs">
-          <li><strong>8 ta bo‘lim</strong> · 67 ta batafsil nazariya va hisoblagich</li>
           <li><strong>Effectuall · Cannon-es · Three.js Fluids · WebGL2</strong> 3D stendlari</li>
-          <li><strong>1 340 ta test savoli</strong> · 335 ta 2-jamoaviy 3D duel o‘yini</li>
+          <li><strong>1 340 ta test</strong> · 335 ta birinchi topgan yutadigan 3D poyga o‘yini</li>
         </ul>
         <button class="btn-3d btn-3d-phys btn-3d-full" data-choose-subject="physics" type="button">
-          Fizikaga Kirish (67 mavzu) →
+          ⚛ Fizikaga Kirish (67 mavzu) →
         </button>
       </article>
 
-      <article class="academy-book-card book-folio chem-card">
-        <div class="ac-top-tag">2-YO‘NALISH · KIMYO KOINOTI</div>
-        <h2>Kimyo Akademiyasi</h2>
-        <p>Umumiy va stexiometrik kimyo, VSEPR va davriy qonun, kinetika, muvozanat, eritmalar, pH, elektrokimyo, noorganik, organik va biokimyo.</p>
+      <article class="academy-book-card book-folio holo-card chem-card">
+        <div class="holo-corner tl"></div><div class="holo-corner br"></div>
+        <div class="ac-header-split">
+          <div>
+            <div class="ac-top-tag">2-YO‘NALISH · KIMYO KOINOTI</div>
+            <h2>Kimyo Akademiyasi</h2>
+          </div>
+          <span class="ac-count-badge chem tabular">55 MAVZU</span>
+        </div>
+        <div class="ac-canvas-frame chem">
+          <canvas id="landing-chem-canvas" class="ac-mini-canvas"></canvas>
+          <span class="ac-canvas-label">3D Molekulalar &amp; Virtual Laboratoriya</span>
+        </div>
+        <p>Umumiy kimyo, stexiometriya, VSEPR, kinetika, Le Shatelye, pH titrlash, elektrokimyo, noorganik, organik va biokimyo.</p>
+        <div class="ac-chips-row chem">
+          <span>1. Umumiy Kimyo</span><span>2. Fizik Kimyo</span><span>3. Noorganik</span>
+          <span>4. Organik &amp; DNK</span><span>5. Analitik Kimyo</span>
+        </div>
         <ul class="ac-specs">
-          <li><strong>5 ta bo‘lim</strong> · 55 ta to‘liq akademik mavzu</li>
-          <li><strong>3Dmol.js · MolView · PhET · ChemCollective · Amrita OLabs</strong></li>
-          <li><strong>1 100 ta test savoli</strong> · 275 ta 2-jamoaviy 3D duel o‘yini</li>
+          <li><strong>45+ ta 3Dmol · 25 ta maxsus VLab apparat · PhET</strong> (har mavzuda 4 ta stend!)</li>
+          <li><strong>1 100 ta test</strong> · 275 ta teng qiyinlikdagi tezkor guruh o‘yini</li>
         </ul>
         <button class="btn-3d btn-3d-chem btn-3d-full" data-choose-subject="chemistry" type="button">
-          Kimyoga Kirish (55 mavzu) →
+          🧪 Kimyoga Kirish (55 mavzu) →
         </button>
       </article>
     </section>
@@ -356,6 +382,6 @@
     </div>
   </footer>
 
-  <script type="module" src="js/app.js?v=4.1"></script>
+  <script type="module" src="js/app.js?v=5.0"></script>
 </body>
 </html>

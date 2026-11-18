@@ -7,16 +7,16 @@ import {
   ALL_TOPICS,
   getTopicById,
   getSectionById,
-} from './data/curriculum.js?v=4.0';
-import { AtomixParametricSim } from './sim-engine.js?v=4.0';
-import { AtomixTeamGames } from './team-games.js?v=4.0';
+} from './data/curriculum.js?v=4.1';
+import { AtomixParametricSim } from './sim-engine.js?v=4.1';
+import { AtomixTeamGames } from './team-games.js?v=4.1';
 import {
   ATOMIX_MAIN_LOGO_SVG,
   SECTION_LOGOS,
   ENGINE_LOGOS,
   initQuantumAmbientCanvas,
   initHeroAtomCanvas,
-} from './quantum-bg.js?v=4.0';
+} from './quantum-bg.js?v=4.1';
 
 const STORAGE_KEY = 'atomix_quiz_v2';
 

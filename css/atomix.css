@@ -1450,15 +1450,22 @@ button {
   font-size: 14.8px;
   line-height: 1.5;
   white-space: normal;
-  word-break: break-word;
   transition: border-color 140ms ease, background-color 140ms ease, transform 120ms var(--ease-out), box-shadow 120ms ease;
 }
-.opt-btn span:not(.opt-letter) {
+.opt-btn > span:not(.opt-letter) {
   flex: 1;
   min-width: 0;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   line-height: 1.52;
+}
+.opt-btn .katex,
+.q-explain .katex,
+.tg-match-card .katex {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  display: inline-block;
 }
 .opt-btn:hover:not(:disabled) {
   border-color: var(--accent-border);
@@ -2124,7 +2131,7 @@ button {
   font-size: 17px;
   line-height: 1.55;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .quiz-step-nav {
@@ -2535,7 +2542,7 @@ button {
   text-align: left;
   min-height: 52px;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   line-height: 1.45;
 }
 .tg-match-card.selected {

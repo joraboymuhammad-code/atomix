@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Domino Zanjir Reaksiyasi va Impuls Uzatish — Atomix 3D Fizika</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #060913; color: #e2e8f0; font-family: 'Inter', system-ui, sans-serif; }
+    #canvas-wrap { position: fixed; inset: 0; }
+    .hud {
+      position: fixed; top: 12px; left: 12px; z-index: 20;
+      background: rgba(8, 13, 28, 0.8); backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.28); border-radius: 12px;
+      padding: 12px 16px; max-width: 340px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+    .hud-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #34d399; margin-bottom: 4px; }
+    .hud h1 { font-size: 15px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
+    .hud p { font-size: 12px; color: #94a3b8; line-height: 1.45; }
+    .telemetry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(148, 163, 184, 0.18); }
+    .tel-item span { display: block; font-size: 10px; color: #94a3b8; }
+    .tel-item strong { font-size: 13px; color: #38bdf8; font-family: monospace; }
+    .panel {
+      position: fixed; bottom: 12px; right: 12px; left: 12px; max-width: 760px; margin: 0 auto; z-index: 20;
+      background: rgba(8, 13, 28, 0.84); backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.28); border-radius: 14px;
+      padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+    }
+    .ctrl { display: flex; flex-direction: column; gap: 4px; min-width: 135px; flex: 1; }
+    .ctrl label { font-size: 11px; color: #cbd5e1; display: flex; justify-content: space-between; }
+    .ctrl input[type="range"] { width: 100%; accent-color: #38bdf8; }
+    .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      background: linear-gradient(135deg, rgba(56,189,248,0.22), rgba(99,102,241,0.28));
+      border: 1px solid rgba(56,189,248,0.45); color: #f8fafc;
+      padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    button:hover { border-color: #38bdf8; box-shadow: 0 0 12px rgba(56,189,248,0.35); }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+      "cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="canvas-wrap"></div>
+  <div class="hud">
+    <div class="hud-tag">cx20 WebGL Cannon-es 3D</div>
+    <h1>Domino Zanjir Reaksiyasi va Impuls Uzatish</h1>
+    <p>Mexanik impuls va potensial energiyaning ketma-ket uzatilishi.</p>
+    <div class="telemetry">
+      <div class="tel-item"><span>Jismlar</span><strong id="t-count">0</strong></div>
+      <div class="tel-item"><span>Kinetik E</span><strong id="t-ke">0.0 J</strong></div>
+      <div class="tel-item"><span>Vaqt</span><strong id="t-time">0.0 s</strong></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="ctrl">
+      <label>Gravitatsiya (g) <span id="v-g">9.81 m/s²</span></label>
+      <input id="s-g" type="range" min="0" max="20" step="0.2" value="9.81" />
+    </div>
+    <div class="ctrl">
+      <label>Tiklanish koef. (e) <span id="v-e">0.65</span></label>
+      <input id="s-e" type="range" min="0" max="1" step="0.05" value="0.65" />
+    </div>
+    <div class="ctrl">
+      <label>Ishqalanish (μ) <span id="v-mu">0.30</span></label>
+      <input id="s-mu" type="range" min="0" max="1" step="0.05" value="0.30" />
+    </div>
+    <div class="btns">
+      <button id="btn-impulse">Zarba / Kuch berish</button>
+      <button id="btn-add">+ Jism qo‘shish</button>
+      <button id="btn-reset">Qayta tiklash</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import * as CANNON from 'cannon-es';
+
+    const SCENE_TYPE = 'domino';
+    const wrap = document.getElementById('canvas-wrap');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    wrap.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x060913);
+    scene.fog = new THREE.FogExp2(0x060913, 0.025);
+
+    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 120);
+    camera.position.set(8, 7, 12);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(0, 1.5, 0);
+
+    scene.add(new THREE.AmbientLight(0x94a3b8, 0.8));
+    const dir = new THREE.DirectionalLight(0xe0f2fe, 2.2);
+    dir.position.set(10, 18, 10);
+    dir.castShadow = true;
+    dir.shadow.mapSize.set(1024, 1024);
+    scene.add(dir);
+    const rim = new THREE.PointLight(0x38bdf8, 40, 30);
+    rim.position.set(-6, 6, -6);
+    scene.add(rim);
+
+    const grid = new THREE.GridHelper(32, 32, 0x1e3a5f, 0x0f172a);
+    scene.add(grid);
+
+    let world, mat, contactMat, bodies = [], simTime = 0;
+
+    function addBody(shape, mesh, mass, pos, vel) {
+      const body = new CANNON.Body({ mass, material: mat, shape });
+      body.position.set(pos[0], pos[1], pos[2]);
+      if (vel) body.velocity.set(vel[0], vel[1], vel[2]);
+      world.addBody(body);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+      bodies.push({ body, mesh });
+      return body;
+    }
+
+    function clearBodies() {
+      for (const item of bodies) {
+        world?.removeBody(item.body);
+        scene.remove(item.mesh);
+      }
+      bodies = [];
+    }
+
+    function initWorld() {
+      clearBodies();
+      simTime = 0;
+      const g = parseFloat(document.getElementById('s-g').value);
+      const e = parseFloat(document.getElementById('s-e').value);
+      const mu = parseFloat(document.getElementById('s-mu').value);
+
+      world = new CANNON.World({ gravity: new CANNON.Vec3(0, -g, 0) });
+      world.broadphase = new CANNON.SAPBroadphase(world);
+      world.allowSleep = true;
+
+      mat = new CANNON.Material('phys');
+      contactMat = new CANNON.ContactMaterial(mat, mat, { restitution: e, friction: mu });
+      world.addContactMaterial(contactMat);
+      world.defaultContactMaterial = contactMat;
+
+      // Ground
+      const groundBody = new CANNON.Body({ mass: 0, material: mat, shape: new CANNON.Plane() });
+      groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+      world.addBody(groundBody);
+      const groundMesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(32, 32),
+        new THREE.MeshStandardMaterial({ color: 0x0b1224, roughness: 0.7, metalness: 0.2 })
+      );
+      groundMesh.rotation.x = -Math.PI / 2;
+      groundMesh.receiveShadow = true;
+      scene.add(groundMesh);
+      bodies.push({ body: groundBody, mesh: groundMesh });
+
+      const palette = [0x38bdf8, 0x818cf8, 0x34d399, 0xf472b6, 0xfbbf24, 0xf87171];
+
+      if (SCENE_TYPE === 'domino') {
+        camera.position.set(9, 7, 11);
+        for (let i = 0; i < 16; i++) {
+          const z = -6 + i * 0.82;
+          const x = Math.sin(i * 0.35) * 1.4;
+          const box = new THREE.Mesh(
+            new THREE.BoxGeometry(0.9, 2.0, 0.22),
+            new THREE.MeshStandardMaterial({ color: palette[i % palette.length], roughness: 0.35, metalness: 0.2 })
+          );
+          const b = addBody(new CANNON.Box(new CANNON.Vec3(0.45, 1.0, 0.11)), box, 1.0, [x, 1.01, z]);
+          b.quaternion.setFromEuler(0, Math.cos(i * 0.35) * 0.3, 0);
+        }
+        // Trigger sphere
+        const ball = new THREE.Mesh(
+          new THREE.SphereGeometry(0.55, 24, 24),
+          new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0ea5e9, emissiveIntensity: 0.35 })
+        );
+        addBody(new CANNON.Sphere(0.55), ball, 2.5, [0, 1.2, -8.5], [0, 0, 7.5]);
+      } else if (SCENE_TYPE === 'friction') {
+        camera.position.set(7, 6, 11);
+        const ramp = new THREE.Mesh(
+          new THREE.BoxGeometry(10, 0.4, 5),
+          new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 })
+        );
+        const rampBody = addBody(new CANNON.Box(new CANNON.Vec3(5, 0.2, 2.5)), ramp, 0, [0, 2.2, 0]);
+        rampBody.quaternion.setFromEuler(0, 0, -0.34);
+        ramp.quaternion.copy(rampBody.quaternion);
+        for (let i = 0; i < 4; i++) {
+          const cube = new THREE.Mesh(
+            new THREE.BoxGeometry(0.9, 0.9, 0.9),
+            new THREE.MeshStandardMaterial({ color: palette[i], roughness: 0.3 })
+          );
+          const b = addBody(new CANNON.Box(new CANNON.Vec3(0.45, 0.45, 0.45)), cube, 1 + i * 0.8, [-3.4, 4.1, -1.5 + i]);
+          b.quaternion.setFromEuler(0, 0, -0.34);
+        }
+      } else if (SCENE_TYPE === 'restitution') {
+        camera.position.set(0, 5, 11);
+        for (let i = 0; i < 6; i++) {
+          const r = 0.48;
+          const sphere = new THREE.Mesh(
+            new THREE.SphereGeometry(r, 24, 24),
+            new THREE.MeshStandardMaterial({ color: palette[i], roughness: 0.25, metalness: 0.3 })
+          );
+          addBody(new CANNON.Sphere(r), sphere, 1.0, [-3.75 + i * 1.5, 2.5 + i * 0.7, 0]);
+        }
+      } else if (SCENE_TYPE === 'box') {
+        camera.position.set(7, 6.5, 9.5);
+        for (let y = 0; y < 5; y++) {
+          for (let x = -1; x <= 1; x++) {
+            const box = new THREE.Mesh(
+              new THREE.BoxGeometry(1.0, 1.0, 1.0),
+              new THREE.MeshStandardMaterial({ color: palette[(x + y + 2) % palette.length], roughness: 0.35 })
+            );
+            addBody(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), box, 1.0, [x * 1.06, 0.52 + y * 1.04, 0]);
+          }
+        }
+      } else if (SCENE_TYPE === 'marbles') {
+        camera.position.set(8, 7, 10);
+        for (let i = 0; i < 24; i++) {
+          const r = 0.35 + (i % 3) * 0.08;
+          const m = new THREE.Mesh(
+            new THREE.SphereGeometry(r, 24, 24),
+            new THREE.MeshStandardMaterial({ color: palette[i % palette.length], metalness: 0.45, roughness: 0.18 })
+          );
+          addBody(
+            new CANNON.Sphere(r),
+            m,
+            1.2,
+            [(Math.random() - 0.5) * 4, 2 + i * 0.45, (Math.random() - 0.5) * 4],
+            [(Math.random() - 0.5) * 3, 0, (Math.random() - 0.5) * 3]
+          );
+        }
+      } else {
+        // balls / Newton collisions
+        camera.position.set(7, 5.5, 10);
+        for (let i = 0; i < 18; i++) {
+          const r = 0.42 + (i % 4) * 0.08;
+          const m = new THREE.Mesh(
+            new THREE.SphereGeometry(r, 24, 24),
+            new THREE.MeshStandardMaterial({ color: palette[i % palette.length], roughness: 0.25, metalness: 0.35 })
+          );
+          addBody(new CANNON.Sphere(r), m, 1.0 + (i % 3) * 0.5, [(i % 5 - 2) * 1.2, 2.0 + Math.floor(i / 5) * 1.3, (Math.random() - 0.5) * 2]);
+        }
+      }
+    }
+
+    document.getElementById('s-g').addEventListener('input', (ev) => {
+      const g = parseFloat(ev.target.value);
+      document.getElementById('v-g').textContent = g.toFixed(2) + ' m/s²';
+      if (world) world.gravity.set(0, -g, 0);
+    });
+    document.getElementById('s-e').addEventListener('input', (ev) => {
+      const e = parseFloat(ev.target.value);
+      document.getElementById('v-e').textContent = e.toFixed(2);
+      if (contactMat) contactMat.restitution = e;
+    });
+    document.getElementById('s-mu').addEventListener('input', (ev) => {
+      const mu = parseFloat(ev.target.value);
+      document.getElementById('v-mu').textContent = mu.toFixed(2);
+      if (contactMat) contactMat.friction = mu;
+    });
+    document.getElementById('btn-reset').addEventListener('click', initWorld);
+    document.getElementById('btn-impulse').addEventListener('click', () => {
+      for (const { body } of bodies) {
+        if (body.mass > 0) {
+          body.wakeUp();
+          body.applyImpulse(new CANNON.Vec3((Math.random() - 0.5) * 10, 6 + Math.random() * 5, (Math.random() - 0.5) * 10));
+        }
+      }
+    });
+    document.getElementById('btn-add').addEventListener('click', () => {
+      const r = 0.45;
+      const m = new THREE.Mesh(
+        new THREE.SphereGeometry(r, 24, 24),
+        new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0284c7, emissiveIntensity: 0.25 })
+      );
+      addBody(new CANNON.Sphere(r), m, 1.5, [(Math.random() - 0.5) * 3, 6.5, (Math.random() - 0.5) * 3]);
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    initWorld();
+    let last = performance.now();
+    function animate(now) {
+      requestAnimationFrame(animate);
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      world.step(1 / 60, dt, 3);
+      simTime += dt;
+      let totalKE = 0;
+      let dynCount = 0;
+      for (const { body, mesh } of bodies) {
+        mesh.position.copy(body.position);
+        mesh.quaternion.copy(body.quaternion);
+        if (body.mass > 0) {
+          dynCount++;
+          const v2 = body.velocity.lengthSquared();
+          totalKE += 0.5 * body.mass * v2;
+        }
+      }
+      document.getElementById('t-count').textContent = dynCount;
+      document.getElementById('t-ke').textContent = totalKE.toFixed(1) + ' J';
+      document.getElementById('t-time').textContent = simTime.toFixed(1) + ' s';
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

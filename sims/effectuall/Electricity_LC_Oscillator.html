@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+	<meta charset="utf-8">
+	<title>LC Oscillator</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="shortcut icon" href="../files/favicon_white.ico" media="(prefers-color-scheme: dark)" />
+	<link rel="shortcut icon" href="../files/favicon.ico" media="(prefers-color-scheme: light)" />
+	<link rel="stylesheet" type="text/css" href="../css/style-page.css">
+	<style>
+		.label {
+			font-weight: bold;
+			font-size: 12px;
+
+		}
+	</style>
+	<!-- Google tag (gtag.js) -->
+	
+<!-- 	<script>
+		
+	</script> -->
+	<meta name="google-site-verification" content="mz0TRB59UNqdTxhwzmXmGdgVPh8pB4YqjuUr-aWNGIY">
+
+</head>
+
+<body>
+
+	<div id="topmenu">
+		<div>
+			LC Oscillator
+		</div>
+
+	</div>
+
+	<div id="sidemenu">
+
+		<div class="fraction">
+			<span class="fup"></span>
+			<span class="bar"></span>
+			<span class="fdn"></span>
+		</div>
+		<a>
+		</a>
+		<br>
+
+	</div>
+
+	<div id="menu">
+
+
+		<a id="message-el" style="font-weight: bolder; text-transform:uppercase">CONNECT TO CELL</a><br>
+
+		<button id="isStop">SWITCH</button>
+
+	</div>
+	<script>
+		function theorySite() {
+
+			window.open("", "_self")
+		}
+	</script>
+
+	<script type="module">
+		import * as THREE from '../build/three.module.js';
+		import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+		import { CSS2DRenderer, CSS2DObject } from '../jsm/renderers/CSS2DRenderer.js';
+		import { TWEEN } from '../jsm/libs/tween.module.min.js';
+
+		let renderer, scene, camera, controls, labelRenderer;
+		let capacitor, inductor, flip, labelDiv, labelDiv1, redPoints, bluePoints, requestID
+		let drawCount = 151, A = 1, isStop = true, isCell = false, N = 151, ARROWS = new THREE.Group(), line = 0, sign = 1;
+
+		let oscillator = null;
+		const messageElement = document.getElementById('message-el');
+		const buttonStop = document.getElementById('isStop');
+
+
+		window.onload = function () {
+			start()
+		}
+
+		function init() {
+			// camera = new THREE.PerspectiveCamera(20, config.width / config.height, 1, 50000);
+
+			// camera.position.set(1750, 700, 1500);
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0xbfd1e5);
+
+
+			camera = createCamera(20, 1750, 700, 1500);
+			camera.lookAt(scene.position);
+			scene.add(new THREE.GridHelper(1000, 10));
+			createRenderer()
+			createControls(-180, 130, -30);
+			createLights();
+			createCapacitor()
+			createWires()
+			console.log('here')
+			labelDiv = document.createElement("div");
+			labelDiv.className = "label";
+			labelDiv.style.fontSize = '20px';
+			labelDiv.textContent = "DISCHARGING";
+			labelDiv.style.color = "red";
+			const chargeLabel = new CSS2DObject(labelDiv);
+			chargeLabel.position.set(0, 280, 0);
+			scene.add(chargeLabel)
+			capacitor.add(chargeLabel);
+
+
+			labelDiv1 = document.createElement("div");
+			labelDiv1.className = "label";
+			labelDiv1.style.fontSize = '20px';
+			labelDiv1.textContent = "MAGNETIZING";
+			labelDiv1.style.color = "green";
+			const inductorLabel = new CSS2DObject(labelDiv1);
+			scene.add(inductorLabel)
+			inductorLabel.position.set(50, -50, 180);
+
+			createArrows()
+
+			render()
+
+			redPoints = points(150, 0xff0000, 50)
+			bluePoints = points(150, 0x0000ff, -50)
+			scene.add(redPoints)
+			scene.add(bluePoints)
+			redPoints.geometry.setDrawRange(0, 0);
+			bluePoints.geometry.setDrawRange(0, 0);
+
+			let capLabel = labels('CAPACITOR', new THREE.Vector3(0, 130, 0))
+			capacitor.add(capLabel);
+			let indLabel = labels('INDUCTOR', new THREE.Vector3(0, 60, 200))
+			inductor.add(indLabel);
+			inductor.add(inductorLabel);
+			let cell = createCell();
+			cell.position.x = -500;
+			scene.add(cell)
+
+			window.addEventListener("resize", onWindowResize);
+			buttonStop.addEventListener('click', function () {
+				isStop = !isStop
+				isCell = !isCell
+				load(isCell, isStop)
+
+			});
+		}
+
+		function createArrows() {
+			scene.add(ARROWS)
+			ARROWS.position.set(92, 50, 0)
+			let arrow = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.5, 500), new THREE.MeshBasicMaterial({ color: 'blue' }))
+			let end = new THREE.Mesh(new THREE.ConeGeometry(8, 25, 5).rotateX(1.57).translate(0, 0, 250), new THREE.MeshBasicMaterial({ color: 'red' }))
+			arrow.add(end)
+			// arrow.position.set(92, 40, 0)
+
+			scene.add(ARROWS)
+			let arrow1 = new THREE.Group();
+			// arrow2 = arrow.clone()
+			let arrow2 = new THREE.Group();
+			ARROWS.add(arrow, arrow1, arrow2)
+			let pos = [
+				new THREE.Vector3(15, 0, 0),
+				new THREE.Vector3(-15, 0, 0),
+				new THREE.Vector3(0, -15, 0),
+				new THREE.Vector3(0, 15, 0),
+			]
+
+			for (let i = 0; i < 4; i++) {
+				let mesh = arrow.clone()
+				mesh.position.copy(pos[i])
+				arrow1.add(mesh)
+				// console.log(i, pos[i])
+			}
+			let pos1 = [
+				new THREE.Vector3(30, 0, 0),
+				new THREE.Vector3(-30, 0, 0),
+				new THREE.Vector3(20, -20, 0),
+				new THREE.Vector3(20, 20, 0),
+				new THREE.Vector3(-20, -20, 0),
+				new THREE.Vector3(-20, 20, 0),
+				new THREE.Vector3(0, 30, 0),
+				new THREE.Vector3(0, -30, 0),
+			]
+
+			for (let i = 0; i < 8; i++) {
+				let mesh = arrow.clone()
+				mesh.position.copy(pos1[i])
+				arrow2.add(mesh)
+				// console.log(i, pos1[i])
+			}
+
+			for (let i = 0; i < ARROWS.children.length; i++) {
+				// console.log(ARROWS.children[i])
+				ARROWS.children[i].scale.x = 0
+				ARROWS.children[i].scale.y = 0
+			}
+		}
+
+		function createCamera(view, x, y, z) {
+
+			let fov = view;
+			const aspect = window.innerWidth / window.innerHeight;
+			const near = 1;
+			const far = 50000;
+
+			camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+			camera.position.set(x, y, z);
+			return camera
+		}
+
+		function createCapacitor() {
+			capacitor = new THREE.Group();
+			let cMaterial = new THREE.MeshPhongMaterial({
+				color: 'orange',
+				transparent: true,
+				opacity: 0.3
+			});
+			let geo = new THREE.BoxGeometry(200, 250, 10).translate(0, 125, 0)
+
+			let baseGeo = new THREE.BoxGeometry(200, 10, 10.2).translate(0, 0, 0)
+			let baseMaterial = new THREE.MeshPhongMaterial({
+				color: 0xb87333
+			});
+			let base1 = new THREE.Mesh(baseGeo, baseMaterial)
+			let plate1 = new THREE.Mesh(geo, cMaterial)
+
+			plate1.add(base1)
+			let plate2 = plate1.clone()
+			plate2.rotation.y = 3.14;
+			capacitor.add(plate1)
+			capacitor.add(plate2)
+			plate1.position.z = -50;
+			plate2.position.z = 50;
+			let end1 = base1.clone()
+			end1.scale.set(0.5, 10, 1)
+			inductor = addSpring()
+			inductor.position.set(92, 50, -160)
+			let end2 = end1.clone()
+			end1.position.set(0, 0, 320)
+			inductor.add(end1, end2)
+			capacitor.position.set(-250, 0, 0)
+			scene.add(capacitor, inductor)
+			let cell = createCell();
+			cell.position.x = -500;
+			scene.add(cell)
+
+		}
+
+		function createControls(x, y, z) {
+			controls = new OrbitControls(camera, renderer.domElement);
+			controls.enablePan = true;
+			controls.enableZoom = true;
+			controls.target.set(x, y, z);
+			controls.enableDamping = true;
+			controls.dampingFactor = 0.05;
+			controls.rotateSpeed = 0.1;
+			controls.update();
+			controls.addEventListener('change', render);
+
+		}
+
+		function createRenderer() {
+			// create the renderer
+			renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.alpha = true;
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.useLegacyLights = true;
+			// renderer.outputEncoding = THREE.sRGBEncoding;
+			document.body.appendChild(renderer.domElement);
+
+			labelRenderer = new CSS2DRenderer();
+			labelRenderer.setSize(window.innerWidth, window.innerHeight);
+			labelRenderer.domElement.style.position = 'absolute';
+			labelRenderer.domElement.style.top = '0px';
+			labelRenderer.domElement.style.pointerEvents = 'none';
+			document.body.appendChild(labelRenderer.domElement);
+		}
+
+		function createLights() {
+			const light = new THREE.DirectionalLight(0xffffff, 2);
+			const ambilight = new THREE.AmbientLight(0xffffff, .20);
+			light.position.set(0, 10, 5);
+			scene.add(light, ambilight)
+		}
+
+		function onWindowResize() {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			labelRenderer.setSize(window.innerWidth, window.innerHeight);
+			render();
+		}
+
+		function render() {
+
+			renderer.render(scene, camera);
+			labelRenderer.render(scene, camera);
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			TWEEN.update();
+			controls.update();
+			render();
+
+		}
+
+		function points(points, col, posZ) {
+			//create chargingpoints geometry
+			const geometry = new THREE.BufferGeometry();
+			const positions = new Float32Array(points * 3); // 3 vertices per point
+			geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+			let drawCount = 0; // draw the first 2 points, only
+
+
+			const material = new THREE.PointsMaterial({ size: 25, color: col });
+
+			let chargePoints = new THREE.Points(geometry, material);
+
+
+			chargePoints.position.z = posZ;
+			// updateReds();
+			let i = 0;
+			let x, y, z, index;
+			x = -250 - 90;
+			y = 20 // 80
+			index = 0;
+			z = 0;
+			for (let j = 0, l = N; j < l; j++) {
+				i = i + 1
+
+				y += (Math.random() - 0.5) * 1;
+				z += 0;
+				positions[index++] = x;
+				positions[index++] = y;
+				positions[index++] = z;
+
+				x += 20;
+
+				if (i == 10) {
+					i = 0
+					x = -250 - 90
+					y += 15
+				}
+				// drawCount1 = (drawCount1 + 1);
+			}
+			// scene.add(chargePoints);
+			return chargePoints
+		}
+
+		function labels(name, pos) {
+			const text = document.createElement('div');
+			text.className = 'label';
+			// text.style.color = 'red';
+			text.textContent = name;
+
+			const label = new CSS2DObject(text);
+			label.position.copy(pos)
+			return label
+		}
+
+		function start() {
+			init()
+			console.log('initial loading')
+			flip.rotation.z = -0.5
+			ARROWS.visible = false
+			labelDiv.textContent = ''
+			labelDiv1.textContent = ''
+			animate()
+		}
+
+		function load(cell, osci) {
+			
+
+			if (cell) {
+				ARROWS.visible = false
+				drawCount = 0
+				redPoints.geometry.setDrawRange(0, drawCount)
+				bluePoints.geometry.setDrawRange(0, drawCount)
+				messageElement.innerHTML = 'CAPACITOR CHARGING'
+				labelDiv.textContent = ''
+				labelDiv1.textContent = ''
+				flip.rotation.z = 0.5
+				// console.log('action cell connect')
+				cellConnected()
+			} else {
+
+				stop(osci)
+				console.log(cell, osci)
+			}
+
+		}
+
+		function cellConnected() {
+			cancelAnimationFrame(requestID)
+			ARROWS.visible = false
+			if (drawCount < N) {
+				// console.log('action cell connect')
+			redPoints.geometry.setDrawRange(0, drawCount)
+			bluePoints.geometry.setDrawRange(0, drawCount)
+			drawCount = drawCount + A
+			requestID = requestAnimationFrame(cellConnected)
+			}else if (drawCount >= N) {
+				messageElement.innerHTML = 'FLIP SWITCH'
+				// console.log('end animation')
+				cancelAnimationFrame(requestID)
+			}
+			
+		}
+
+		function stop(action) {
+			if (action) {
+				console.log(action, 'action LC oscillator')
+				messageElement.innerHTML = 'LC OSCILLATOR'
+				flip.rotation.z = -0.5
+				A = -1
+				drawCount = N
+				changeAction()
+			}
+		}
+
+		function periodicAction() {
+
+			drawCount = drawCount - A
+			redPoints.geometry.setDrawRange(0, drawCount)
+			bluePoints.geometry.setDrawRange(0, drawCount)
+
+
+		}
+
+		function changeAction() {
+			ARROWS.visible = true
+			// console.log(drawCount)
+			if (drawCount == 0 || drawCount == N) {
+
+				A *= -1
+				labelDiv.textContent = A > -1 ? "DISCHARGING" : "CHARGING";
+				labelDiv1.textContent = A > -1 ? "MAGNETIZING" : "DE-MAGNETIZING";
+
+				line = A > -1 ? 0 : 1;
+				// sign = line == 0 ? -1 : 1;
+				if(line==0) {
+					sign *= -1
+				}else if (line==1) {
+					sign *= 1
+				}
+
+				if (A < 0) {
+
+					redPoints.material.color.r = redPoints.material.color.r < 1 ? 1 : 0;
+					redPoints.material.color.b = redPoints.material.color.b < 1 ? 1 : 0;
+					bluePoints.material.color.r = bluePoints.material.color.r < 1 ? 1 : 0;
+					bluePoints.material.color.b = bluePoints.material.color.b < 1 ? 1 : 0;
+				}
+
+			}
+			periodicAction()
+			magLines()
+			requestID = requestAnimationFrame(changeAction)
+		}
+
+		function magLines() {
+
+			if (line === 0) {
+				// console.log('mag lines appear large', sign)
+				new TWEEN.Tween(ARROWS.children[0].scale)
+					.to({ x: 1, y: 1, z: sign }, 1000)
+					.easing(TWEEN.Easing.Cubic.Out)
+					.start()
+				new TWEEN.Tween(ARROWS.children[1].scale)
+					.to({ x: 1, y: 1, z: sign }, 1000)
+					.easing(TWEEN.Easing.Cubic.Out)
+					.start()
+				new TWEEN.Tween(ARROWS.children[2].scale)
+					.to({ x: 1, y: 1, z: sign }, 1000)
+					.easing(TWEEN.Easing.Cubic.Out)
+					.start()
+			} else if (line === 1) {
+				// console.log('mag lines appear small', sign)
+				new TWEEN.Tween(ARROWS.children[2].scale)
+					.to({ x: 0, y: 0, z: sign  }, 10000)
+					.easing(TWEEN.Easing.Cubic.Out)
+					.start()
+				new TWEEN.Tween(ARROWS.children[1].scale)
+					.to({ x: 0, y:0, z: sign  }, 10000)
+					.easing(TWEEN.Easing.Cubic.Out)
+					.start()
+				new TWEEN.Tween(ARROWS.children[0].scale)
+					.to({ x: 0, y: 0, z: sign  }, 10000)
+					.easing(TWEEN.Easing.Cubic.Out)
+					.start()
+
+			}
+		}
+
+		function createWires() {
+
+			let wire1 = makeWire(-500, 0, 80, -500, 0, 500, 0xb87333)
+			let wire2 = makeWire(-500, 0, -30, -500, 0, -500, 0xb87333)
+			scene.add(wire1, wire2)
+			let wire3 = makeWire(-300, 0, 500, -500, 0, 500, 0xb87333)
+			let wire4 = makeWire(-250, 0, -500, -500, 0, -500, 0xb87333)
+			scene.add(wire4, wire3)
+			let wire5 = makeWire(-250, 0, 400, -250, 0, 50, 0xb87333)
+			let wire6 = makeWire(-250, 0, -500, -250, 0, -50, 0xb87333)
+			scene.add(wire5, wire6)
+			flip = new THREE.Mesh(new THREE.BoxGeometry(10, 120, 10).translate(0, 60, -10), new THREE.MeshPhongMaterial({ color: 'black' }))
+			flip.rotation.x = 1.57;
+			flip.position.set(-250, -10, 400)
+			scene.add(flip)
+			let box = makeFlip()
+			box.position.set(-250, -10, 400)
+			scene.add(box)
+			let connector1 = makeConnector(90, 50, -160, -250, 0, -500, -500)
+			let connector2 = makeConnector(90, 50, 160, -200, 0, 500, 500)
+			scene.add(connector1, connector2)
+		}
+
+		function makeConnector(x1, y1, z1, x2, y2, z2, gap) {
+			const measureSpline = new THREE.CatmullRomCurve3([
+				new THREE.Vector3(x1, y1, z1),
+				new THREE.Vector3(x1 - 20, y1, z2),
+				new THREE.Vector3(x2, y2, gap)
+			]);
+
+			let tubeGeometry = new THREE.TubeGeometry(measureSpline, 25, 4, 4, false);
+			let connectorMaterial = new THREE.MeshPhongMaterial({
+				color: 0xb87333,
+				side: THREE.DoubleSide,
+			});
+			let mesh = new THREE.Mesh(tubeGeometry, connectorMaterial);
+
+			return mesh
+		}
+
+		export { makeConnector };
+
+		function addSpring() {
+			const curvePoints = [];
+
+			for (let t = 0; t < 145; t += 0.1) {
+
+				curvePoints.push(new THREE.Vector3(40 * Math.cos(t), 40 * Math.sin(t), 2.2 * t));
+
+			}
+			const curve = new THREE.CatmullRomCurve3(curvePoints);
+
+			let tubeGeometry = new THREE.TubeGeometry(curve, 500, 5, 15, false);
+			let material = new THREE.MeshPhongMaterial({
+				color: 0xff1133,
+				flatShading: false,
+				side: THREE.DoubleSide
+			})
+			material.color.convertSRGBToLinear();
+			let mesh = new THREE.Mesh(tubeGeometry, material);
+			return (mesh)
+		}
+
+		export { addSpring };
+
+		function createCell() {
+			let mesh = new THREE.Mesh(new THREE.CylinderGeometry(30, 30, 80), new THREE.MeshPhongMaterial({ color: 'brown' }))
+			let mesh1 = mesh.clone()
+			mesh1.material = new THREE.MeshPhongMaterial({ color: 'black' })
+			mesh1.scale.y = 0.5
+			mesh1.position.y = 60
+
+			mesh.add(mesh1)
+			mesh.rotation.z = 1.57
+			mesh.rotation.y = 1.57
+			return mesh
+
+		}
+		
+		function makeWire(x1, y1, z1, x2, y2, z2, col) {
+			const measureSpline = new THREE.CatmullRomCurve3([
+				new THREE.Vector3(x1, y1, z1),
+				new THREE.Vector3(x2, y2, z2)
+			]);
+
+			let tubeGeometry = new THREE.TubeGeometry(measureSpline, 25, 4, 4, false);
+			let connectorMaterial = new THREE.MeshPhongMaterial({
+				color: col,
+				side: THREE.DoubleSide,
+			});
+			let mesh = new THREE.Mesh(tubeGeometry, connectorMaterial);
+
+			return mesh
+		}
+
+		function makeFlip() {
+			let mesh1 = new THREE.Mesh(new THREE.BoxGeometry(120, 10, 120).translate(0, 0, 50), new THREE.MeshPhongMaterial({ color: 'brown' }))
+
+
+			// mesh1.add(mesh2);
+			return mesh1
+		}
+
+	</script>
+
+</body>
+
+</html>

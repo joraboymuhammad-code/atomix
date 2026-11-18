@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+	<meta charset="utf-8">
+	<title>Motional emf in a conductor moving in magnetic field</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="shortcut icon" href="../files/favicon_white.ico" media="(prefers-color-scheme: dark)" />
+	<link rel="shortcut icon" href="../files/favicon.ico" media="(prefers-color-scheme: light)" />
+	<link rel="stylesheet" type="text/css" href="../css/style-page.css">
+	<!-- Google tag (gtag.js) -->
+	
+	<script>
+		
+	</script>
+	<meta name="google-site-verification" content="mz0TRB59UNqdTxhwzmXmGdgVPh8pB4YqjuUr-aWNGIY">
+
+</head>
+
+<body>
+
+	<div id="topmenu">
+		<div>
+			Motional emf in a conductor moving in magnetic field
+		</div>
+	</div>
+	<div id="sidemenu">
+
+	</div>
+	<div id="menu">
+		<a><label for="railD">Magnetic Field, B=</label><a id="magDisplay"> 1 </a> T<br>
+			<input type="range" id="magField" name="magfield" min="0.25" max="1.1" value="1" step="0.05">
+		</a><br>
+		<a><label for="railD">Distance between the rail=</label><a id="railDisplay"> 1 </a> m<br>
+			<input type="range" id="railD" name="railD" min="1" max="5" value="1.5" step="0.5">
+		</a><br>
+		<a><label for="dist">Velocity of the rod =</label><a id="distDisplay"> 1 </a> m/s<br>
+			<input type="range" id="dist" name="dist" min="0" max="10" value="1" step="0.1">
+		</a><br>
+		<p>Motional emf = <a id="emf-el"></a> V</p><br>
+		<button id="visual">Emf Visualization</button><button id="reset">RESET</button><button id="hand">Left
+			Hand</button>
+
+	</div>
+
+	<script type="module">
+		import * as THREE from '../build/three.module.js';
+		import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
+		import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+		import { TransformControls } from '../jsm/controls/TransformControls.js';
+		import { CSS2DRenderer, CSS2DObject } from '../jsm/renderers/CSS2DRenderer.js';
+		import Stats from '../jsm/libs/stats.module.js';
+		import { GUI } from '../jsm/libs/lil-gui.module.min.js';
+
+
+		let camera, aspect, fov, stats, clock;
+		let scene, renderer, controls, labelRenderer, transformControls;
+		let Points, Electrons = new THREE.Group(), MagLine = new THREE.Group();
+		let negCharges = [];
+		let posCharges = new THREE.Group();
+		let leftHand, rodFront;
+		let params = {
+			vel: 0.01,
+			len: 1,
+			B: 1,
+			emf: 0.01,
+			L: 5,
+			spacing: 1
+		};
+		let FIELDS = new THREE.Group();
+		let SPHERES = new THREE.Group()
+		const modelPath = './model/';
+		const elements = {
+			'1': 'lefthandrule.glb'
+		};
+
+		//button and html elements
+		const resetButton = document.getElementById('reset');
+		const visualButton = document.getElementById('visual');
+		const emfElement = document.getElementById('emf-el');
+		const inputMag = document.getElementById('magField');
+		const magDisplay = document.getElementById('magDisplay');
+		const inputDist = document.getElementById('dist');
+		const distDisplay = document.getElementById('distDisplay');
+		const inputRail = document.getElementById('railD');
+		const railDisplay = document.getElementById('railDisplay');
+		const handButton = document.getElementById('hand');
+
+		//scene
+		scene = new THREE.Scene();
+		scene.background = new THREE.Color(0xbfd1e5);
+
+		//camera
+		camera = createCamera(50, 14, 8, 8);
+		stats = new Stats();
+		clock = new THREE.Clock();
+		document.body.appendChild(stats.dom);
+
+		//renderer
+		createRenderer();
+
+		//cameracontrols
+		createControls(1, 3.5, 1);
+
+		//create light 
+		createLights();
+
+		const gridHelper = new THREE.GridHelper(10, 10);
+		scene.add(gridHelper);
+		document.body.appendChild(renderer.domElement);
+
+		window.addEventListener("resize", onWindowResize);
+
+		buttonLoad();
+		createModel();
+		scene.add(MagLine)
+
+		MagLine.add(createArrow("green", "B", 0, 3.14))
+		MagLine.add(createArrow("blue", "v", 0, 1.57))
+		MagLine.add(createArrow("red", "F", 1.57, 0))
+		MagLine.rotation.set(1.57, 0, -1.57)
+		// createCoil();
+		// guiControls()
+		transformControls = new TransformControls(camera, renderer.domElement);
+
+		transformControls.addEventListener('change', function () {
+			// console.log('move')
+
+		});
+
+		transformControls.addEventListener('dragging-changed', function (event) {
+			controls.enabled = !event.value
+
+			// console.log('moved')
+
+		});
+		transformControls.attach(MagLine)
+		transformControls.visible = false
+
+		let railPosition = 4;
+		let magnetBottom = createBox(10, 0.5, 20, 0x1e2f9e, false)
+		let magnetTop = createBox(10, 0.5, 20, 0x9e271e, true)
+		magnetTop.position.y = 15;
+		scene.add(magnetBottom, magnetTop)
+		addMaglines()
+		scene.add(FIELDS, SPHERES)
+		let rodLeft = createBox(0.1, 0.1, 22, 0xe6b60b, false)
+		let rodRight = rodLeft.clone()
+		rodFront = createBox(5, 0.1, 0.5, 0xe6b60b, true)
+		let resistor = createBox(1.0, 0.8, 0.1, 0x01917e, false)
+		rodLeft.position.x = 1
+		rodRight.position.x = -1
+		let rod = new THREE.Group()
+
+		rod.position.y = railPosition
+		let rodBack = createBox(2.05, 0.1, 0.1, 0xe6b60b, false)
+		rodFront.position.y = 0.1
+		rodBack.position.z = resistor.position.z = -10
+
+		rod.add(rodLeft, rodRight, rodBack, resistor)
+		scene.add(rod, rodFront)
+		rodFront.position.z = -8
+		rodFront.position.y = railPosition
+		let negBlock = createBox(0.01, 0.12, 0.52, 0x0000ff, false)
+		rodFront.add(negBlock)
+		negBlock.position.x = 2.5
+		negBlock.translateX = 0.005
+		let posBlock = createBox(0.01, 0.12, 0.52, 0xff0000, false)
+		rodFront.add(posBlock, Electrons)
+		posBlock.position.x = -2.5
+		posBlock.translateX = -0.005
+		posBlock.visible = negBlock.visible = false
+		let loadLabel = addLabel(0, railPosition + 0.1, -10, 'Multimeter')
+		scene.add(loadLabel)
+
+		// scene.add()
+		let length = addLines(new THREE.Vector3(1, 0, .1), new THREE.Vector3(-1, 0, .1), 0x01917e)
+		rodFront.add(length)
+		length.add(addLabel(0, 0, 0, '<strong>l = 1m</strong>'))
+		let deltaL = addLines(new THREE.Vector3(0, 0, 3), new THREE.Vector3(0, 0, 0), 'red')
+		emfElement.innerHTML = motionalEmf(params.B, params.vel, params.len)
+
+		let volttext = document.createElement('div');
+		volttext.className = 'label';
+		volttext.textContent = 'Emf = ' + params.emf + 'V';
+
+		let voltLabel = new CSS2DObject(volttext);
+		voltLabel.position.set(0, railPosition + 1.5, -2.5);
+		scene.add(voltLabel)
+		MagLine.visible = false
+
+		scene.add(deltaL)
+		animate()
+		function addLines(vector1, vector2, col) {
+			let linepoints = [vector1, vector2];
+			let lineMaterial = new THREE.LineBasicMaterial({ color: col });
+
+			let lineGeometry = new THREE.BufferGeometry().setFromPoints(linepoints);
+			let line = new THREE.Line(lineGeometry, lineMaterial);
+			// group.add(axis)
+			return line
+		}
+
+		function guiControls() {
+			let gui = new GUI();
+			// gui.close()
+
+
+			gui.add(camera.position, 'x', -30, 30);
+			gui.add(camera.position, 'y', -10, 10);
+			gui.add(camera.position, 'z', -10, 10);
+			let controlFolder = gui.addFolder("Control");
+			controlFolder.add(controls.target, 'x', -100, 100);
+			controlFolder.add(controls.target, 'y', -300, 300);
+			controlFolder.add(controls.target, 'z', -100, 100);
+
+		}
+
+		function createModel() {
+
+			const loader = new GLTFLoader();
+
+			//load Left Hand gesture
+			loader
+				.setPath(modelPath)
+				.load(elements['1'], function (gltf) {
+					leftHand = gltf.scene;
+					MagLine.add(leftHand);
+					leftHand.scale.set(5, 5, 5)
+
+					MagLine.position.set(5, 3, 0)
+					scene.add(transformControls);
+				});
+
+
+		}
+
+		function createCamera(view, x, y, z) {
+
+			let fov = view;
+			const aspect = window.innerWidth / window.innerHeight;
+			const near = 0.1;
+			const far = 1500;
+
+			let camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+			camera.position.set(x, y, z);
+			return camera
+		}
+
+		function createControls(x, y, z) {
+			controls = new OrbitControls(camera, renderer.domElement);
+			controls.enablePan = true;
+			controls.enableZoom = true;
+			controls.target.set(x, y, z);
+			controls.enableDamping = true;
+			controls.dampingFactor = 0.05;
+			controls.rotateSpeed = 0.1;
+			controls.update();
+			controls.addEventListener('change', render);
+		}
+
+		function createRenderer() {
+			// create the renderer
+			renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.alpha = true;
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.outputEncoding = THREE.sRGBEncoding;
+			document.body.appendChild(renderer.domElement);
+
+			labelRenderer = new CSS2DRenderer();
+			labelRenderer.setSize(window.innerWidth, window.innerHeight);
+			labelRenderer.domElement.style.position = 'absolute';
+			labelRenderer.domElement.style.top = '0px';
+			labelRenderer.domElement.style.pointerEvents = 'none';
+			document.body.appendChild(labelRenderer.domElement);
+		}
+
+		function createLights() {
+			let hemiLight = new THREE.AmbientLight(0xffffff, .20);
+			hemiLight.position.set(0, 20, 0);
+			scene.add(hemiLight);
+
+			let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+			dirLight.position.set(-30, 50, -30);
+			dirLight.castShadow = true;
+			dirLight.shadow.camera.top = 70;
+			dirLight.shadow.camera.bottom = -70;
+			dirLight.shadow.camera.left = -70
+			dirLight.shadow.camera.right = 70;
+			dirLight.shadow.mapSize.width = 2048;
+			dirLight.shadow.mapSize.height = 2048;
+			scene.add(dirLight);
+
+			scene.add(new THREE.AmbientLight(0xffffff, .4));
+		}
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			labelRenderer.setSize(window.innerWidth, window.innerHeight);
+			render();
+
+		}
+
+		function render() {
+
+			renderer.render(scene, camera);
+			labelRenderer.render(scene, camera);
+
+		}
+		let j = 0
+		function animate() {
+			requestAnimationFrame(animate);
+			const oldObjectPosition = new THREE.Vector3();
+			rodFront.getWorldPosition(oldObjectPosition);
+			controls.update();
+			let t = clock.getElapsedTime()
+			stats.update();
+			if (rodFront.position.z > 10) {
+				rodFront.position.z = -8
+				camera.position.set(14, 8, 8);
+			} else {
+				rodFront.position.z += params.vel
+				adjustLine(deltaL, new THREE.Vector3(1.6, railPosition, -8), new THREE.Vector3(1.6, railPosition, rodFront.position.z))
+			}
+
+			for (let i = 0; i < negCharges.length; i++) {
+				negCharges[i].position.x += params.vel * 0.1
+				if (negCharges[i].position.x > 2.4) {
+					negCharges[i].position.x = -2.3
+				}
+			}
+
+			const newObjectPosition = new THREE.Vector3();
+			rodFront.getWorldPosition(newObjectPosition);
+			if (camera.fov === 35) {
+				const delta = newObjectPosition.clone().sub(oldObjectPosition).multiplyScalar(0.8);
+
+				camera.position.add(delta);
+			}
+
+			negBlock.scale.x += params.vel
+			posBlock.scale.x += params.vel
+			render();
+		};
+
+		function createCoil() {
+
+			const connectorMaterial = new THREE.MeshPhongMaterial({
+				color: 0xb87333,
+				side: THREE.DoubleSide,
+			});
+
+			const tubeGeometry = new THREE.TorusGeometry(2, 0.05, 9, 4).rotateZ(0.8).rotateX(1.57);
+			let mesh = new THREE.Mesh(tubeGeometry, connectorMaterial);
+			// mesh.rotation.z = 0.8;
+			mesh.scale.set(1, 1.5, 1.5);
+			mesh.position.set(0.5, 1.5, 0)
+			scene.add(mesh)
+
+
+		}
+
+		function createBox(x, y, z, col, boolean) {
+			let mesh = new THREE.BoxGeometry(x, y, z).translate(0, y / 2, 0);
+			const material = new THREE.MeshPhongMaterial({ color: col, transparent: boolean, opacity: 0.75 });
+			const cube = new THREE.Mesh(mesh, material);
+			return cube
+		}
+
+		function buttonLoad() {
+			inputMag.addEventListener("change", function () {
+
+				magDisplay.innerHTML = inputMag.value;
+				while (FIELDS.children.length > 0) {
+					const A = FIELDS.children[0];
+					A.parent.remove(A);
+				}
+				params.B = Number(inputMag.value)
+				params.spacing = 1 / (1 * params.B)
+				addMaglines()
+				let V = motionalEmf(params.B, params.vel, params.len)
+				params.emf = V
+				emfElement.innerHTML = V
+				volttext.textContent = 'Emf = ' + params.emf + 'V';
+			})
+
+
+			inputDist.addEventListener("change", function () {
+
+				let X = Number(inputDist.value / 100);
+				distDisplay.innerHTML = inputDist.value;
+
+				params.vel = X
+				let V = motionalEmf(params.B, params.vel, params.len)
+				params.emf = V
+				emfElement.innerHTML = V
+				volttext.textContent = 'Emf = ' + params.emf + 'V';
+
+			})
+
+			inputRail.addEventListener("change", function () {
+
+				let X = Number(inputRail.value);
+				railDisplay.innerHTML = X;
+				console.log(motionalEmf(params.B, params.vel, params.len), X)
+				rodLeft.position.x = X;
+				rodRight.position.x = -X;
+				rodFront.geometry.dispose();
+				rodFront.geometry = new THREE.BoxGeometry(5 + X, 0.1, 0.5).translate(0, 0.05, 0);
+				rodBack.scale.x = X;
+				params.len = X
+				let V = motionalEmf(params.B, params.vel, params.len)
+				emfElement.innerHTML = V
+			})
+			resetButton.addEventListener("click", function () {
+				magnetTop.visible = true
+				deltaL.visible = true
+				rod.visible = true
+				posBlock.visible = negBlock.visible = false
+				params.vel = 0.01
+				inputDist.value = params.vel * 100
+				distDisplay.innerHTML = inputDist.value;
+				let V = motionalEmf(params.B, params.vel, params.len)
+				emfElement.innerHTML = V
+				camera.position.set(14, 8, 8);
+				camera.fov = 50
+				controls.target.set(1, 3.5, 1);
+				posBlock.scale.x = negBlock.scale.x = 1
+				posBlock.visible = negBlock.visible = false
+
+			})
+			handButton.addEventListener("click", function () {
+				MagLine.visible = !MagLine.visible
+
+			})
+			visualButton.addEventListener("click", function () {
+
+				rod.visible = false
+				deltaL.visible = false
+				// magnetTop.visible = false
+				// rodFront.position.z = 0
+
+				camera.position.set(2, 8, 2);
+				camera.fov = 35
+				controls.target.set(0.5, 4.5, 0.5);
+				const geometry = new THREE.SphereGeometry(0.03, 8, 4).translate(0, 0.05, 0);
+				const material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+				let eln = new THREE.Mesh(geometry, material);
+
+				Points = minusPoints()
+				console.log(negCharges, Points.length)
+				for (let i = 0; i < Points.length; i = i + 3) {
+					let E = eln.clone()
+					Electrons.add(E)
+					E.position.set(Points[i], Points[i + 1], Points[i + 2])
+					negCharges.push(E)
+				}
+
+				posCharges = addSpheres(0.05, 0xff0000)
+				rodFront.add(posCharges)
+
+				setTimeout(function () {
+					posBlock.visible = negBlock.visible = true
+				}, 500);
+			})
+		}
+
+		function motionalEmf(mag, vel, len) {
+			let emf = (mag * vel * len).toFixed(3)
+			return emf
+		}
+		function addLabel(x, y, z, name) {
+			let text = document.createElement('div');
+			text.className = 'label';
+			text.innerHTML = name;
+
+			let value = new CSS2DObject(text);
+			value.position.set(x, y, z);
+			// let label.add(value);
+			return value
+		}
+
+		function adjustLine(L, pos1, pos2) {
+			// console.log(pos1, pos2)
+			L.geometry.dispose();
+
+			let linepoints = [pos1, pos2];
+			let objGeometry = new THREE.BufferGeometry().setFromPoints(linepoints);
+			L.geometry = objGeometry;
+		}
+
+		function addMaglines() {
+			let magLine = createBox(0.02, 15, 0.02, 0xffffff, true)
+			let magArrow = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.4, 6).rotateX(3.14).translate(0, 3.5, 0),
+				new THREE.MeshPhongMaterial({ color: 0x1b1b1c, transparent: true, opacity: 0.9 }));
+			console.log(params.spacing)
+			for (let i = -4.5; i < 5; i = i + params.spacing) {
+				let A = params.L * 2
+				for (let j = -9.5; j < 10; j = j + params.spacing) {
+					let arrow = magArrow.clone()
+					let mesh = magLine.clone()
+					arrow.position.y = -1.5 + Math.random()
+					mesh.add(arrow)
+					mesh.position.set(i, 0, j)
+					FIELDS.add(mesh)
+				}
+
+			}
+		}
+
+		function addSpheres(r, col) {
+			const geometry = new THREE.SphereGeometry(r, 8, 4).translate(0, 0.05, 0);
+			const material = new THREE.MeshBasicMaterial({ color: col });
+			const sphere = new THREE.Mesh(geometry, material);
+			// scene.add(sphere)
+			let CHARGES = new THREE.Group()
+			for (let i = -2.3; i < 2.4; i = i + 0.25) {
+				let A = params.L * 2
+				for (let j = -0.2; j < 0.2; j = j + 0.18) {
+					let mesh = sphere.clone()
+					mesh.position.set(i, 0, j)
+					CHARGES.add(mesh)
+				}
+
+			}
+
+			return CHARGES
+		}
+
+		function minusPoints() {
+			const geometry = new THREE.BufferGeometry();
+			const positions = new Float32Array(60 * 3); // 3 vertices per point
+			// geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+			// const material = new THREE.PointsMaterial({ size: 0.12, color: 0x0000ff });
+
+			// let Points = new THREE.Points(geometry, material);
+			let i = 0;
+			let x, y, z, index;
+			x = -2.3;
+			y = 0;
+			index = 0;
+			z = -0.18;
+			for (let j = -2.5, l = 8.2; j < l; j = j + .18) {
+				i = i + 1
+
+				y += 0;
+				z += 0;
+				positions[index++] = x;
+				positions[index++] = y;
+				positions[index++] = z;
+
+				x += 0.25;
+
+				if (i == 20) {
+					i = 0
+					x = -2.3
+					z += 0.18
+				}
+			}
+
+
+			// Points.geometry.setDrawRange(0, 180);
+			// return Points
+			return positions
+		}
+
+		function createArrow(col, label, rot1, rot2) {
+			let mesh = new THREE.Group()
+
+			let Line = new THREE.Mesh(new THREE.BoxGeometry(.05, .05, 5).translate(0, 0, -2.5), new THREE.MeshBasicMaterial({ color: col }))
+			Line.rotation.y = rot1;
+			Line.rotation.x = rot2;
+			let Arrow = new THREE.Mesh(new THREE.ConeGeometry(0.2, 1, 60).translate(0, 5, 0).rotateX(-1.57),
+				new THREE.MeshBasicMaterial({ color: col }));
+			Line.add(Arrow)
+			mesh.add(Line)
+
+			return mesh
+		}
+	</script>
+</body>
+
+</html>

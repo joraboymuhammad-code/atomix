@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atomix — 3D Zarralar va Suyuqliklar Fizikasi (PBF)</title>
+    <link rel="stylesheet" href="./pbf-style.css" />
+    <style>/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      // Automatic WebGL2 3D SPH Fallback when browser lacks WebGPU
+      window.__ATOMIX_START_WEBGL2_FLUID__ = async function(presetId) {
+        const errEl = document.getElementById('error');
+        const loadEl = document.getElementById('loading');
+        if (errEl) errEl.hidden = true;
+        if (loadEl) loadEl.hidden = true;
+        const host = document.getElementById('canvas-host') || document.body;
+        host.innerHTML = '';
+        const THREE = await import('three');
+        const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+        const w = host.clientWidth || window.innerWidth;
+        const h = host.clientHeight || window.innerHeight;
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        host.appendChild(renderer.domElement);
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x060913);
+        const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 50);
+        camera.position.set(2.4, 1.8, 3.0);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 0.5, 0);
+
+        scene.add(new THREE.AmbientLight(0x94a3b8, 0.9));
+        const dl = new THREE.DirectionalLight(0x38bdf8, 2.0);
+        dl.position.set(2, 4, 3);
+        scene.add(dl);
+
+        const boxGeo = new THREE.BoxGeometry(1.6, 1.2, 1.2);
+        const edges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(boxGeo),
+          new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45 })
+        );
+        edges.position.set(0, 0.6, 0);
+        scene.add(edges);
+
+        const N = 1600;
+        const pos = new Float32Array(N * 3);
+        const vel = new Float32Array(N * 3);
+        const isGas = presetId === 'vortex-plume';
+        const isBuoyancy = presetId === 'buoyancy';
+        for (let i = 0; i < N; i++) {
+          pos[i * 3] = (Math.random() - 0.5) * (isGas ? 0.35 : 0.7);
+          pos[i * 3 + 1] = isGas ? Math.random() * 1.1 : 0.25 + Math.random() * 0.85;
+          pos[i * 3 + 2] = (Math.random() - 0.5) * (isGas ? 0.35 : 0.9);
+          vel[i * 3 + 1] = isGas ? 0.6 + Math.random() * 0.6 : 0;
+        }
+        const pGeo = new THREE.BufferGeometry();
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        const pMat = new THREE.PointsMaterial({
+          color: presetId === 'viscous-pour' ? 0xfbbf24 : isGas ? 0xe7ad87 : 0x38bdf8,
+          size: 0.042,
+          transparent: true,
+          opacity: 0.88
+        });
+        const points = new THREE.Points(pGeo, pMat);
+        scene.add(points);
+
+        let duck;
+        if (isBuoyancy) {
+          duck = new THREE.Mesh(
+            new THREE.SphereGeometry(0.18, 24, 24),
+            new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.3 })
+          );
+          duck.position.set(0, 0.55, 0);
+          scene.add(duck);
+        }
+
+        const badge = document.createElement('div');
+        badge.className = 'atomix-iframe-badge';
+        badge.textContent = 'WebGL2 Zarraviy Suyuqlik Rejimi (Atomix)';
+        host.appendChild(badge);
+
+        let t = 0;
+        function tick() {
+          requestAnimationFrame(tick);
+          t += 0.016;
+          const attr = pGeo.attributes.position;
+          for (let i = 0; i < N; i++) {
+            const ix = i * 3;
+            if (isGas) {
+              const x = attr.array[ix], z = attr.array[ix + 2];
+              const ang = Math.atan2(z, x) + 0.05;
+              const rad = Math.hypot(x, z) + 0.002;
+              attr.array[ix] = Math.cos(ang) * rad;
+              attr.array[ix + 2] = Math.sin(ang) * rad;
+              attr.array[ix + 1] += vel[ix + 1] * 0.016;
+              if (attr.array[ix + 1] > 1.5 || rad > 0.75) {
+                attr.array[ix] = (Math.random() - 0.5) * 0.2;
+                attr.array[ix + 1] = 0.02;
+                attr.array[ix + 2] = (Math.random() - 0.5) * 0.2;
+              }
+            } else {
+              vel[ix + 1] -= 9.81 * 0.016 * 0.35;
+              if (presetId === 'wave-chamber') vel[ix] += Math.sin(t * 2.1) * 0.08;
+              attr.array[ix] += vel[ix] * 0.016;
+              attr.array[ix + 1] += vel[ix + 1] * 0.016;
+              attr.array[ix + 2] += vel[ix + 2] * 0.016;
+              if (attr.array[ix + 1] < 0.04) {
+                attr.array[ix + 1] = 0.04;
+                vel[ix + 1] *= -0.35;
+                vel[ix] += (Math.random() - 0.5) * 0.25;
+                vel[ix + 2] += (Math.random() - 0.5) * 0.25;
+              }
+              if (Math.abs(attr.array[ix]) > 0.76) { attr.array[ix] = Math.sign(attr.array[ix]) * 0.76; vel[ix] *= -0.5; }
+              if (Math.abs(attr.array[ix + 2]) > 0.56) { attr.array[ix + 2] = Math.sign(attr.array[ix + 2]) * 0.56; vel[ix + 2] *= -0.5; }
+            }
+          }
+          if (duck) duck.position.y = 0.45 + Math.sin(t * 3.2) * 0.06;
+          attr.needsUpdate = true;
+          controls.update();
+          renderer.render(scene, camera);
+        }
+        tick();
+      };
+    </script>
+    <script type="module" src="./pbf-bundle.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const err = document.getElementById('error');
+          if (err && !err.hidden) {
+            const p = new URL(location.href).searchParams.get('preset') || 'buoyancy';
+            window.__ATOMIX_START_WEBGL2_FLUID__(p);
+          }
+        }, 1200);
+      });
+    </script>
+  </body>
+</html>

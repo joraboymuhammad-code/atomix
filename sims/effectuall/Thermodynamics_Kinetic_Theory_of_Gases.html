@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+    <meta charset="utf-8">
+    <title>Kinetic Theory of Gases</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="shortcut icon" href="../files/favicon_white.ico" media="(prefers-color-scheme: dark)" />
+    <link rel="shortcut icon" href="../files/favicon.ico" media="(prefers-color-scheme: light)" />
+    <link rel="stylesheet" type="text/css" href="../css/style-page.css">
+    <!-- Google tag (gtag.js) -->
+
+<script>
+  
+</script>
+    <meta name="google-site-verification" content="mz0TRB59UNqdTxhwzmXmGdgVPh8pB4YqjuUr-aWNGIY">
+
+</head>
+
+<body>
+
+    <div style="font-weight:normal; text-align: left; text-decoration-line: none;" id="topmenu">
+        <div>
+            Kinetic Theory of Gases (Monoatomic)
+        </div>
+        <a>A cylinder contains a mixture of He and Ar gas in equilibrium at 150 °C.<br>(a)What is the average kinetic energy (K.E) for each type of gas molecule?<br> (b) What is the root-mean-square speed of each type of molecule.</a>
+    </div>
+
+
+
+    <div id="menu">
+      
+        <a> <label for="temp"><strong>Temperature : = </strong></label><input type="range" id="temp" name="temp" min="10" max="200" value="150" step="0.5"><a id="temp-el">150</a>°C<br>
+            <label for="temp"><strong>K.E = <div class="fraction">
+                <span class="fup"> 3</span>
+                <span class="bar">/</span>
+                <span class="fdn"> 2</span>
+            </div>k<sub>B</sub>T</strong></label>
+        </a>
+        <a>also, <strong>K.E =  <div class="fraction">
+            <span class="fup"> 1</span>
+            <span class="bar">/</span>
+            <span class="fdn"> 2</span>
+        </div>m<sub>g</sub>v<sup>2</sup></strong></a><br>
+        <button id="theorybutton" onClick="theorySite()">CALCULATION / THEORY</button>
+
+    </div>
+    <script>
+        function theorySite() {
+
+            window.open("../Theory/Thermodynamics/Thermodynamics_Kinetic_Theory_of_Gases.html", "_self")
+        }
+ 
+    </script>
+  
+    <script type="module">
+        import * as THREE from '../build/three.module.js';
+        import { CSS2DRenderer, CSS2DObject } from '../jsm/renderers/CSS2DRenderer.js';
+        import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+        import Stats from '../jsm/libs/stats.module.js';
+        import { GUI } from '../jsm/libs/lil-gui.module.min.js';
+        import { TWEEN } from '../jsm/libs/tween.module.min.js';
+
+        let camera, aspect, fov, stats, clock, gui;
+        let scene, renderer, labelRenderer, controls, container, sample, sampleMaterial;
+        let box, slider1, slider2, plane, rod, indicatorMaterial, pressurePointer, tempPointer;
+        const atom1 = [];
+        const atom2 = [];
+        let t1 = 0.00150;
+        let t2 = 0.0003;
+        let params = {
+            A: 10,
+
+            Molecules: function () {
+                addMolecules(100);               
+                pressurePointer.rotation.z +=-0.25;
+               
+            },
+            Atoms: function () {
+                addAtoms(100)
+                pressurePointer.rotation.z +=-0.2;
+            },
+            Clear: function () {
+                clearParticles();
+                
+            }
+        }
+
+        //button and html elements
+        let temp = document.getElementById('temp');
+        let message = "";
+        let messageEl = document.getElementById("message-el");
+        let tempEl = document.getElementById('temp-el');
+
+        init()
+        animate()
+
+        function buttonAction() {
+            // change volume space and pressure indicator
+            temp.addEventListener("input", function (event) {
+                
+                let value = temp.valueAsNumber;
+                tempEl.innerHTML = value;
+                t1 = (value)*0.00001;
+                t2 = (value)*0.000002;
+                // console.log(t1, t2)
+            });
+         
+        }
+
+        function init() {
+            //scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xbfd1e5);
+
+            //camera
+            createCamera(16, 12, 35);
+
+            //renderer
+            createRenderer();
+
+            //cameracontrols
+            createControls(-1, 12, 0);
+
+            //create light 
+            createLights();
+
+            //create controls
+            // guiControls();
+            addAxes(new THREE.Vector3(0, 0, 0));
+
+            //Gas Container Box
+            const material = new THREE.MeshPhongMaterial(
+                {
+                    color: 'green',
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.25
+                })
+          
+            box = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 22, 32).translate(0,11,0), material);
+            scene.add(box);
+            
+            let sliderMaterial = new THREE.MeshPhongMaterial({ color: 0x035400 });
+            slider1 = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 1, 32), sliderMaterial);
+            slider2 = slider1.clone();
+            scene.add(slider1, slider2);
+            slider2.position.y = params.A + 1.5;
+            slider1.position.y = -0.5;
+            rod = new THREE.Mesh(new THREE.CylinderGeometry(.5, .5, 24, 8).translate(0, 12, 0), sliderMaterial);
+            slider2.add(rod);
+            
+            addAtoms(0.2, 40, 'red', atom1);
+            addAtoms(0.40, 60, 'blue', atom2);
+            
+            buttonAction();
+            document.body.appendChild(renderer.domElement);
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+
+        function guiControls() {
+            gui = new GUI();
+            // gui.close()
+            // camera control adjust
+            // console.log(camera.position)
+            // let controlFolder = gui.addFolder("Control");
+            // controlFolder.add(controls.target, 'x', -100, 100);
+            // controlFolder.add(controls.target, 'y', -100, 100);
+            // controlFolder.add(controls.target, 'z', -100, 100);
+            // // // let cameraFolder = gui.addFolder("Camera");
+            // gui.add(camera.position, 'x', -100, 100);
+            // gui.add(camera.position, 'y', -100, 100);
+            // gui.add(camera.position, 'z', -100, 100);
+
+            // change volume space and pressure indicator
+            gui.add(params, 'A', 1, 20, 0.25).onChange((value) => {
+                // console.log(value)
+                box.geometry.dispose();
+                let newGeometry = new THREE.BoxGeometry(10.8, (params.A * 2 + 1), 10.8);
+                box.geometry = newGeometry;
+                slider1.position.y = -params.A - 1;
+                slider2.position.y = params.A + 1;
+                tempPointer.scale.set(1, value * 1.5, 1);
+                t = 0.0001 + value * 0.0001
+            });
+
+            gui.add(params, 'Molecules');
+            gui.add(params, 'Atoms');
+            gui.add(params, 'Clear').name('RESET');
+        }
+
+        function addTemperature() {
+            
+            plane = new THREE.Mesh(new THREE.BoxGeometry(2, 11, .4).translate(0, 5.5, -0.45), new THREE.MeshPhongMaterial({ color: 0x000314 }));
+            let indicatorGeometry = new THREE.PlaneGeometry(1, 10, 1).translate(0, 5.5, -0.2)
+
+            let indicator = new THREE.Mesh(indicatorGeometry, indicatorMaterial);
+            scene.add(indicator);
+            // indicator.rotation.set(0, 0, -1.57);
+            indicator.position.set(10, 0, 0)
+            indicator.add(plane)
+            let rodGeometry = new THREE.CylinderGeometry(.2, .2, .2, 8).translate(0, .1, 0);
+            let rodMaterial = new THREE.MeshPhongMaterial({ color: 0xff11ad })
+            tempPointer = new THREE.Mesh(rodGeometry, rodMaterial);
+            tempPointer.position.set(0, 0.5, 0)
+
+            indicator.add(tempPointer)
+            tempPointer.scale.set(1, params.A * 1.5, 1)
+
+            indicator.add(addLabels('TEMPERATURE', 'black', 0, -1));
+        }
+
+        function addPressure() {
+            let indicatorGeometry = new THREE.RingGeometry(2, 4, 32, 1, 1.57, 3.14)
+            let indicator = new THREE.Mesh(indicatorGeometry, indicatorMaterial);
+            scene.add(indicator);
+            indicator.rotation.set(0, 0, -1.57);
+            indicator.position.set(-12, 0, 0)
+
+            let rodGeometry = new THREE.CircleGeometry(3.5, 3, 1.57, .08).translate(0, -3.4, 0.1);
+            let rodMaterial = new THREE.MeshPhongMaterial({ color: 'black' })
+            pressurePointer = new THREE.Mesh(rodGeometry, rodMaterial);
+            
+
+            indicator.add(pressurePointer)
+            pressurePointer.rotation.set(0, 0, -1)
+
+            indicator.add(addLabels('P = P` + F/A', 'black', -5, -2));
+            indicator.add(addLabels('PRESSURE', 'black', 1, -1));
+        }
+        
+        function createCamera(x, y, z) {
+
+            fov = 55;
+            const aspect = window.innerWidth / window.innerHeight;
+            const near = 0.1;
+            const far = 1500;
+
+            camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+            camera.position.set(x, y, z);
+        }
+
+        function createControls(x, y, z) {
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enablePan = true;
+            controls.enableZoom = true;
+            controls.target.set(x, y, z);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.rotateSpeed = 0.1;
+            controls.update();
+            controls.addEventListener('change', render);
+        }
+
+        function createRenderer() {
+            // create the renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.alpha = true;
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            document.body.appendChild(renderer.domElement);
+
+            labelRenderer = new CSS2DRenderer();
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+            labelRenderer.domElement.style.pointerEvents = 'none';
+            document.body.appendChild(labelRenderer.domElement);
+        }
+
+        function createLights() {
+            let hemiLight = new THREE.AmbientLight(0xffffff, .20);
+            hemiLight.position.set(0, 20, 0);
+            scene.add(hemiLight);
+
+            let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(-30, 50, -30);
+            dirLight.castShadow = true;
+            dirLight.shadow.camera.top = 70;
+            dirLight.shadow.camera.bottom = -70;
+            dirLight.shadow.camera.left = -70
+            dirLight.shadow.camera.right = 70;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            scene.add(dirLight);
+
+            scene.add(new THREE.AmbientLight(0xffffff, .4));
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function addLabels(name, col, x, y) {
+
+            let text = document.createElement('div');
+            text.className = 'label';
+            text.innerHTML = name;
+            text.style.color = col;
+
+            let label = new CSS2DObject(text);
+            label.position.x = x;
+            label.position.y = y;
+
+            return label
+        }
+
+        function render() {
+
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+
+        function addAxes(pos) {
+            let axes = new THREE.Group();
+            const axesHelper = new THREE.AxesHelper(20);
+            axes.add(axesHelper);
+            const axesHelper1 = new THREE.AxesHelper(-20);
+            axes.add(axesHelper1);
+            axes.position.copy(pos)
+            scene.add(axes)
+        }
+
+        function addParticles(N) {
+            atoms = !atoms;
+
+            if (atoms) {
+                addAtoms(N);
+
+            } else {
+                addMolecules(N);
+            }
+
+
+        }
+
+        function clearParticles() {
+
+            for (let i = 0; i < spheres.length; i++) {
+                scene.remove(spheres[i])
+            }
+            
+            addMolecules(100);
+                
+            t = 0.00015
+            params.A = 5;
+            pressurePointer.rotation.set(0, 0, -1);
+            tempPointer.scale.set(1, params.A * 1.5, 1);
+            box.geometry.dispose();
+            let newGeometry = new THREE.BoxGeometry(10.8, (params.A * 2 + 1), 10.8);
+            box.geometry = newGeometry;
+            slider1.position.y = -params.A - 1;
+            slider2.position.y = params.A + 1;
+            volume.value = params.A;
+        }
+
+        function addAtoms(R,N, col, spheres) {
+            const geometry = new THREE.SphereGeometry(R, 32, 16);
+            const material = new THREE.MeshPhongMaterial({ color: col });
+
+            for (let i = 0; i < N; i++) {
+
+                const mesh = new THREE.Mesh(geometry, material);
+
+                mesh.position.x = Math.random() * params.A - 5;
+                mesh.position.y = Math.random() * params.A + 0.5;
+                mesh.position.z = Math.random() * params.A - 5 ;
+                mesh.rotation.x = Math.random() * 1.57;
+                mesh.rotation.y = 0;
+                mesh.rotation.z = Math.random() * 1.57;
+                // mesh.scale.x = mesh.scale.y = mesh.scale.z = 3;
+
+                scene.add(mesh);
+
+                spheres.push(mesh);
+
+            }
+        }
+
+        function addMolecules(N) {
+            const geometry1 = new THREE.OctahedronGeometry(0.2, 3).translate(0.15, 0, 0);
+            const geometry2 = new THREE.OctahedronGeometry(0.2, 3).translate(-0.15, 0, 0);
+            const material1 = new THREE.MeshPhongMaterial({ color: 'red' });
+
+            for (let i = 0; i < N; i++) {
+                let molecule = new THREE.Group()
+                molecule.add(new THREE.Mesh(geometry2, material1), new THREE.Mesh(geometry1, material1));
+                // scene.add(molecule)
+                molecule.position.x = Math.random() * 10 - 5;
+                molecule.position.y = Math.random() * 10 - 5;
+                molecule.position.z = Math.random() * 10 - 5;
+                molecule.rotation.x = Math.random() * 3.14;
+                molecule.rotation.y = Math.random() * 3.14;
+                molecule.rotation.z = Math.random() * 3.14;
+                scene.add(molecule);
+
+                spheres.push(molecule);
+
+            }
+
+        }
+
+        function addArrow() {
+            const dir = new THREE.Vector3(mesh.rotation.x, mesh.rotation.y, mesh.rotation.z);
+
+            //normalize the direction vector (convert to vector of length 1)
+            dir.normalize();
+
+            const arrowHelper = new THREE.ArrowHelper(dir,
+                new THREE.Vector3(0, 0, 0), 0.6, 0xff0000);
+            // const arrowHelper = new THREE.ArrowHelper( new THREE.Vector3( 1, 0, 0 ), 
+            //                             new THREE.Vector3( 0, 0, 0 ), 0.6, 0xff0000 );
+            mesh.add(arrowHelper);
+        }
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+            const timer1 = t1 * Date.now();
+            const timer2 = t2 * Date.now();
+            // console.log(timer)
+            camera.lookAt(scene.position);
+          
+            for (let i = 0; i < atom1.length; i++) {
+
+                const sphere = atom1[i];
+
+                sphere.position.x = params.A/2 * Math.cos(timer1 + i);
+                sphere.position.y = 5.5 + (params.A/2) * Math.sin(timer1 + i *0.9);
+
+            }
+            for (let i = 0; i < atom2.length; i++) {
+
+                const sphere = atom2[i];
+
+                sphere.position.x = params.A/2 * Math.cos(timer2 + i);
+                sphere.position.y = 5.5 + (params.A/2) * Math.sin(timer2 + i *0.9);
+
+            }
+            controls.update();
+            render();
+
+        }
+
+    </script>
+</body>
+
+</html>

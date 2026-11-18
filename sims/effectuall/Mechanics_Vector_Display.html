@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+    <meta charset="utf-8">
+    <title>Vector Addition</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="shortcut icon" href="../files/favicon_white.ico" media="(prefers-color-scheme: dark)" />
+    <link rel="shortcut icon" href="../files/favicon.ico" media="(prefers-color-scheme: light)" />
+    <link rel="stylesheet" type="text/css" href="../css/style-page.css">
+    <!-- Google tag (gtag.js) -->
+    
+<!--     <script>
+        
+    </script> -->
+    <meta name="google-site-verification" content="mz0TRB59UNqdTxhwzmXmGdgVPh8pB4YqjuUr-aWNGIY">
+
+</head>
+
+<body>
+    <div id="topmenu">Vector Addition</div>
+    <div id="sidemenu"> </div>
+
+
+    <div id="menu">
+        Total Distance Travelled= <a id="distEl">----</a> units<br>
+        <button onClick="vectorAlgebra() ">VECTOR ALGEBRA</button>
+    </div>
+    <script>
+        function vectorAlgebra() {
+
+            window.open("Mechanics_Vector_Algebra.html", "_self")
+        }
+
+    </script>
+        <script type="module">
+
+            import * as THREE from '../build/three.module.js';
+            import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+            import { TransformControls } from '../jsm/controls/TransformControls.js';
+            import Stats from '../jsm/libs/stats.module.js';
+            import { GUI } from '../jsm/libs/lil-gui.module.min.js';
+            import { CSS2DRenderer, CSS2DObject } from '../jsm/renderers/CSS2DRenderer.js';
+
+            let camera, scene, renderer, orbitControls, labelRenderer, transformControls;
+            let plane;
+            let pointer, raycaster, isShiftDown = false;
+            let initialPos, POS = [];
+            let cubeGeo, cubeMaterial;
+            const objects = [];
+            let SELECTED;
+            let obj;
+            let LINE = new THREE.Group();
+            let LAST = new THREE.Group();
+            let LABEL = new THREE.Group();
+            let line, lineLast;
+            let distEl = document.getElementById('distEl');
+
+            init();
+            animate();
+
+            function init() {
+
+                camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.position.set(20, 15, 60);
+                // camera.lookAt(0, 0, 0);
+
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0xf0f0f0);
+
+
+
+                cubeGeo = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0);
+                cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xfeb74c });
+                let blueMaterial = new THREE.MeshPhongMaterial({ color: 0x4cb7ff })
+                let redMaterial = new THREE.MeshPhongMaterial({ color: 0xff374c })
+                let greyMaterial = new THREE.MeshPhongMaterial({ color: 0x676767 })
+                
+                let cube = new THREE.Mesh(cubeGeo, cubeMaterial);
+                cube.position.set(-20, 10, 20);
+                cube.scale.set(5, 5, 5)
+                objects.push(cube)
+                scene.add(cube);
+               
+
+                let cuboid = cube.clone();
+                cuboid.material = blueMaterial;
+                cuboid.position.set(20, 0, 10);
+                cuboid.scale.set(10, 5, 5)
+                objects.push(cuboid)
+                scene.add(cuboid)
+                
+
+                let pillar = cube.clone();
+                pillar.material = redMaterial;
+                pillar.position.set(-30, 0, -25);
+                pillar.scale.set(5, 15, 5)
+                objects.push(pillar)
+                scene.add(pillar)
+                
+
+                let block = cube.clone();
+                block.material = greyMaterial;
+                block.position.set(-5, 0, -15);
+                block.scale.set(15, 15, 5)
+                objects.push(block)
+                scene.add(block)
+                
+
+                const gridHelper = new THREE.GridHelper(100, 20);
+                scene.add(gridHelper);
+
+                raycaster = new THREE.Raycaster();
+                pointer = new THREE.Vector2();
+
+                const axesHelper = new THREE.AxesHelper(50);
+                scene.add(axesHelper);
+
+                // lights
+
+                const ambientLight = new THREE.AmbientLight(0x606060);
+                scene.add(ambientLight);
+
+                const directionalLight = new THREE.DirectionalLight(0xffffff);
+                directionalLight.position.set(1, 0.75, 0.5).normalize();
+                scene.add(directionalLight);
+
+                createRenderer()
+
+                orbitControls = new OrbitControls(camera, renderer.domElement);
+                orbitControls.enablePan = true;
+                orbitControls.enableZoom = true;
+                orbitControls.target.set(-9, 10, -9);
+                orbitControls.enableDamping = true;
+                orbitControls.dampingFactor = 0.05;
+                orbitControls.rotateSpeed = 0.1;
+
+                orbitControls.addEventListener('change', render);
+
+                transformControls = new TransformControls(camera, renderer.domElement);
+                scene.add(LINE);
+                scene.add(LAST);
+                scene.add(LABEL);
+                // guiControls()
+
+                transformControls.attach(objects[3]);
+                transformControls.setTranslationSnap(2);
+                SELECTED = objects[3];
+                obj = SELECTED;
+                initialPos = SELECTED.position;    
+                drawLine(SELECTED.position)
+                scene.add(transformControls);
+                // add event listener to highlight dragged objects
+                transformControls.addEventListener('change', render);
+                transformControls.addEventListener('dragging-changed', function (event) {
+
+                    orbitControls.enabled = !event.value;
+                    drawLine(SELECTED.position);
+                    
+                });
+
+                transformControls.addEventListener('dragover', function (event) {
+
+                    orbitControls.enabled = !event.value;
+                    console.log(SELECTED);
+
+                });
+                document.addEventListener('click', onClick);
+
+                window.addEventListener('resize', onWindowResize);
+
+            }
+
+            function createRenderer() {
+                // create the renderer
+                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.alpha = true;
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.outputEncoding = THREE.sRGBEncoding;
+                document.body.appendChild(renderer.domElement);
+
+                labelRenderer = new CSS2DRenderer();
+                labelRenderer.setSize(window.innerWidth, window.innerHeight);
+                labelRenderer.domElement.style.position = 'absolute';
+                labelRenderer.domElement.style.top = '-25px';
+                labelRenderer.domElement.style.left = '-25px';
+                labelRenderer.domElement.style.pointerEvents = 'none';
+                document.body.appendChild(labelRenderer.domElement);
+
+            }
+
+            function onWindowResize() {
+
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                labelRenderer.setSize(window.innerWidth, window.innerHeight);
+                render();
+
+            }
+
+            function render() {
+
+                renderer.render(scene, camera);
+                labelRenderer.render(scene, camera);
+            }
+
+            function previousLine(pos1, pos2, len) {
+
+                lineLast = initLine({
+                    points: [pos1, pos2],
+                    lineMaterial: new THREE.LineBasicMaterial({ color: "rgb(0%, 0%, 100%)" })
+                });
+                LAST.add(lineLast)
+
+            }
+
+            
+            function onClick(event) {
+                // console.log(event); 
+                event.preventDefault();
+
+                pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+                pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+                raycaster.setFromCamera(pointer, camera);
+                let intersects = raycaster.intersectObjects(objects, true);
+                if (intersects.length > 0) {
+                    initialPos = SELECTED.position;                  
+                    
+                    SELECTED = intersects[0].object;
+                    if  (obj != SELECTED) {
+                        while ( LINE.children.length > 0 ) {
+                            const A = LINE.children[ 0 ];
+                            A.parent.remove( A );
+                        }
+                        while ( LAST.children.length > 0 ) {
+                            const A = LAST.children[ 0 ];
+                            A.parent.remove( A );
+                        }
+                        while ( LABEL.children.length > 0 ) {
+                            const A = LABEL.children[ 0 ];
+                            A.parent.remove( A );
+                        }
+                        
+                        let A = POS[POS.length-1].geometry.getAttribute('position');
+                        let B = new THREE.Vector3(A.getX(1), A.getY(1), A.getZ(1));
+                        let C = POS[0].geometry.getAttribute('position');
+                        let D = new THREE.Vector3(C.getX(1), C.getY(1), C.getZ(1));
+                       
+                        line = initLine({
+                            points: [B, D],
+                            lineMaterial: new THREE.LineBasicMaterial({ color: "rgb(100%, 100%, 0%)" })
+                        });
+                        LINE.add(line)
+                        LABEL.add(addLabels(B))
+                        LABEL.add(addLabels(D))
+                        distEl.innerHTML = B.distanceTo(D).toFixed(2)
+                        // console.log(B, D, B.distanceTo(D))
+                        
+                        obj = SELECTED
+                        POS=[]
+                    
+                        transformControls.attach(SELECTED);
+                        // console.log(SELECTED)
+                        drawLine(SELECTED.position)
+                    }
+                }
+            }
+
+            function guiControls() {
+                let gui = new GUI();
+                // gui.close()
+
+
+                gui.add(camera.position, 'x', -100, 100);
+                gui.add(camera.position, 'y', -100, 100);
+                gui.add(camera.position, 'z', -100, 100);
+                let controlFolder = gui.addFolder("Control");
+                controlFolder.add(orbitControls.target, 'x', -100, 100);
+                controlFolder.add(orbitControls.target, 'y', -100, 100);
+                controlFolder.add(orbitControls.target, 'z', -100, 100);
+                
+            }
+
+            function drawLine(pos) {
+                line = initLine({
+                    points: [new THREE.Vector3(0, 0, 0), pos],
+                    lineMaterial: new THREE.LineBasicMaterial({ color: "rgb(100%, 0%, 0%)" })
+                });
+                
+                LABEL.add(addLabels(pos))
+                POS.push(line);
+                let len = POS.length;
+                LINE.add(line)
+                if (len >= 2) {
+                    let A = POS[len - 2].geometry.getAttribute('position');
+                    let B = new THREE.Vector3(A.getX(1), A.getY(1), A.getZ(1));
+                    let X = POS[0].geometry.getAttribute('position')
+                    initialPos = new THREE.Vector3(X.getX(1), X.getY(1), X.getZ(1));
+                    let dist = (B.distanceTo(pos)).toFixed(2)
+                    
+                    previousLine(B, pos, dist);
+                }
+
+            }
+
+            function addLabels(A, D) {
+                let X = A.x >= 0 ? '' + A.x : A.x; //d[2]<10?'0'+d[2]:''+ d[2];
+                let Y =  A.y >= 0 ? '+' + A.y : A.y;
+                let Z = A.z >= 0 ? '+' + A.z : A.z;
+                
+                let text = document.createElement('div');
+                text.className = 'label';
+                text.innerHTML = X + ' i ' + Y + ' j ' + Z + ' z ';
+                text.style.color = 'black';
+
+                let label = new CSS2DObject(text);
+                label.position.copy(A);
+
+                return label
+            }
+
+            function addDistance(A, D) {
+               let B = A.add(new THREE.Vector3(0.5,0.5,0.5))
+                let text = document.createElement('div');
+                text.className = 'label';
+                text.innerHTML = D + 'm'
+                text.style.color = 'red';
+
+                let label = new CSS2DObject(text);
+                label.position.copy(A)
+                console.log(D)
+                return label
+            }
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                orbitControls.update();
+
+                render();
+            }
+
+            
+            function initLine(data) {
+                let lineGeometry = new THREE.BufferGeometry().setFromPoints(data.points);
+                line = new THREE.Line(lineGeometry, data.lineMaterial);
+                return line;
+            }
+        </script>
+
+    </body>
+
+</html>

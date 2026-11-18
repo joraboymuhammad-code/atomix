@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+	<meta charset="utf-8">
+	<title>Resultant Force on a Charge in a Straight line using Interactive 3D Simulation</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="shortcut icon" href="../files/favicon_white.ico" media="(prefers-color-scheme: dark)" />
+	<link rel="shortcut icon" href="../files/favicon.ico" media="(prefers-color-scheme: light)" />
+	<link rel="stylesheet" type="text/css" href="../css/style-page.css">
+	<style>
+		.label {
+			font-weight: bold;
+			font-size: 12px;
+		}
+	</style>
+	<!-- Google tag (gtag.js) -->
+	
+<!-- 	<script>
+		
+	</script> -->
+	<meta name="google-site-verification" content="mz0TRB59UNqdTxhwzmXmGdgVPh8pB4YqjuUr-aWNGIY">
+
+</head>
+
+<body>
+
+	<div id="topmenu">
+		<div>
+			Coulomb's Law: Finding the position where the resultant force is ZERO.
+		</div>
+
+	</div>
+	<div id="sidemenu">
+
+		F<sub>13</sub> =
+		<div class="fraction">
+			<span class="fup">1</span>
+			<span class="bar">/</span>
+			<span class="fdn">4 &pi; &epsilon;<sub>0</sub></span>
+		</div>
+		<div class="fraction">
+			<span class="fup">q<sub>1</sub>q<sub>3</sub></span>
+			<span class="bar">/</span>
+			<span class="fdn">(<a id="r1">x<sub>1</sub></a> -
+				x<sub>3</sub>)<sup>2</sup></span>
+		</div><br>
+		F<sub>23</sub> =
+		<div class="fraction">
+			<span class="fup">1</span>
+			<span class="bar">/</span>
+			<span class="fdn">4 &pi; &epsilon;<sub>0</sub></span>
+		</div>
+		<div class="fraction">
+			<span class="fup">q<sub>2</sub>q<sub>3</sub></span>
+			<span class="bar">/</span>
+			<span class="fdn">(<a id="r1">x<sub>2</sub></a> -
+				x<sub>3</sub>)<sup>2</sup></span>
+		</div><br>
+		F<sub>13</sub> = F<sub>23</sub>
+	</div>
+
+
+	<div id="menu">
+
+		<a><label for="q1Value"><em>q<sub>1</sub></em> =</label>
+			<input type="value" id="q1Value" name="q1Value" min="-25" max="25" value="16" step="1" size="4">
+			&micro;C<br>
+		</a>
+		<a><label for="q2Value"><em>q<sub>2</sub></em> =</label>
+			<input type="value" id="q2Value" name="q2Value" min="-25" max="25" value="6" step="1" size="4">
+			&micro;C<br>
+		</a>
+		<a> <label for="q3Value"><em>q<sub>3</sub></em> =</label>
+			<select name="q3Val" id="q3Value">
+				<option value="Negative">Negative</option>
+				<option value="Positive">Positive</option>
+			</select>
+		</a><br>
+
+		<div>Resultant force on charge <em>q<sub>3</sub></em> is zero at, <br>
+			(x<sub>2</sub> - x<sub>3</sub>)<sup>2</sup>q<sub>1</sub> = (x<sub>1</sub> -
+			x<sub>3</sub>)<sup>2</sup>q<sub>2</sub><br>
+			(<a id="dist1">0 + </a>x<sub>3</sub>)<sup>2</sup>q<sub>1</sub> = (<a id="dist2">2</a>
+			x<sub>3</sub>)<sup>2</sup>q<sub>2</sub><br>
+			<em>x<sub>3</sub> = </em><a id="r3Value"></a>
+		</div>
+		<a> <a id="message-1" style="color: red; text-transform: uppercase;">Two solutions, </a> <a id="message-2"
+				style="color: green; text-transform: uppercase">but only at one, forces are in opposite direction, </a>
+			as indicated.</a>
+	</div>
+	<script>
+		function theorySite() {
+
+			window.open("../Theory/Magnetism/Magnetism_Hall_Effect.html", "_self")
+		}
+	</script>
+
+	<script type="module">
+		import * as THREE from '../build/three.module.js';
+		import { DragControls } from '../jsm/controls/DragControls.js';
+		import { TransformControls } from '../jsm/controls/TransformControls.js';
+		import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+		import { GUI } from '../jsm/libs/lil-gui.module.min.js';
+		import { CSS2DRenderer, CSS2DObject } from '../jsm/renderers/CSS2DRenderer.js';
+
+
+		let pointer, raycaster;
+		let camera, aspect, fov, stats, clock, gui;
+		let scene, renderer, labelRenderer, controls, transformControls, lineArrow;
+		let q1Charge, q2Charge, q3Charge, indicatorF12, indicatorF21, indicatorF13, indicatorF31, indicatorF32, indicatorF23;
+		let sign = '(-)';
+		let posCol, negCol;
+		let q1Material, q2Material, posMaterial, negMaterial;
+		let disp = 0.0, t = 0.001;
+		let curveHandles = [];
+		const objects = [];
+		let SELECTED, drag_objects = [], draggableObject;;
+		let curves = new THREE.Group();
+		let CURVES = new THREE.Group();
+		let LABELS = new THREE.Group();
+		let LINES = new THREE.Group();
+		let arrows = new THREE.Group();
+
+		let params = {
+			r1Value: 4, // m
+			r2Value: 0, //1e-1 m
+			q1Charge: 16, // in &micro;C
+			q2Charge: 6,
+			q3Charge: -1,
+			r3Value: 0
+		}
+		const K = 9 //Coulomb's constant x1e9 in Nm^2/C^2
+
+		//button and html elements
+		let inputQ1value = document.getElementById("q1Value");
+		let inputQ2value = document.getElementById("q2Value");
+		let selectQ3value = document.getElementById("q3Value");
+		let inputQ3pos = document.getElementById("q3Pos");
+		let inputQ3neg = document.getElementById("q3Neg");
+
+
+		let dist1El = document.getElementById("dist1");
+		let dist2El = document.getElementById("dist2");
+		let r3valueEl = document.getElementById("r3Value");
+		let message1El = document.getElementById("message-1");
+		let message2El = document.getElementById("message-2");
+
+		init()
+		animate()
+
+		//Three point charge scene
+		function init() {
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0xbfd1e5);
+
+			createCamera(4, 20, 80);
+			createRenderer();
+			createControls(15, 0, -25);
+			createLights();
+
+			raycaster = new THREE.Raycaster();
+			pointer = new THREE.Vector2();
+
+			//group collection
+			scene.add(LABELS);
+			scene.add(LINES);
+
+			posCol = "rgb(90%, 10%, 0%)"
+			negCol = "rgb(10%, 0%, 90%)"
+
+			posMaterial = new THREE.MeshPhongMaterial({ color: posCol });
+			negMaterial = new THREE.MeshPhongMaterial({ color: negCol });
+
+			const gridHelper = new THREE.GridHelper(200, 20);
+			scene.add(gridHelper);
+
+			//creating the three charges.. materials/color defined above
+			let q1Geometry = new THREE.SphereGeometry(1.5, 16).translate(0, 1.5, 0);
+			q1Charge = new THREE.Mesh(q1Geometry, negMaterial);
+
+			q2Charge = q1Charge.clone();
+			q3Charge = q1Charge.clone();
+
+			q1Charge.position.x = params.r1Value * 10; //distance calculated follow Coulomb's law
+			scene.add(q1Charge);
+
+			q2Charge.position.x = params.r2Value * 10;
+			scene.add(q2Charge);
+
+			scene.add(q3Charge);
+			objects.push(q1Charge, q2Charge) //for raycaster select from the charge q1 and q2 only
+
+			//add labels to identify the charges
+			q1Charge.add(addLabel(new THREE.Vector3(0, -3, 0), '0px', '0px', '(q<sub>1</sub>)', 'black'))
+			q2Charge.add(addLabel(new THREE.Vector3(0, -3, 0), '0px', '0px', '(q<sub>2</sub>)', 'black'))
+			q3Charge.add(addLabel(new THREE.Vector3(0, -3, 0), '0px', '0px', '(q<sub>3</sub>)', 'black'))
+
+			//add force arrows for vector representation
+			indicatorF21 = addArrow(0.6, 2, 'darkblue')
+			indicatorF31 = addArrow(0.6, 1.3, 'darkred')
+
+			//add labels for the two forces acting on each chrges
+			let F21label = addLabel(new THREE.Vector3(5, 1, 0), '0px', '0px', 'F<sub>21<sub>', 'blue')
+			let F31label = addLabel(new THREE.Vector3(5, -1, 0), '0px', '0px', 'F<sub>31<sub>', 'red')
+
+			indicatorF21.add(F21label)
+			indicatorF31.add(F31label)
+			q1Charge.add(indicatorF21, indicatorF31) //force vectors on charge q1
+
+			indicatorF12 = addArrow(0.6, 2, 'darkblue')
+			indicatorF32 = addArrow(0.6, 0.7, 'darkgreen')
+
+			let F12label = addLabel(new THREE.Vector3(5, 1, 0), '0px', '0px', 'F<sub>12<sub>', 'blue')
+			let F32label = addLabel(new THREE.Vector3(5, -1, 0), '0px', '0px', 'F<sub>32<sub>', 'green')
+
+			indicatorF12.add(F12label)
+			indicatorF32.add(F32label)
+			q2Charge.add(indicatorF12, indicatorF32) //force vectors on charge q2
+
+			indicatorF13 = addArrow(0.6, 1.4, 'darkred')
+			indicatorF23 = addArrow(0.6, 0.7, 'darkgreen')
+
+
+			let F1label = addLabel(new THREE.Vector3(5, 1, 0), '0px', '0px', 'F<sub>13<sub>', 'red')
+			let F2label = addLabel(new THREE.Vector3(5, -1, 0), '0px', '0px', 'F<sub>23<sub>', 'green')
+
+			indicatorF23.add(F2label)
+			indicatorF13.add(F1label)
+
+			q3Charge.add(indicatorF13, indicatorF23) //force vectors on charge q3
+
+			inputAction();
+			buttonLoad();
+			transControls();
+
+			document.body.appendChild(renderer.domElement);
+			document.addEventListener('click', onClick);
+			window.addEventListener('resize', onWindowResize);
+		}
+
+
+		function calPosition() {
+			//two possible solutions
+			let q1 = Math.abs(params.q1Charge);
+			let q2 = Math.abs(params.q2Charge);
+			let r1 = params.r1Value;
+			let r2 = params.r2Value;
+			let X1, X2;
+			// console.log(q1, q2, r1, r2)
+			if (q1 != q2) {
+
+				let A = (q1 - q2);
+				let B = 2 * (r1 * q2 - r2 * q1);
+				let C = r2 * r2 * q1 - r1 * r1 * q2;
+				let W = Math.sqrt((B * B - 4 * A * C));
+				// console.log(A, B, C, W);
+				let a = ((- B + W) / (2 * A)).toFixed(3);
+				let b = ((- B - W) / (2 * A)).toFixed(3);
+
+				X1 = Number(a);
+				X2 = Number(b);
+				// console.log(X1, X2)
+				return { X1, X2 }
+
+			}
+		}
+
+		function buttonLoad() {
+
+			inputQ1value.addEventListener('input', function (e) {
+
+				params.q1Charge = inputQ1value.value;
+				inputAction()
+
+			})
+			inputQ2value.addEventListener('input', function (e) {
+
+				params.q2Charge = inputQ2value.value;
+				inputAction()
+			})
+			selectQ3value.addEventListener('input', function (e) {
+
+				if (this.value == 'Positive') {
+					sign = '(+)'
+					params.q3Charge = 1
+				} else if (this.value == 'Negative') {
+					sign = '(-)'
+					params.q3Charge = -1
+				}
+
+				inputAction()
+			});
+
+		}
+
+		function q3Change() {
+			let T = (q1Charge.position.x - q3Charge.position.x) / (q1Charge.position.x);
+			let S = (q2Charge.position.x - q3Charge.position.x) / (q2Charge.position.x);
+
+
+			if (Math.atan(T) < 0) {
+				indicatorF13.scale.x = indicatorF13.scale.x * 1
+				indicatorF31.scale.x = indicatorF31.scale.x * 1
+			} else if (Math.atan(T) > 0) {
+				indicatorF13.scale.x = indicatorF13.scale.x * -1
+				indicatorF31.scale.x = indicatorF31.scale.x * -1
+			}
+			if (Math.atan(S) < 0) {
+				indicatorF23.scale.x = indicatorF23.scale.x * -1
+				indicatorF32.scale.x = indicatorF23.scale.x * 1
+			} else if (Math.atan(S) > 0) {
+				indicatorF23.scale.x = indicatorF23.scale.x * 1
+				indicatorF32.scale.x = indicatorF23.scale.x * -1
+			}
+		}
+
+		function onClick(event) {
+			// console.log(event); 
+			event.preventDefault();
+
+			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+			pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+			raycaster.setFromCamera(pointer, camera);
+			let intersects = raycaster.intersectObjects(objects, true);
+			if (intersects.length > 0) {
+
+				SELECTED = intersects[0].object;
+				if (SELECTED.parent.type == 'Scene') {
+					// console.log(SELECTED)
+					transformControls.attach(SELECTED);
+				}
+			}
+		}
+
+		function transControls() {
+			transformControls = new TransformControls(camera, renderer.domElement);
+			transformControls.showY = false;
+			transformControls.showZ = false;
+			// transformControls.size = 0.6;
+			transformControls.setTranslationSnap(5);
+			scene.add(transformControls);
+			transformControls.addEventListener('change', function () {
+				render
+			});
+
+			transformControls.addEventListener('dragging-changed', function (event) {
+				controls.enabled = !event.value;
+				// inputAction()
+				dragChange()
+				// transformCal()
+			});
+
+			transformControls.addEventListener('dragend', function (event) {
+				controls.enabled = true;
+
+			});
+		}
+
+		function guiControls() {
+			gui = new GUI();
+			gui.close()
+			// camera control adjust
+			// console.log(camera.position)
+			let controlFolder = gui.addFolder("Control");
+			controlFolder.add(controls.target, 'x', -100, 100);
+			controlFolder.add(controls.target, 'y', -100, 100);
+			controlFolder.add(controls.target, 'z', -100, 400);
+			// let cameraFolder = gui.addFolder("Camera");
+			gui.add(camera.position, 'x', -100, 100);
+			gui.add(camera.position, 'y', -100, 100);
+			gui.add(camera.position, 'z', -100, 400);
+
+			// change current flow path
+
+		}
+
+		function createCamera(x, y, z) {
+
+			fov = 35;
+			const aspect = window.innerWidth / window.innerHeight;
+			const near = 0.1;
+			const far = 1500;
+
+			camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+			camera.position.set(x, y, z);
+		}
+
+		function createControls(x, y, z) {
+			controls = new OrbitControls(camera, renderer.domElement);
+			controls.enablePan = true;
+			controls.enableZoom = true;
+			controls.target.set(x, y, z);
+			controls.enableDamping = true;
+			controls.dampingFactor = 0.05;
+			controls.rotateSpeed = 0.1;
+			controls.update();
+			controls.addEventListener('change', render);
+		}
+
+		function createRenderer() {
+			// create the renderer
+			renderer = new THREE.WebGLRenderer({ antialias: true });
+			renderer.alpha = true;
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.outputEncoding = THREE.sRGBEncoding;
+			document.body.appendChild(renderer.domElement);
+
+			labelRenderer = new CSS2DRenderer();
+			labelRenderer.setSize(window.innerWidth, window.innerHeight);
+			labelRenderer.domElement.style.position = 'absolute';
+			// labelRenderer.domElement.style.top = '-25px';
+			labelRenderer.domElement.style.left = '-25px';
+			labelRenderer.domElement.style.pointerEvents = 'none';
+			document.body.appendChild(labelRenderer.domElement);
+
+		}
+
+		function createLights() {
+			let hemiLight = new THREE.AmbientLight(0xffffff, .20);
+			hemiLight.position.set(0, 20, 0);
+			scene.add(hemiLight);
+
+			let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+			dirLight.position.set(-30, 50, -30);
+			dirLight.castShadow = true;
+			dirLight.shadow.camera.top = 70;
+			dirLight.shadow.camera.bottom = -70;
+			dirLight.shadow.camera.left = -70
+			dirLight.shadow.camera.right = 70;
+			dirLight.shadow.mapSize.width = 2048;
+			dirLight.shadow.mapSize.height = 2048;
+			scene.add(dirLight);
+
+			scene.add(new THREE.AmbientLight(0xffffff, .4));
+		}
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			labelRenderer.setSize(window.innerWidth, window.innerHeight);
+			render();
+
+		}
+
+		function render() {
+
+			renderer.render(scene, camera);
+			labelRenderer.render(scene, camera);
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+
+			controls.update();
+
+			render();
+		};
+
+		function solDisplay() {
+			let mag1 = (params.q1Charge) / Math.abs(params.q1Charge);
+			let mag2 = (params.q2Charge) / Math.abs(params.q2Charge);
+
+			if (Math.abs(params.q1Charge) == Math.abs(params.q2Charge)) {
+				//solution when q1, q2 are equal in magnitude--no solution
+				r3valueEl.innerHTML = 'No solution';
+				message1El.innerHTML = 'No solution,';
+				message2El.innerHTML = '';
+				message1El.style.color = 'red';
+				message2El.style.color = 'green';
+				q3Charge.position.x = Infinity;
+				while (LINES.children.length > 0) {
+					const A = LINES.children[0];
+					A.parent.remove(A);
+				}
+				while (LABELS.children.length > 0) {
+					const A = LABELS.children[0];
+					A.parent.remove(A);
+				}
+				if (params.q1Charge > 0) {
+					q1Charge.material = posMaterial
+					LABELS.add(addLabel(q1Charge.position, '0px', '0px', params.q1Charge + ' &micro;C', 'black'))
+				} else {
+					q1Charge.material = negMaterial
+					LABELS.add(addLabel(q1Charge.position, '0px', '0px', params.q1Charge + ' &micro;C', 'black'))
+				}
+				if (params.q2Charge > 0) {
+					q2Charge.material = posMaterial
+					LABELS.add(addLabel(q2Charge.position, '0px', '0px', params.q2Charge + ' &micro;C', 'black'))
+				} else {
+					q2Charge.material = negMaterial
+					LABELS.add(addLabel(q2Charge.position, '0px', '0px', params.q2Charge + ' &micro;C', 'black'))
+				}
+				// changeDist()
+				// changeLines()
+			} else {
+				//solution when q1, q2 are not equal in magnitude == 2 solutions
+				twoSolution()
+			}
+
+		}
+
+		function inputAction() {
+			if (params.q1Charge != params.q2Charge) {
+				console.log(params)
+				solDisplay()
+
+			} else if (params.q1Charge == params.q2Charge) {
+				console.log('one solution')
+				message1El.innerHTML = 'only one solution,';
+				message2El.innerHTML = 'at mid-center,';
+				message1El.style.color = 'red';
+				message2El.style.color = 'green';
+				chargeCol()
+				singleSolution()
+				changeDist()
+				changeLines()
+			}
+		}
+
+		function singleSolution() {
+			//two possible solutions
+			let q1 = Math.abs(params.q1Charge);
+			let q2 = Math.abs(params.q2Charge);
+			let r1 = Number(params.r1Value);
+			let r2 = Number(params.r2Value);
+			let X1, X2;
+
+			let r3 = Number((r2 + r1) / 2);
+			q3Charge.position.x = r3 * 10;
+			console.log(params)
+		}
+
+		function chargeCol() {
+			while (LABELS.children.length > 0) {
+				const A = LABELS.children[0];
+				A.parent.remove(A);
+			}
+
+			if (params.q1Charge > 0) {
+				q1Charge.material = posMaterial
+				LABELS.add(addLabel(q1Charge.position, '0px', '0px', params.q1Charge + ' &micro;C', 'black'))
+			} else {
+				q1Charge.material = negMaterial
+				LABELS.add(addLabel(q1Charge.position, '0px', '0px', params.q1Charge + ' &micro;C', 'black'))
+			}
+			if (params.q2Charge > 0) {
+				q2Charge.material = posMaterial
+				LABELS.add(addLabel(q2Charge.position, '0px', '0px', params.q2Charge + ' &micro;C', 'black'))
+			} else {
+				q2Charge.material = negMaterial
+				LABELS.add(addLabel(q2Charge.position, '0px', '0px', params.q2Charge + ' &micro;C', 'black'))
+			}
+
+			if (params.q3Charge < 0) {
+				q3Charge.material = negMaterial
+			} else {
+				q3Charge.material = posMaterial
+			}
+
+		}
+
+		function changeDist() {
+			params.r1Value = (q1Charge.position.x / 10).toFixed(2);
+			params.r2Value = (q2Charge.position.x / 10).toFixed(2);
+
+			let r1 = (Math.abs(q1Charge.position.x - q3Charge.position.x) / 10).toFixed(2);
+			let r2 = (Math.abs(q2Charge.position.x - q3Charge.position.x) / 10).toFixed(2);
+			// let r3 = ((q3Charge.position.x) / 10).toFixed(2);
+
+			LABELS.add(addLabel(new THREE.Vector3((q3Charge.position.x + q2Charge.position.x) / 2, -3, 0), '0px', '0px', r2 + ' m', 'black'))
+			LABELS.add(addLabel(new THREE.Vector3((q1Charge.position.x + q3Charge.position.x) / 2, -6, 0), '0px', '0px', r1 + ' m', 'black'))
+			// console.log(params)
+			// LABELS.add(addLabel(new THREE.Vector3((q3Charge.position.x) / 2, -9, 0), '0px', '0px', r1 + ' m', 'black'))
+		}
+
+		function changeLines() {
+
+			while (LINES.children.length > 0) {
+				const A = LINES.children[0];
+				A.parent.remove(A);
+			}
+
+			LINES.add(initLine({
+				points: [new THREE.Vector3(q2Charge.position.x, -20, 0), new THREE.Vector3(q2Charge.position.x, 0, 0)],
+				lineMaterial: new THREE.LineBasicMaterial({ color: "rgb(0%, 0%, 0%)", side: THREE.DoubleSide })
+			}));
+			LINES.add(initLine({
+				points: [new THREE.Vector3(q1Charge.position.x, -20, 0), new THREE.Vector3(q1Charge.position.x, 0, 0)],
+				lineMaterial: new THREE.LineBasicMaterial({ color: "rgb(0%, 0%, 0%)", side: THREE.DoubleSide })
+			}));
+			let A = new THREE.Vector3(q3Charge.position.x, q3Charge.position.y - 4, q3Charge.position.z)
+			let B = new THREE.Vector3(q2Charge.position.x, q2Charge.position.y - 4, q2Charge.position.z)
+			LINES.add(initLine({
+				points: [A, B],
+				lineMaterial: new THREE.LineBasicMaterial({ color: "rgb(100%, 0%, 0%)", side: THREE.DoubleSide })
+			}));
+			let C = new THREE.Vector3(q1Charge.position.x, q1Charge.position.y - 7, q1Charge.position.z)
+			let D = new THREE.Vector3(q3Charge.position.x, q3Charge.position.y - 7, q3Charge.position.z)
+			LINES.add(initLine({
+				points: [C, D],
+				lineMaterial: new THREE.LineBasicMaterial({ color: "rgb(0%, 0%, 100%)" })
+			}));
+		}
+
+		function dragChange() {
+
+			params.r1Value = (q1Charge.position.x / 10).toFixed(2);
+			params.r2Value = (q2Charge.position.x / 10).toFixed(2);
+
+			let A = calPosition().X1;
+			let B = calPosition().X2;
+			let mag1 = (params.q1Charge) / Math.abs(params.q1Charge);
+			let mag2 = (params.q2Charge) / Math.abs(params.q2Charge);
+			if (mag1 == mag2) {
+				q3Charge.position.x = A * 10;
+				params.r3Value = (q3Charge.position.x / 10).toFixed(2);
+			} else if (mag1 != mag2) {
+				q3Charge.position.x = B * 10;
+				params.r3Value = (q3Charge.position.x / 10).toFixed(2);
+			}
+
+			dist1El.innerText = params.r1Value + ' - ';
+			dist2El.innerText = params.r2Value + ' - ';
+			r3valueEl.innerHTML = A + ' or ' + B + ' m';
+
+
+			chargeCol()
+			changeLines()
+			changeDist()
+		}
+
+		function addArrow(s, pos, col) {
+
+			//d[2]<10?'0'+d[2]:''+ d[2];0.6
+			let lineGeometry = new THREE.CylinderBufferGeometry(0.1 * s, 0.1 * s, 8 * s, 4).translate(0, 4 * s, 0).rotateZ(-Math.PI / 2);
+			// lineGeometry.rotateX(Math.PI / 2);"rgb(60%, 50%, 0%)"
+
+			let line = new THREE.Mesh(lineGeometry, new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.8 }));
+			let coneGeometry = new THREE.ConeGeometry(0.8 * s, 1.0 * s, 6).translate(0, 8 * s, 0).rotateZ(-Math.PI / 2);
+			// coneGeometry.rotateX(Math.PI / 2);
+			let cone = new THREE.Mesh(coneGeometry, new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.8 }));
+			line.add(cone)
+			line.position.y = pos;
+			// line.rotateZ(Math.PI / 2);
+
+			// line.scale.set(s, s, s)
+			arrows.add(line)
+			return line
+		}
+
+		function addLabel(vector, valueT, valueL, name, col) {
+			let text = document.createElement('div');
+			text.className = 'label';
+			text.style.color = col;
+			// text.style.font.size = 16px;
+			text.innerHTML = name;
+			text.style.top = valueT;
+			text.style.left = valueL;
+			let label = new CSS2DObject(text);
+			label.position.copy(vector);
+			LABELS.add(label);
+			return label
+		}
+
+		function twoSolution() {
+
+			let A = calPosition().X1; //two possible solutions are A, B
+			let B = calPosition().X2;
+			// let C =  (q1Charge.position).distanceTo(q2Charge.position)
+			console.log(q3Charge.position)
+			let mag1 = (params.q1Charge) / Math.abs(params.q1Charge); //get the sign
+			let mag2 = (params.q2Charge) / Math.abs(params.q2Charge);
+			let mag3 = (params.q3Charge) / Math.abs(params.q3Charge);
+			dist1El.innerText = params.r2Value + ' - ';
+			dist2El.innerText = params.r1Value + ' - ';
+
+
+			if (mag1 != mag2 && mag1 == mag3 && mag2 != mag3) {
+
+				q3Charge.position.x = B * 10;
+				params.r3Value = (q3Charge.position.x / 10).toFixed(2);
+				console.log(q3Charge.position)
+				r3valueEl.innerHTML = A + ' or ' + B + ' m';
+				chargeCol()
+				changeDist()
+				changeLines()
+				indicatorF21.scale.set(-1, 1, 1)
+				indicatorF12.scale.set(1, 1, 1)
+				indicatorF23.scale.set(1, 1, 1)
+				indicatorF32.scale.set(-1, 1, 1)
+				indicatorF13.scale.set(-1, 1, 1)
+				indicatorF31.scale.set(1, 1, 1)
+
+
+			} else if (mag1 != mag2 && mag1 != mag3 && mag2 == mag3) {
+
+				q3Charge.position.x = B * 10;
+				params.r3Value = (q3Charge.position.x / 10).toFixed(2);
+				// console.log(q3Charge.position)
+				r3valueEl.innerHTML = A + ' or ' + B + ' m';
+				chargeCol()
+				changeDist()
+				changeLines()
+				indicatorF21.scale.set(-1, 1, 1)
+				indicatorF12.scale.set(1, 1, 1)
+				indicatorF23.scale.set(-1, 1, 1)
+				indicatorF32.scale.set(1, 1, 1)
+				indicatorF13.scale.set(1, 1, 1)
+				indicatorF31.scale.set(-1, 1, 1)
+
+
+			} else if (mag1 == mag2 && mag1 != mag3) {
+
+				q3Charge.position.x = A * 10;
+				params.r3Value = (q3Charge.position.x / 10).toFixed(2);
+				console.log(q3Charge.position)
+				r3valueEl.innerHTML = A + ' or ' + B + ' m';
+				chargeCol()
+				changeDist()
+				changeLines()
+				indicatorF21.scale.set(1, 1, 1)
+				indicatorF12.scale.set(-1, 1, 1)
+				indicatorF23.scale.set(-1, 1, 1)
+				indicatorF32.scale.set(1, 1, 1)
+				indicatorF13.scale.set(1, 1, 1)
+				indicatorF31.scale.set(-1, 1, 1)
+
+			} else if (mag1 == mag2 && mag1 == mag3) {
+
+				q3Charge.position.x = A * 10;
+				params.r3Value = (q3Charge.position.x / 10).toFixed(2);
+				console.log(q3Charge.position)
+				r3valueEl.innerHTML = A + ' or ' + B + ' m';
+				chargeCol()
+				changeDist()
+				changeLines()
+				indicatorF21.scale.set(1, 1, 1)
+				indicatorF12.scale.set(-1, 1, 1)
+				indicatorF23.scale.set(1, 1, 1)
+				indicatorF32.scale.set(-1, 1, 1)
+				indicatorF13.scale.set(-1, 1, 1)
+				indicatorF31.scale.set(1, 1, 1)
+
+			}
+			LABELS.add(addLabel(q3Charge.position, '0px', '0px', sign, 'black'))
+		}
+		
+		function initLine(data) {
+			let lineGeometry = new THREE.BufferGeometry().setFromPoints(data.points);
+			let line = new THREE.Line(lineGeometry, data.lineMaterial);
+			return line;
+		}
+
+		function radTodeg(T) {
+			return (T * (180 / Math.PI)).toFixed(1)
+		}
+
+		
+	</script>
+
+</body>
+
+</html>

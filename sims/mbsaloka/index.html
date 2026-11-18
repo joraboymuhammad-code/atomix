@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>Atomix — WebGL2 Dinamika va Ishqalanish Laboratoriyasi</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<h1>WEBGL2 DINAMIKA, KUCH VA ISHQALANISH SIMULYATORI</h1>
+<div class="container">
+    <div class="canvas-area">
+        <canvas id="gl-canvas" width="1536" height="870.4"></canvas>
+    </div>
+    <div class="controls">
+        <div class="button-container">
+            <button id="start-button" class="start">Boshlash</button>
+            <button id="stop-button" class="stop">To‘xtatish</button>
+            <button id="reset-button" class="reset">Qayta tiklash</button>
+            <button id="clear-button" class="clear">Tozalash</button>
+        </div>
+
+        <div class="input-container">
+            <div class="input-number">
+                <label for="input-vx">Tezlik Vx (m/s)</label>
+                <input id="input-vx" type="number" step="0.1" value="0.0" min="-50" max="50" disabled />
+            </div>
+
+            <div class="input-number">
+                <label for="input-vy">Tezlik Vy (m/s)</label>
+                <input id="input-vy" type="number" step="0.1" value="0.0" min="-50" max="50" disabled />
+            </div>
+
+            <div class="input-number">
+                <label for="input-force">Kuch F (N)</label>
+                <input id="input-force" type="number" step="0.1" value="0.0" min="0.0" max="50" />
+            </div>
+
+            <div class="input-number">
+                <label for="input-mass">Massa m (kg)</label>
+                <input id="input-mass" type="number" step="0.1" value="1.0" min="0.5" max="10.0" />
+            </div>
+
+            <div class="input-number">
+                <label for="input-mu">μ (Ishqalanish)</label>
+                <input id="input-mu" type="number" step="0.1" value="0.3" min="0.0" max="1.0" />
+            </div>
+
+
+            <div class="input-number">
+                <label for="input-bounce-factor">Tiklanish koef. (e)</label>
+                <input id="input-bounce-factor" type="number" step="0.1" value="0.5" min="0.0" max="1.0" />
+            </div>
+        </div>
+
+        <div class="slider-container">
+            <div class="slider">
+                Kuch burchagi θ (<span id="theta-value">0°</span>)
+                0 <input id="slider-theta" type="range"
+                min="0" max="360" step="1" value="0.0" />
+                360
+            </div>
+
+            <div class="slider">
+                Jism o‘lchami (<span id="object-size-value">0.5</span>)
+                0.1 <input id="object-size" type="range"
+                min="0.1" max="2.0" step="0.1" value="0.5" />
+                2.0
+            </div>
+
+            <h3>3D Perspektiva Sozlamalari</h3>
+
+            <div class="slider">
+                Yaqin tekislik (<span id="near-value">0.3</span>)
+                0.1 <input id="slider-near" type="range"
+                min="0.1" max="10" step="0.1" value="0.3" disabled />
+                10
+            </div>
+
+
+            <div class="slider">
+                Uzoq tekislik (<span id="far-value">30</span>)
+                10 <input id="slider-far" type="range"
+                min="10" max="50" step="1" value="30" disabled />
+                50
+            </div>
+
+            <div class="slider">
+                Kamera radiusi (<span id="radius-value">0.5</span>)
+                5 <input id="slider-radius" type="range"
+                min="5" max="30" step="1" value="18" disabled />
+                30
+            </div>
+
+            <div class="slider">
+                Kamera azimuti θ (<span id="theta-projection-value">0°</span>)
+                0 <input id="slider-theta-projection" type="range"
+                min="0" max="360" step="1" value="0" disabled />
+                360
+            </div>
+
+            <div class="slider">
+                Kamera balandligi φ (<span id="phi-value">0</span>)
+                0 <input id="slider-phi" type="range"
+                min="0" max="360" step="1" value="0" disabled />
+                360
+            </div>
+
+            <div class="slider">
+                Ko‘rish burchagi FOV (<span id="fovy-value">60°</span>)
+                15 <input id="slider-fovy" type="range"
+                min="15" max="120" step="1" value="60" disabled />
+                120
+            </div>
+            <br>
+            <button id="reset-perspective" class="reset" disabled>Tiklash</button>
+        </div>
+
+        <div class="checkbox-container">
+            <div class="checkbox">
+                <label for="checkbox-gravity">Gravitatsiya (g)</label>
+                <input id="checkbox-gravity" type="checkbox" checked />
+            </div>
+
+            <div class="checkbox">
+                <label for="checkbox-friction">Ishqalanish</label>
+                <input id="checkbox-friction" type="checkbox" checked />
+            </div>
+
+            <div class="checkbox">
+                <label for="checkbox-force">Kuch vektori</label>
+                <input id="checkbox-force" type="checkbox" checked />
+            </div>
+
+            <div class="checkbox">
+                <label for="checkbox-trajectory">Trayektoriya</label>
+                <input id="checkbox-trajectory" type="checkbox" checked />
+            </div>
+
+            <div class="checkbox">
+                <label for="checkbox-perspective">3D Perspektiva</label>
+                <input id="checkbox-perspective" type="checkbox" />
+            </div>
+        </div>
+
+        <div class="select-container">
+            <div class="select">
+                <label for="shape-select">Jism shakli</label>
+                <select id="shape-select" size="3">
+                    <option value="SQUARE">Kub / Kvadrat</option>
+                    <option value="CIRCLE">Shar / Doira</option>
+                    <option value="LIMAS">Piramida</option>
+                </select>
+            </div>
+
+            <div class="select">
+                <label for="color-select">Jism rangi</label>
+                <select id="color-select" size="6">
+                    <option value="RED">Qizil</option>
+                    <option value="GREEN">Yashil</option>
+                    <option value="BLUE">Ko‘k</option>
+                    <option value="ORANGE">Zarg‘aldoq</option>
+                    <option value="PURPLE">Binafsha</option>
+                    <option value="YELLOW">Sariq</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+#version 300 es
+
+in  vec4 aPosition;
+in  vec4 aColor;
+out vec4 vColor;
+
+uniform vec4 uColor;
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+uniform float uTheta;
+
+void main()
+{
+    mat4 rotationMatrix = mat4(
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+    );
+
+    if (uTheta != -1.0) {
+        float angle = radians(-uTheta);
+        float s = sin(angle);
+        float c = cos(angle);
+
+        rotationMatrix = mat4(
+            c, -s, 0.0, 0.0,
+            s, c, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0
+        );
+    }
+
+    gl_Position = uProjectionMatrix * uModelViewMatrix * rotationMatrix * aPosition;
+
+    if (uColor == vec4(0.0, 0.0, 0.0, 0.0)) {
+        vColor = aColor;
+    } else {
+        vColor = uColor;
+    }
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+#version 300 es
+
+precision mediump float;
+
+in vec4 vColor;
+out vec4 fColor;
+
+void
+main()
+{
+    fColor = vColor;
+}
+</script>
+
+<script src="initShaders.js"></script>
+<script src="MVnew.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/Games/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EffectualL - Refraction Module</title>
+    <!-- Load D3.js for the Knowledge Graph -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <!-- Using Lucide for modern icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --dark-blue: #012c59;
+            --orange: #fc5206;
+            --orange-bg: #fff7ed;
+            --cyan: #0dcfb2;
+            --cyan-dark: #0490a1;
+            --orange-light: #faa630;
+            --white: #ffffff;
+            --bg: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--dark-blue);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Floating Bottom Navigation Dock */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 2000;
+        }
+
+        .nav-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--dark-blue);
+        }
+
+        .nav-btn i {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: var(--white);
+            color: var(--orange);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Label Tooltip */
+        .nav-label {
+            position: absolute;
+            bottom: 60px;
+            background: var(--dark-blue);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .nav-item:hover .nav-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        main { padding: 1rem; max-width: 1000px; margin: 0 auto; }
+        
+        .tab-content { display: none; animation: slideUp 0.4s ease-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            border-top: 5px solid var(--cyan);
+        }
+
+        /* Sim Controls optimized for mobile */
+        .sim-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .sim-btn {
+            padding: 8px 4px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .sim-btn.active {
+            background: var(--cyan);
+            color: white;
+            border-color: var(--cyan);
+        }
+
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* Graph Styles */
+        #graph-container { position: relative; width: 100%; height: 600px; }
+        #graph-svg {
+            width: 100%;
+            height: 100%;
+            background: #fafafa;
+            border-radius: 12px;
+            cursor: grab;
+        }
+
+        .node circle { stroke: #fff; stroke-width: 2px; transition: stroke-width 0.2s; }
+        .node:hover circle { stroke-width: 4px; stroke: var(--orange-light); }
+        .node text { font-size: 12px; font-weight: 600; pointer-events: none; fill: var(--dark-blue); }
+        .link { stroke: #cbd5e1; stroke-opacity: 0.6; stroke-width: 2px; }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(1, 44, 89, 0.95);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            pointer-events: none;
+            display: none;
+            max-width: 280px;
+            z-index: 2000;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            line-height: 1.5;
+        }
+
+        /* PREMIUM FLASHCARD STYLE */
+        .flashcard-wrapper {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .flashcard {
+            height: 300px;
+            perspective: 1000px;
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            border-radius: 24px;
+            border: 2px solid var(--cyan);
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .flashcard-back {
+            background: white;
+            transform: rotateY(180deg);
+        }
+
+        .fc-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+        }
+
+        .fc-content {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--dark-blue);
+        }
+
+        .fc-hint {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Quiz */
+        .quiz-container { max-width: 700px; margin: 0 auto; }
+        .option-btn {
+            display: block; width: 100%; padding: 18px; background: #f8fafc;
+            border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer;
+            text-align: left; transition: all 0.2s; margin-bottom: 12px;
+            font-size: 1rem; font-weight: 500;
+        }
+        .option-btn:hover { border-color: var(--cyan); background: #f0fdfa; transform: translateX(5px); }
+        .option-btn.correct { background: #dcfce7; border-color: #22c55e; color: #166534; }
+        .option-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .feedback { margin-top: 1.5rem; padding: 1.2rem; border-radius: 10px; display: none; font-weight: 600; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <main>
+        <!-- Simulation Tab -->
+        <section id="module" class="tab-content active">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 1.25rem;">Lab Simulation</h2>
+                    <a id="ext-link" href="https://effectuall-sims.netlify.app/simulations/optics_refraction_of_light" target="_blank" style="color: var(--cyan-dark); text-decoration: none; font-size: 0.8rem; font-weight: 700;">
+                        <i data-lucide="maximize" style="width:14px; vertical-align:middle;"></i> FULLSCREEN
+                    </a>
+                </div>
+
+                <div class="sim-selector">
+                    <button class="sim-btn active" onclick="changeSim('refraction', this)">Refraction</button>
+                    <button class="sim-btn" onclick="changeSim('tir', this)">T.I.R.</button>
+                    <button class="sim-btn" onclick="changeSim('depth', this)">Depth</button>
+                </div>
+
+                <div class="iframe-container">
+                    <iframe id="sim-frame" src="https://effectuall-sims.netlify.app/simulations/optics_refraction_of_light"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- Knowledge Graph Tab -->
+        <section id="graph" class="tab-content">
+            <div class="card">
+                <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Concept Map</h2>
+                <div id="graph-container">
+                    <svg id="graph-svg"></svg>
+                    <div id="tooltip" class="tooltip"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Flashcards Tab -->
+        <section id="flashcards" class="tab-content">
+             <div class="card">
+                <h2 style="font-size: 1.25rem; margin-bottom: 5rem;">Let's Revise</h2>
+            <div class="flashcard-wrapper">
+                <div class="flashcard" id="current-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flashcard-inner" id="card-inner-content">
+                        <!-- Content injected by JS -->
+                    </div>
+                </div>
+                <div class="flashcard-nav">
+                    <button class="nav-circle-btn" onclick="prevCard()"><i data-lucide="chevron-left"></i></button>
+                    <div class="fc-counter" id="fc-counter">1 / 3</div>
+                    <button class="nav-circle-btn" onclick="nextCard()"><i data-lucide="chevron-right"></i></button>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Quiz Tab -->
+        <section id="quiz" class="tab-content">
+            <div class="card">
+                <h2 style="font-size: 1.25rem; margin-bottom: 5rem;">Knowledge Check</h2>
+                <div id="quiz-body"></div>
+                <div id="quiz-feedback" style="margin-top:15px; padding:12px; border-radius:8px; display:none; text-align:center; font-weight:600;"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Dock -->
+    <nav class="bottom-nav">
+        <div class="nav-item">
+            <span class="nav-label">Refraction</span>
+            <button class="nav-btn active" onclick="showTab('module', this)">
+                <i data-lucide="compass"></i>
+            </button>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Graph</span>
+            <button class="nav-btn" onclick="showTab('graph', this)">
+                <i data-lucide="network"></i>
+            </button>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Flashcards</span>
+            <button class="nav-btn" onclick="showTab('flashcards', this)">
+                <i data-lucide="layers"></i>
+            </button>
+        </div>
+        <div class="nav-item">
+            <span class="nav-label">Quiz</span>
+            <button class="nav-btn" onclick="showTab('quiz', this)">
+                <i data-lucide="check-circle"></i>
+            </button>
+        </div>
+    </nav>
+    </main>
+
+    <script>
+         lucide.createIcons();
+
+        const simUrls = {
+            refraction: "https://effectuall-sims.netlify.app/simulations/optics_refraction_of_light",
+            tir: "https://effectuall-sims.netlify.app/simulations/optics_total_internal_reflection",
+            depth: "https://effectuall-sims.netlify.app/simulations/optics_apparent_depth"
+        };
+
+        function changeSim(type, btn) {
+            document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const url = simUrls[type];
+            document.getElementById('sim-frame').src = url;
+            document.getElementById('ext-link').href = url;
+        }
+
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(tabId === 'graph') initD3Graph();
+        }
+
+       const nodes = [
+            { id: 'Refraction', group: 1, desc: 'The bending of light as it passes from one medium to another due to a change in speed.' },
+            { id: "Snell's Law", group: 2, desc: 'The ratio of the sines of the angles of incidence and refraction is constant: $n_1 \\sin \\theta_1 = n_2 \\sin \\theta_2$.' },
+            { id: 'Refractive Index', group: 2, desc: 'A measure of how much light slows down in a medium. $n = c/v$.' },
+            { id: 'Optical Density', group: 2, desc: 'A property of a medium that indicates its ability to slow down light waves.' },
+            { id: 'Critical Angle', group: 3, desc: 'The angle of incidence for which the angle of refraction is 90 degrees.' },
+            { id: 'Total Internal Reflection', group: 3, desc: 'Occurs when light travels from a denser to a less dense medium at an angle greater than the critical angle.' },
+            { id: 'Normal Line', group: 4, desc: 'An imaginary line perpendicular to the surface at the point of incidence.' },
+            { id: 'Apparent Depth', group: 5, desc: 'The perceived depth of an object under water, appearing shallower than its real depth due to refraction.' },
+            { id: 'Angle of Incidence', group: 4, desc: 'The angle between the incident ray and the normal.' },
+            { id: 'Angle of Refraction', group: 4, desc: 'The angle between the refracted ray and the normal.' }
+        ];
+
+        const links = [
+            { source: 'Refraction', target: "Snell's Law", value: 1 },
+            { source: 'Refraction', target: 'Refractive Index', value: 1 },
+            { source: 'Refraction', target: 'Optical Density', value: 1 },
+            { source: 'Refractive Index', target: "Snell's Law", value: 1 },
+            { source: 'Refraction', target: 'Normal Line', value: 1 },
+            { source: 'Refraction', target: 'Critical Angle', value: 1 },
+            { source: 'Critical Angle', target: 'Total Internal Reflection', value: 1 },
+            { source: 'Refraction', target: 'Apparent Depth', value: 1 },
+            { source: 'Normal Line', target: 'Angle of Incidence', value: 1 },
+            { source: 'Normal Line', target: 'Angle of Refraction', value: 1 }
+        ];
+
+        
+
+        let graphInitialized = false;
+        function initD3Graph() {
+            if (graphInitialized) return;
+            graphInitialized = true;
+
+            const svg = d3.select("#graph-svg");
+            const tooltip = d3.select("#tooltip");
+            const container = document.getElementById('graph-container');
+            const width = container.clientWidth;
+            const height = 500;
+
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+                .force("charge", d3.forceManyBody().strength(-600))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            const link = svg.append("g")
+                .selectAll("line")
+                .data(links)
+                .enter().append("line")
+                .attr("class", "link");
+
+            const node = svg.append("g")
+                .selectAll("g")
+                .data(nodes)
+                .enter().append("g")
+                .attr("class", "node")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+                .on("mouseover", (event, d) => {
+                    tooltip.style("display", "block")
+                           .html(`<strong>${d.id}</strong><br/>${d.desc}`);
+                })
+                .on("mousemove", (event) => {
+                    const rect = container.getBoundingClientRect();
+                    tooltip.style("left", (event.clientX - rect.left + 15) + "px")
+                           .style("top", (event.clientY - rect.top + 15) + "px");
+                })
+                .on("mouseout", () => tooltip.style("display", "none"));
+
+            node.append("circle")
+                .attr("r", d => d.group === 1 ? 32 : 24)
+                .attr("fill", d => {
+                    if (d.group === 1) return "var(--dark-blue)";
+                    if (d.group === 2) return "var(--cyan)";
+                    if (d.group === 3) return "var(--orange)";
+                    return "var(--orange-light)";
+                });
+
+            node.append("text")
+                .attr("dy", 45)
+                .attr("text-anchor", "middle")
+                .text(d => d.id);
+
+            simulation.on("tick", () => {
+                link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+                node.attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+
+            function dragstarted(event, d) { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }
+            function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+            function dragended(event, d) { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }
+        }
+
+      const flashcards = [
+            { q: "What happens when light enters a denser medium?", a: "It slows down and bends towards the normal line." },
+            { q: "Define the Critical Angle.", a: "The angle of incidence that results in a 90° refracted angle." },
+            { q: "Under what conditions does T.I.R. occur?", a: "Light travels from denser to rarer medium and incident angle > critical angle." },
+            { q: "How is Refractive Index (n) calculated?", a: "n = Speed of light in vacuum / Speed of light in medium." },
+            { q: "What is Refraction?", a: "The bending of light as it passes from one medium to another of different optical density." },
+            { q: "Light moving: Air → Glass", a: "It slows down and bends TOWARDS the normal line." },
+            { q: "Light moving: Water → Air", a: "It speeds up and bends AWAY from the normal line." },
+            { q: "Total Internal Reflection Requirement", a: "1. Light travels from denser to less dense. 2. Angle of incidence > Critical angle." },
+            { q: "Refractive Index formula", a: "$n = c/v$ (Speed in vacuum / Speed in medium)" },
+            { q: "Apparent Depth", a: "The optical illusion where underwater objects look closer to the surface than they really are." }
+        ];
+        let currentIdx = 0;
+
+        function updateFlashcard() {
+            const card = flashcards[currentIdx];
+            const content = document.getElementById('card-inner-content');
+            document.getElementById('current-card').classList.remove('flipped');
+            
+            content.innerHTML = `
+                <div class="flashcard-front">
+                    <div class="fc-tag">Question</div>
+                    <div class="fc-content">${card.q}</div>
+                    <div class="fc-hint">Click card to see answer</div>
+                </div>
+                <div class="flashcard-back">
+                    <div class="fc-tag">Answer</div>
+                    <div class="fc-content">${card.a}</div>
+                </div>
+            `;
+            document.getElementById('fc-counter').innerText = `${currentIdx + 1} / ${flashcards.length}`;
+        }
+
+        function nextCard() { currentIdx = (currentIdx + 1) % flashcards.length; updateFlashcard(); }
+        function prevCard() { currentIdx = (currentIdx - 1 + flashcards.length) % flashcards.length; updateFlashcard(); }
+
+
+       const questions = [
+            { q: "When light travels from air into a glass block, it:", opts: ["Speeds up", "Bends away from the normal", "Bends towards the normal", "Keeps the same speed"], correct: 2 },
+            { q: "Total Internal Reflection can only occur when light travels from:", opts: ["Less dense to more dense", "More dense to less dense", "Air to Water", "Vacuum to Glass"], correct: 1 },
+            { q: "The ratio $n = \\sin i / \\sin r$ is known as:", opts: ["Newton's Law", "Snell's Law", "Einstein's Equation", "Critical Angle Law"], correct: 1 }
+        ];
+        let curQ = 0;
+
+        function renderQuiz() {
+            const body = document.getElementById('quiz-body');
+            const q = questions[curQ];
+             body.innerHTML = `
+                <p style="font-weight: 600; margin-bottom: 20px;">Question ${curQ + 1} of ${questions.length}:</p>
+                <p style="font-size: 1.1rem; margin-bottom: 25px;">${q.q}</p>
+                <div class="options">${q.opts.map((o,i) => `<button class="option-btn" onclick="checkQ(${i})">${o}</button>`).join('')}</div>`;
+        }
+
+        function checkQ(idx) {
+            const fb = document.getElementById('quiz-feedback');
+            fb.style.display = 'block';
+            if(idx === questions[curQ].correct) {
+                fb.innerHTML = "✅ Correct!"; fb.style.background = "#dcfce7"; fb.style.color = "#166534";
+            } else {
+                fb.innerHTML = "❌ Incorrect. Light bends towards the normal in denser media."; fb.style.background = "#fee2e2"; fb.style.color = "#991b1b";
+            }
+            setTimeout(() => { curQ = (curQ + 1) % questions.length; renderQuiz(); fb.style.display='none'; }, 2000);
+        }
+
+        window.onload = () => { updateFlashcard(); renderQuiz(); };
+    </script>
+</body>
+</html>

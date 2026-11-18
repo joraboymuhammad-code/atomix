@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+    <meta charset="utf-8">
+    <title>Image Formation with Converging Lens</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="shortcut icon" href="../files/favicon_white.ico" media="(prefers-color-scheme: dark)" />
+    <link rel="shortcut icon" href="../files/favicon.ico" media="(prefers-color-scheme: light)" />
+    <link rel="stylesheet" type="text/css" href="../css/style-page.css">
+    <!-- Google tag (gtag.js) -->
+
+<script>
+  
+</script>    <meta name="google-site-verification" content="mz0TRB59UNqdTxhwzmXmGdgVPh8pB4YqjuUr-aWNGIY">
+
+</head>
+
+<body>
+
+    <div id="container">
+        <div id="topmenu">
+            <div>
+                Image Formation with Converging Lens</div>
+
+        </div>
+
+        <div style="display: none;" id="sidemenu">
+            <a> Lens Formula: </a><br>           
+                    <div class="fraction">
+                        <span class="fup">1</span>
+                        <span class="bar">/</span>
+                        <span class="fdn">f</span>
+                    </div>
+                    <a>=</a>
+                    <div class="fraction">
+                        <span class="fup">1</span>
+                        <span class="bar">/</span>
+                        <span class="fdn">v</span>
+                    </div>
+                    <a>-</a>
+                    <div class="fraction">
+                        <span class="fup">1</span>
+                        <span class="bar">/</span>
+                        <span class="fdn">u</span>
+                    </div>
+            <br>
+            &nbsp; &nbsp; &nbsp; &nbsp; or 
+            <br>
+                <div class="fraction">
+                    <span class="fup">1</span>
+                    <span class="bar">/</span>
+                    <span class="fdn">v</span>
+                </div>
+                <a>=</a>
+                <div class="fraction">
+                    <span class="fup">1</span>
+                    <span class="bar">/</span>
+                    <span class="fdn">f</span>
+                </div>
+                <a>+</a>
+                <div class="fraction">
+                    <span class="fup">1</span>
+                    <span class="bar">/</span>
+                    <span class="fdn">u</span>
+                </div>
+                <br>
+                magnification:
+                <br> 
+                <div class="fraction">
+                    m =
+
+                </div>
+                <div class="fraction">
+                    <span class="fup">v</span>
+                    <span class="bar">/</span>
+                    <span class="fdn">u</span>
+                </div>
+        </div>
+
+    <div id="menu">
+           
+                <a id="message-el"> Focal length, (f) = <b id="fmessage-el">5 </b> cm <br>
+                    Object Distance, (u) = <b id="umessage-el"> -10 </b> cm<br>
+                    Image Distance, (v) = <b style="color:red;" id="vmessage-el"> 10 </b> cm <br>
+                </a>
+            <!-- calculation values to be updated here                 -->
+            <a>
+                <div style="color:red;" class="fraction">
+                    <span class="fup">1</span>
+                    <span class="bar">/</span>
+                    <span id="v-el" class="fdn">10</span>
+                </div>
+                <a>=</a>
+                <div class="fraction">
+                    <span class="fup">1</span>
+                    <span class="bar">/</span>
+                    <span id="f-el" class="fdn">5</span>
+                </div>
+
+                <a>+</a>
+                <div class="fraction">
+                    <span class="fup">1</span>
+                    <span class="bar">/</span>
+                    <span id="u-el" class="fdn">-10</span>
+                </div>
+                <a>&</a>
+                <a> &nbsp;</a>
+                <a>m =</a>
+                <div class="fraction">
+                    <span style="color:red;" id="mv-el" class="fup">10</span>
+                    <span class="bar">/</span>
+                    <span id="mu-el" class="fdn">-10</span>
+                </div>
+                <a> &nbsp; =</a>
+                <a id="m-el">-1</a>
+                <br>
+                <button onClick="displayOn()">FORMULA</button> 
+                <button id="theorybutton" onClick="theorySite()">THEORY</button>
+              
+            </div>
+        
+    </div>
+    <script>
+        let sideMenu = document.getElementById('sidemenu');
+        let theoryButton = document.getElementById('theorybutton');
+        function displayOn() {
+           
+            if (sideMenu.style.display === 'block') {
+                sideMenu.style.display = 'none';
+            } else {
+                sideMenu.style.display = 'block';
+            }
+        };
+
+        function theorySite() {
+
+            window.open("../Theory/Optics/Optics_Converging_Lens.html", "_self")
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from '../build/three.module.js';
+        import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
+        import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from '../jsm/renderers/CSS2DRenderer.js';
+        import Stats from '../jsm/libs/stats.module.js';
+        import g, { GUI } from '../jsm/libs/lil-gui.module.min.js';
+
+        let scene, camera, renderer, controls, labelRenderer;
+        let incidentRay1, incidentRay2, incidentRay3;
+        let incidentArrow1, incidentArrow2, incidentArrow3;
+        let reflectedRay1, reflectedRay2, reflectedRay3;
+        let reflectedArrow1, reflectedArrow2, reflectedArrow3;
+        let rayLine, rayArrow, eye;
+        let object, objectTip, image, imageTip, imagePoint, pole, pointP1, pointA, pointP2, opticalAxis;
+        let width = window.innerWidth, height = window.innerHeight;
+        let objLabel, imgLabel, f1Point, f1Label, f2Point, f2Label, opticalLabel, lensLabel;
+        let v, f, u, m, heightV;
+
+        let params = {
+            f: 5,
+            h: 3,
+            u: -10,
+            m: -1,
+            v: 10
+        }
+        let uPos = [-1000 - params.f, -params.f - 2 * (params.f), -params.f * 2, -params.f * 2 + 2, -params.f * 2 + 3.5, -params.f + .01, -(params.f) + 1.5, -(params.f) / 2]
+
+        let fmessageEl = document.getElementById('fmessage-el');
+        let umessageEl = document.getElementById('umessage-el');
+        let vmessageEl = document.getElementById('vmessage-el');
+        let vEl = document.getElementById('v-el');
+        let uEl = document.getElementById('u-el');
+        let mvEl = document.getElementById('mv-el');
+        let muEl = document.getElementById('mu-el');
+        let mEl = document.getElementById('m-el');
+        let fEl = document.getElementById('f-el');
+
+        function createCamera() {
+            // Create a Camera
+            const fov = 70; // AKA Field of View
+            const aspect = width / height;
+            const near = 0.1; // the near clipping plane
+            const far = 1000; // the far clipping plane
+
+            camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+            camera.position.set(-35, 0, 0);
+            // camera.position.set(-10, 3, 40);
+        }
+
+        function createLights() {
+            // Create a directional light
+            const ambientLight = new THREE.HemisphereLight(0xddeeff, 0x202020, 4);
+            const mainLight = new THREE.DirectionalLight(0xffffff, 3.0);
+            scene.add(ambientLight);
+
+            // move the light back and up a bit
+            mainLight.position.set(10, 10, 10);
+
+            // remember to add the light to the scene
+            scene.add(ambientLight, mainLight);
+        }
+        //focal length= 10cm
+        //object position= 10cm
+        //(1/f) = (1/v) -(1/u)
+        function addObject(height) {
+            let tube = new THREE.Mesh(
+                new THREE.CylinderGeometry(.1, .1, height).translate(0, height / 2, 0),
+                new THREE.MeshBasicMaterial({ color: 'black' })
+            );
+
+            let cone = new THREE.Mesh(
+                new THREE.ConeGeometry(.5, 1, 6).translate(0, height + 0.5, 0),
+                new THREE.MeshBasicMaterial({ color: 'black' })
+            );
+
+
+            return { tube, cone }
+        }
+
+        //ray diagram constructor
+        function addRays(length) {
+            let rayGeometry = new THREE.CylinderBufferGeometry(.05, .05, length).translate(0, length / 2, 0);
+            rayGeometry.rotateX(Math.PI / 2);
+
+            rayLine = new THREE.Mesh(rayGeometry, new THREE.MeshBasicMaterial({ color: 'blue' }));
+            let coneGeometry = new THREE.ConeGeometry(.3, .5, 6).translate(0, length / 2, 0);
+            coneGeometry.rotateX(Math.PI / 2);
+            rayArrow = new THREE.Mesh(coneGeometry, new THREE.MeshBasicMaterial({ color: 'red' }));
+
+            return { rayLine, rayArrow }
+        }
+
+        function adjustRays(vector, length) {
+            vector.geometry.dispose();
+            let newrayGeometry = new THREE.CylinderBufferGeometry(.05, .05, length).translate(0, length / 2, 0);
+            newrayGeometry.rotateX(Math.PI / 2);
+            vector.geometry = newrayGeometry;
+            // vector.position.set(0,height,0);
+
+        }
+
+        function changeHeight(vector, height) {
+            vector.geometry.dispose();
+            let newheightGeometry = new THREE.CylinderGeometry(.1, .1, height).translate(0, height / 2, 0);
+            vector.geometry = newheightGeometry;
+            // vector.position.set(0,height,0);
+
+        }
+
+        function adjustCones(vector, height) {
+            vector.geometry.dispose();
+            let newconeGeometry = new THREE.ConeGeometry(.5, 1, 6).translate(0, height + 0.5, 0);
+            vector.geometry = newconeGeometry;
+        }
+
+        function lensFormula(f, heightU, u) {
+            // console.log(heightU,pointA, pointP1)
+            v = (u * f) / (u + f);
+
+            m = v / u;
+            heightV = m * heightU;
+            changeHeight(object, heightU);
+            adjustCones(object, heightU)
+            object.position.z = u;
+            changeHeight(image, heightU);
+            adjustCones(image, heightU);
+            image.position.z = v;
+            image.scale.set(m, m, m);
+
+            pointP1 = new THREE.Vector3(0, heightU, 0);
+            pointA = new THREE.Vector3(u, heightU, 0);
+            pointP2 = new THREE.Vector3(0, heightV, 0);
+            imagePoint.position.set(0, heightV, v);
+            reflectedRay3.position.copy(pointP2);
+
+            incidentRay1.position.set(0, heightU, 0);
+            incidentRay2.position.set(0, heightU, 0);
+            incidentRay3.position.set(0, heightU, 0);
+            adjustRays(incidentRay1, Math.abs(u));
+            adjustRays(incidentRay1, pointA.distanceTo(pointP1));
+            adjustRays(incidentRay2, pointA.distanceTo(pole.position));
+            adjustRays(incidentRay3, pointA.distanceTo(pointP2));
+            incidentRay1.lookAt(reflectedRay1.position);
+            incidentRay2.lookAt(pole.position);
+            incidentRay3.lookAt(reflectedRay3.position);
+
+            adjustRays(reflectedRay1, pointP1.distanceTo(imagePoint.position));
+            adjustRays(reflectedRay2, pole.position.distanceTo(imagePoint.position));
+            adjustRays(reflectedRay3, pointP2.distanceTo(imagePoint.position));
+            reflectedRay1.position.copy(pointP1);
+            reflectedRay2.position.copy(pole.position);
+            reflectedRay3.position.copy(pointP2);
+
+            reflectedRay1.lookAt(imagePoint.position);
+            reflectedRay2.lookAt(imagePoint.position);
+            reflectedRay3.lookAt(imagePoint.position);
+
+            f1Point.position.z = -params.f;
+            f2Point.position.z = params.f;
+        }
+
+        function createRenderer() {
+            // create the renderer
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.alpha = true;
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+
+            labelRenderer = new CSS2DRenderer();
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+            labelRenderer.domElement.style.pointerEvents = 'none';
+            container.appendChild(labelRenderer.domElement);
+        }
+
+        function init() {
+            scene = new THREE.Scene;
+            scene.background = new THREE.Color(0xbfd1e5);
+
+            f = params.f;
+            let heightU = params.h;
+            u = params.u;
+            v = (u * f) / (u + f);
+            m = v / u;
+            heightV = m * heightU;
+
+            createCamera();
+            createLights();
+            createRenderer();
+
+            const lens = new THREE.Mesh(
+                new THREE.SphereGeometry(15, 12, 12),
+                new THREE.MeshBasicMaterial({ color: 'lightgreen', transparent: true, opacity: .8 })
+            );
+            lens.scale.set(.7, .7, .06);
+            scene.add(lens);
+
+            pole = initPoint({
+                vertices: new Float32Array([0, 0, 0]),
+                material: new THREE.PointsMaterial({ color: 0x8888FF, size: .01 }),
+                x: 0,
+                y: 0,
+                z: 0
+            });
+            scene.add(pole);
+
+            pointP1 = new THREE.Vector3(0, heightU, 0);
+            pointA = new THREE.Vector3(u, heightU, 0);
+            imagePoint = initPoint({
+                vertices: new Float32Array([0, 0, 0]),
+                material: new THREE.PointsMaterial({ color: 0x88FF88, size: .01 }),
+                x: 0,
+                y: heightV,
+                z: v
+            });
+            scene.add(imagePoint);
+            imagePoint.position.set(0, heightV, v);
+
+            pointP2 = new THREE.Vector3(0, heightV, 0);
+            //Add object
+            object = addObject(heightU).tube;
+            objectTip = addObject(heightU).cone;
+            object.position.z = u;
+            object.add(objectTip)
+
+
+            //place the image at the calculated point with proper magnification
+            image = addObject(heightU).tube;
+            imageTip = addObject(heightU).cone;
+            image.position.z = v;
+            image.scale.set(m, m, m);
+            image.add(imageTip)
+            scene.add(object, image);
+
+            //add optical axis
+            opticalAxis = addRays(80).rayLine;
+            opticalAxis.material = new THREE.MeshBasicMaterial({ color: 'black' });
+            opticalAxis.position.z = -40;
+            scene.add(opticalAxis)
+            // console.log(object, image)
+
+            incidentRay1 = addRays(Math.abs(u)).rayLine;
+            incidentRay2 = addRays(pointA.distanceTo(pole.position)).rayLine;
+            incidentRay3 = addRays(pointA.distanceTo(pointP2)).rayLine;
+            incidentArrow1 = addRays(Math.abs(u)).rayArrow;
+            incidentArrow2 = addRays(pointA.distanceTo(pole.position)).rayArrow;
+            incidentArrow3 = addRays(pointA.distanceTo(pointP2)).rayArrow;
+            incidentRay1.position.set(0, heightU, 0);
+            incidentRay2.position.set(0, heightU, 0);
+            incidentRay3.position.set(0, heightU, 0);
+            incidentRay1.add(incidentArrow1);
+            incidentRay2.add(incidentArrow2);
+            incidentRay3.add(incidentArrow3)
+            object.add(incidentRay1, incidentRay2, incidentRay3);
+
+            reflectedRay1 = addRays(pointP1.distanceTo(imagePoint.position)).rayLine;
+            reflectedArrow1 = addRays(pointP1.distanceTo(imagePoint.position)).rayArrow;
+            reflectedRay1.position.copy(pointP1);
+
+            scene.add(reflectedRay1);
+            reflectedRay1.add(reflectedArrow1);
+            reflectedRay2 = addRays(pole.position.distanceTo(imagePoint.position)).rayLine;
+            reflectedArrow2 = addRays(pole.position.distanceTo(imagePoint.position)).rayArrow;
+            reflectedRay2.position.copy(pole.position);
+
+            scene.add(reflectedRay2);
+            reflectedRay2.add(reflectedArrow2);
+            reflectedRay3 = addRays(pointP2.distanceTo(imagePoint.position)).rayLine;
+            reflectedArrow3 = addRays(pointP2.distanceTo(imagePoint.position)).rayArrow;
+            reflectedRay3.position.copy(pointP2);
+
+            scene.add(reflectedRay3);
+            reflectedRay3.add(reflectedArrow3);
+            incidentRay1.lookAt(reflectedRay1.position);
+            incidentRay2.lookAt(pole.position);
+            incidentRay3.lookAt(reflectedRay3.position);
+            reflectedRay1.lookAt(imagePoint.position);
+            reflectedRay2.lookAt(imagePoint.position);
+            reflectedRay3.lookAt(imagePoint.position);
+
+            const scaleHorizontal = new THREE.GridHelper(70, 70);
+            scene.add(scaleHorizontal);
+            // const scaleVertical =new THREE.GridHelper(70, 70);
+            // scaleVertical.rotation.z = 1.57;   
+            // scene.add(scaleVertical);
+
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enablePan = true;
+            controls.enableZoom = true;
+            controls.target.set(5, 5, 0);
+
+            document.body.appendChild(renderer.domElement);
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+
+        function showLabels() {
+            //labels
+            objLabel = addLabels('Object');
+            imgLabel = addLabels('Real Image');
+            objLabel.position.y = params.h + params.h / 2;
+            imgLabel.position.y = -m * params.h;
+            object.add(objLabel);
+            image.add(imgLabel);
+
+            f1Label = addLabels('F1');
+            f1Point = initPoint({
+                vertices: new Float32Array([0, 0, 0]),
+                material: new THREE.PointsMaterial({ color: 0xFF8888, size: 1 }),
+                x: 0,
+                y: 0,
+                z: 0
+            });
+            f2Label = addLabels('F2');
+            f2Point = initPoint({
+                vertices: new Float32Array([0, 0, 0]),
+                material: new THREE.PointsMaterial({ color: 0xFF8888, size: 1 }),
+                x: 0,
+                y: 0,
+                z: 0
+            });
+            scene.add(f1Point, f2Point);
+            f1Point.position.z = -params.f;
+            f1Point.add(f1Label);
+            f2Point.position.z = params.f;
+            f2Point.add(f2Label);
+
+            opticalLabel = addLabels('Optical Axis');
+            opticalLabel.position.z = 20;
+            opticalLabel.position.y = -2;
+            opticalAxis.add(opticalLabel);
+
+            lensLabel = addLabels('Convex Lens');
+            lensLabel.position.y = 8;
+            scene.add(lensLabel);
+        }
+
+        function addLabels(name, col) {
+
+            let text = document.createElement('div');
+            text.className = 'label';
+            text.textContent = name;
+            text.style.color = col;
+
+            let label = new CSS2DObject(text);
+            label.position.z = -2;
+            label.position.y = 1;
+
+            return label
+        }
+
+        window.onload = function () {
+
+            init();
+            controls.update()
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.rotateSpeed = 0.1;
+            animate();
+            guiControls();
+            showLabels();
+            eyeShow();
+            // scene.add(new THREE.AmbientLight(0xffffff));  
+        }
+
+        function initPoint(data) {
+            let pointGeometry = new THREE.BufferGeometry();
+            pointGeometry.setAttribute('position', new THREE.BufferAttribute(data.vertices, 3));
+            let pointMaterial = data.material;
+            let point = new THREE.Points(pointGeometry, pointMaterial);
+
+            point.position.x = data.x;
+            point.position.y = data.y;
+            point.position.z = data.z;
+            return point;
+        }
+
+        function render() {
+
+            renderer.setSize(innerWidth, innerHeight);
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            render();
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            render();
+
+        }
+
+        function guiControls() {
+            // dat.GUI
+
+            const gui = new GUI({ width: 250 });
+
+            // let lensFolder = gui.addFolder("Lens Focal Length");
+            gui.add(params, 'f', 2, 50, 1).name('f (in cm)').onChange((value) => {
+
+                params.f = value;
+                let a = ((params.u * params.f) / (params.u + params.f)).toFixed(2);
+                params.v = a;
+                let b = (a / params.u).toFixed(2);
+                params.m = b;
+                changeElements(a, b, value, params.u)
+            });
+            // , Object height(O.H) & Position(u)
+            // let formulaFolder = gui.addFolder("Adjust Object height & Distance ");
+            gui.add(params, 'h', .5, 5, .1).name('ho (in cm)').onChange((value) => {
+
+                params.h = value;
+                changeElements(params.v, params.m, params.f, params.u)
+                console.log(params.m)
+                // objLabel.position.y = value + value/2;
+                // imgLabel.position.y = -params.m*value ;
+            });
+
+            gui.add(object.position, 'z', -100, -1, 1).name('u (in cm)').onChange((value) => {
+                params.u = value;
+                let a = ((value * params.f) / (value + params.f)).toFixed(2);
+                let b = (a / value).toFixed(2);
+                params.v = a;
+                params.m = b;
+                changeElements(a, b, params.f, value);
+            });
+            let fixedFolder = gui.addFolder("Fixed 'u' values for focal length, f = 5 cm");
+            fixedFolder.add(object.position, 'z', uPos).name('u (in cm)').onChange((value) => {
+                params.u = value;
+
+                let a = ((value * params.f) / (value + params.f)).toFixed(2);
+                let b = (a / value).toFixed(2);
+                params.v = a;
+                params.m = b;
+                changeElements(a, b, params.f, value);
+                params.f = 5;
+                params.h = 3;
+
+            });
+
+        }
+
+        function changeElements(a, b, c, d) {
+            lensFormula(c, params.h, d)
+            changeHeight(object, params.h)
+            changeHeight(image, params.h)
+            adjustCones(objectTip, params.h)
+            adjustCones(imageTip, params.h)
+            fEl.innerHTML = c;
+            uEl.innerHTML = d;
+            vEl.innerHTML = a;
+            muEl.innerHTML = d;
+            mvEl.innerHTML = a;
+            mEl.innerHTML = b;
+            fmessageEl.innerHTML = c;
+            vmessageEl.innerHTML = a;
+            umessageEl.innerHTML = d;
+            if (Math.abs(params.u) < params.f) {
+                image.remove(imgLabel);
+                imgLabel = addLabels('Virtual Image');
+                image.add(imgLabel);
+                incidentArrow1.visible = false;
+                incidentArrow2.visible = false;
+                incidentArrow3.visible = false;
+                reflectedArrow1.visible = false;
+                reflectedArrow2.visible = false;
+                reflectedArrow3.visible = false;
+                incidentRay3.visible = false;
+                reflectedRay3.visible = false;
+                eye.visible = true;
+                let newMaterial = new THREE.MeshBasicMaterial({ color: 'green' });
+                reflectedRay1.material = newMaterial;
+                reflectedRay2.material = newMaterial;
+                reflectedRay3.material = newMaterial;
+            } else if (params.f < 4) {
+                console.log("short  f")
+                reflectedArrow1.visible = false;
+                reflectedArrow2.visible = false;
+                reflectedArrow3.visible = false;
+            } else {
+                image.remove(imgLabel);
+                imgLabel = addLabels('Real Image');
+                image.add(imgLabel);
+                eye.visible = false;
+                let newMaterial = new THREE.MeshBasicMaterial({ color: 'blue' });
+                reflectedRay1.material = newMaterial;
+                reflectedRay2.material = newMaterial;
+                reflectedRay3.material = newMaterial;
+                incidentArrow1.visible = true;
+                incidentArrow2.visible = true;
+                incidentArrow3.visible = true;
+                reflectedArrow1.visible = true;
+                reflectedArrow2.visible = true;
+                reflectedArrow3.visible = true;
+                incidentRay3.visible = true;
+                reflectedRay3.visible = true;
+                console.log("object distance greater than f")
+            }
+        }
+
+
+        function eyeShow() {
+
+            const map1 = new THREE.TextureLoader().load('./assets/img/eyeIconR.png');
+            const material1 = new THREE.SpriteMaterial({ map: map1, color: 0xffffff });
+
+            eye = new THREE.Sprite(material1);
+            eye.scale.set(5, 5, 5);
+            eye.position.set(0, 2, 7);
+
+            scene.add(eye);
+            eye.visible = false;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <base href="https://effectuall.github.io/Simulations/" />
+  <style id="atomix-sim-theme">/* Atomix Translucent Neon Theme for Embedded Open-Source Simulations */
+:root {
+  --atomix-bg: #060913;
+  --atomix-glass: rgba(10, 16, 34, 0.78);
+  --atomix-glass-strong: rgba(8, 13, 28, 0.9);
+  --atomix-border: rgba(56, 189, 248, 0.28);
+  --atomix-cyan: #38bdf8;
+  --atomix-indigo: #818cf8;
+  --atomix-emerald: #34d399;
+  --atomix-text: #e2e8f0;
+  --atomix-muted: #94a3b8;
+}
+
+html, body {
+  background-color: var(--atomix-bg) !important;
+  color: var(--atomix-text) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+#topmenu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-cyan) !important;
+  border-bottom: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+  letter-spacing: 0.04em !important;
+  font-weight: 600 !important;
+}
+
+#sidemenu, #caltable, #Vtable, .floating-panel {
+  background: var(--atomix-glass) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+#sidemenu table, #caltable, #Vtable {
+  border-collapse: collapse !important;
+  color: var(--atomix-text) !important;
+}
+
+#sidemenu td, #caltable td, #Vtable td {
+  color: var(--atomix-text) !important;
+  border-color: rgba(148, 163, 184, 0.16) !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+#menu {
+  background: var(--atomix-glass-strong) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  color: var(--atomix-text) !important;
+  border-top: 1px solid var(--atomix-border) !important;
+  box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.5) !important;
+}
+
+#menu label, #menu a, #message-el {
+  color: var(--atomix-text) !important;
+}
+
+#menu button, #sidemenu button, .atomix-btn {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.25)) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+}
+
+#menu button:hover, #sidemenu button:hover, .atomix-btn:hover {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.38), rgba(99, 102, 241, 0.42)) !important;
+  border-color: var(--atomix-cyan) !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--atomix-cyan) !important;
+}
+
+select, input[type="number"], input[type="text"] {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: var(--atomix-text) !important;
+  border: 1px solid var(--atomix-border) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+}
+
+/* lil-gui & dat.gui translucent neon styling */
+.lil-gui, .dg.ac {
+  --background-color: rgba(8, 13, 28, 0.86) !important;
+  --text-color: #e2e8f0 !important;
+  --title-background-color: rgba(15, 23, 42, 0.94) !important;
+  --title-text-color: #38bdf8 !important;
+  --widget-color: rgba(30, 41, 59, 0.9) !important;
+  --hover-color: rgba(56, 189, 248, 0.22) !important;
+  --focus-color: rgba(56, 189, 248, 0.32) !important;
+  --number-color: #34d399 !important;
+  --string-color: #38bdf8 !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+.lil-gui.root {
+  margin-top: 46px !important;
+}
+
+/* Custom Atomix badge inside iframe */
+.atomix-iframe-badge {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  z-index: 9999;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(6, 10, 22, 0.82);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+</style>
+  <script id="atomix-sim-bridge">/* Atomix Real-Time Uzbek Localization & Bridge for Open-Source Simulations */
+(function () {
+  if (window.__ATOMIX_BRIDGE_ACTIVE__) return;
+  window.__ATOMIX_BRIDGE_ACTIVE__ = true;
+
+  // Redirect Theory buttons back to Atomix Tab 1 instead of external English pages
+  window.theorySite = function () {
+    try {
+      window.parent.postMessage({ type: 'atomix-open-tab', tab: 'theory' }, '*');
+    } catch (_) {}
+  };
+
+  const PHRASES = [
+    // Longer phrases first
+    ['Adjust launch height, angle and velocity of the projectile, to visualise the trajectory.', 'Trayektoriyani ko‘rish uchun otish balandligi, burchagi va boshlang‘ich tezligini sozlang.'],
+    ['Three Point Charges at Triangle Corners', 'Uchburchak uchlaridagi uchta nuqtaviy zaryad'],
+    ['Three Point Charges in a Line', 'To‘g‘ri chiziqdagi uchta nuqtaviy zaryad'],
+    ['Conservation of Angular Momentum', 'Impuls momentining saqlanish qonuni'],
+    ['Conservation of Momentum', 'Impulsning saqlanish qonuni'],
+    ['Force on a Current Carrying Conductor', 'Tokli o‘tkazgichga ta’sir etuvchi Amper kuchi'],
+    ['Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch'],
+    ['Close Up Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch (yaqin ko‘rinish)'],
+    ['Understanding Force on a Current Carrying Wire', 'Tokli o‘tkazgichga ta’sir etuvchi kuch tahlili'],
+    ['Magnetic Effect due to Current', 'Tokning magnit maydoni'],
+    ['Young\'s Double Slit Experiment', 'Yungning ikki tirqishli interferensiya tajribasi'],
+    ['Total Internal Reflection', 'To‘la ichki qaytish hodisasi'],
+    ['Electromagnetic Induction', 'Elektromagnit induksiya'],
+    ['Factors Effecting Capacitance', 'Kondensator sig‘imiga ta’sir etuvchi omillar'],
+    ['Understanding Capacitance', 'Elektr sig‘imi tushunchasi'],
+    ['Understanding Inductance', 'Induktivlik tushunchasi'],
+    ['Understanding Lorentz Force', 'Lorens kuchini o‘rganish'],
+    ['Cathode Rays The Electrons', 'Katod nurlari va elektronlar'],
+    ['Kinetic Theory of Gases', 'Gazlarning molekulyar-kinetik nazariyasi'],
+    ['Ideal Gas Equation', 'Ideal gaz holat tenglamasi (Mendeleyev-Klapeyron)'],
+    ['Astronomical Telescope', 'Astronomik teleskop'],
+    ['Compound Microscope', 'Murakkab mikroskop'],
+    ['Photoelectric Effect', 'Fotoeffekt hodisasi'],
+    ['Simple Harmonic Motion', 'Garmonik tebranma harakat'],
+    ['Damped Harmonic Motion', 'So‘nuvchi tebranishlar'],
+    ['Gravitational Force', 'Gravitatsion o‘zaro ta’sir kuchi'],
+    ['Law of Gravitation', 'Butun olam tortishish qonuni'],
+    ['Projectile Motion', 'Burchak ostida otilgan jism harakati'],
+    ['Circular Motion', 'Aylana bo‘ylab harakat'],
+    ['Angular Momentum', 'Impuls momenti'],
+    ['Precession Motion', 'Presessiya harakati'],
+    ['Simple Pendulum', 'Matematik mayatnik'],
+    ['Periodic Motion', 'Davriy harakat'],
+    ['Banking on a Road', 'Burilish yo‘lining qiyaligi'],
+    ['Motion in a Plane', 'Tekislikdagi harakat'],
+    ['Motion in straight line', 'To‘g‘ri chiziqli harakat'],
+    ['Motion in a Straight Line', 'To‘g‘ri chiziqli harakat'],
+    ['Vector Algebra', 'Vektorlar algebrasi'],
+    ['Vector Display', 'Vektorlar tasviri'],
+    ['Spring Force', 'Elastiklik kuchi (Guk qonuni)'],
+    ['Buoyant Force', 'Arximed kuchi (ko‘tarish kuchi)'],
+    ['Torricellis Law', 'Torrichelli tajribasi va qonuni'],
+    ['Torricelli\'s Law', 'Torrichelli tajribasi va qonuni'],
+    ['Pascal\'s Law', 'Paskal qonuni'],
+    ['Boyle\'s Law', 'Boyl-Mariott qonuni'],
+    ['Charle\'s Law', 'Gey-Lyussak / Sharl qonuni'],
+    ['Charles\'s Law', 'Sharl / Gey-Lyussak qonuni'],
+    ['Hot Air Balloon', 'Issiq havo shari (Arximed kuchi)'],
+    ['Coulomb\'s Law', 'Kulon qonuni'],
+    ['The Electric Field', 'Elektr maydoni'],
+    ['Electric Field', 'Elektr maydon kuchlanganligi'],
+    ['LC Oscillator', 'Tebranish konturi (LC)'],
+    ['Fleming\'s Thumb Rule', 'O‘ng va chap qo‘l qoidasi'],
+    ['Motional EMF', 'Harakatdagi o‘tkazgichda EYuK'],
+    ['Hall Effect', 'Xoll effekti'],
+    ['Converging Lens', 'Yig‘uvchi linza'],
+    ['Diverging Lens', 'Sochuvchi linza'],
+    ['Converging Mirror', 'Botik sferik ko‘zgu'],
+    ['Diverging Mirror', 'Qavariq sferik ko‘zgu'],
+    ['Refraction of Light', 'Yorug‘likning sinishi (Snell qonuni)'],
+    ['Reflection of Light', 'Yorug‘likning qaytishi'],
+    ['Apparent depth', 'Ko‘rinma chuqurlik'],
+    ['Apparent Depth', 'Ko‘rinma chuqurlik'],
+    ['Light as Rays and Waves', 'Yorug‘lik: nurlar va to‘lqinlar'],
+    ['Understanding Waves', 'To‘lqinlarni o‘rganish'],
+    ['Hydrogen Atom', 'Vodorod atomi'],
+    ['The Bohr Atom', 'Bor atom modeli'],
+    ['Carnot Cycle Simulation', 'Karno sikli 3D simulyatsiyasi'],
+    ['Launch Height', 'Otish balandligi'],
+    ['Launch Velocity', 'Boshlang‘ich tezlik'],
+    ['Launch Angle', 'Otish burchagi'],
+    ['Maximum Height', 'Maksimal ko‘tarilish balandligi'],
+    ['Maximum Range', 'Maksimal uchish uzoqligi'],
+    ['Time of Flight', 'Uchish vaqti'],
+    ['Initial Velocity', 'Boshlang‘ich tezlik'],
+    ['Final Velocity', 'Oxirgi tezlik'],
+    ['Angular Velocity', 'Burchak tezlik'],
+    ['Linear Velocity', 'Chiziqli tezlik'],
+    ['Centripetal Acceleration', 'Markazga intilma tezlanish'],
+    ['Centripetal Force', 'Markazga intilma kuch'],
+    ['Moment of Inertia', 'Inersiya momenti'],
+    ['Kinetic Energy', 'Kinetik energiya'],
+    ['Potential Energy', 'Potensial energiya'],
+    ['Total Energy', 'To‘la energiya'],
+    ['Mechanical Energy', 'Mexanik energiya'],
+    ['Spring Constant', 'Prujina bikrligi (k)'],
+    ['Surface Tension', 'Sirt taranglik'],
+    ['Relative Density', 'Nisbiy zichlik'],
+    ['Angle of Incidence', 'Tushish burchagi'],
+    ['Angle of Refraction', 'Sinish burchagi'],
+    ['Refractive Index', 'Sinish ko‘rsatkichi'],
+    ['Focal Length', 'Fokus masofasi'],
+    ['Object Distance', 'Buyum masofasi'],
+    ['Image Distance', 'Tasvir masofasi'],
+    ['Work Function', 'Chiqish ishi'],
+    ['Stopping Potential', 'Tormozlovchi kuchlanish'],
+    ['Threshold Frequency', 'Qizil chegara chastotasi'],
+    ['Magnetic Field', 'Magnit maydon induksiyasi (B)'],
+    ['Magnetic Flux', 'Magnit oqimi (Φ)'],
+    ['Electric Potential', 'Elektr potensial'],
+    ['Potential Difference', 'Potensiallar farqi (Kuchlanish)'],
+    ['Slow Motion', 'Sekinlashtirilgan'],
+    ['Real Time', 'Real vaqt'],
+    ['Pause / Resume', 'Pauza / Davom etish'],
+    ['Play / Pause', 'Ijro / Pauza']
+  ];
+
+  const WORDS = new Map([
+    ['PROJECTILE MOTION', 'BURCHAK OSTIDA OTILGAN JISM'],
+    ['THEORY', 'NAZARIYA (1-PUNKT)'],
+    ['SHOOT', 'OTISH'],
+    ['LAUNCH', 'UCHIRISH'],
+    ['RESET', 'QAYTA TIKLASH'],
+    ['START', 'BOSHLASH'],
+    ['STOP', 'TO‘XTATISH'],
+    ['PAUSE', 'PAUZA'],
+    ['PLAY', 'IJRO ETISH'],
+    ['CLEAR', 'TOZALASH'],
+    ['GRID', 'PANJARA'],
+    ['VECTOR', 'VEKTOR'],
+    ['VECTORS', 'VEKTORLAR'],
+    ['COMPONENTS', 'PROYEKSIYALAR'],
+    ['LABELS', 'YORLIQLAR'],
+    ['AXES', 'O‘QLAR'],
+    ['CONTROLS', 'BOSHQARUV'],
+    ['PARAMETERS', 'PARAMETRLAR'],
+    ['SETTINGS', 'SOZLAMALAR'],
+    ['VELOCITY', 'TEZLIK'],
+    ['SPEED', 'TEZLIK'],
+    ['ACCELERATION', 'TEZLANISH'],
+    ['HEIGHT', 'BALANDLIK'],
+    ['DISTANCE', 'MASOFA'],
+    ['DISPLACEMENT', 'KO‘CHISH'],
+    ['POSITION', 'KOORDINATA'],
+    ['ANGLE', 'BURCHAK'],
+    ['MASS', 'MASSA'],
+    ['FORCE', 'KUCH'],
+    ['TORQUE', 'KUCH MOMENTI'],
+    ['GRAVITY', 'GRAVITATSIYA (g)'],
+    ['WEIGHT', 'OG‘IRLIK'],
+    ['FRICTION', 'ISHQALANISH'],
+    ['TENSION', 'TARANGLIK'],
+    ['PRESSURE', 'BOSIM'],
+    ['VOLUME', 'HAJM'],
+    ['TEMPERATURE', 'HARORAT'],
+    ['DENSITY', 'ZICHLIK'],
+    ['VISCOSITY', 'QOVUSHQOQLIK'],
+    ['AMPLITUDE', 'AMPLITUDA'],
+    ['FREQUENCY', 'CHASTOTA'],
+    ['PERIOD', 'DAVR'],
+    ['WAVELENGTH', 'TO‘LQIN UZUNLIGI'],
+    ['PHASE', 'FAZA'],
+    ['DAMPING', 'SO‘NISH'],
+    ['RESONANCE', 'REZONANS'],
+    ['CHARGE', 'ZARYAD'],
+    ['VOLTAGE', 'KUCHLANISH'],
+    ['CURRENT', 'TOK KUCHI'],
+    ['RESISTANCE', 'QARSHILIK'],
+    ['CAPACITANCE', 'SIG‘IM'],
+    ['INDUCTANCE', 'INDUKTIVLIK'],
+    ['ENERGY', 'ENERGIYA'],
+    ['WORK', 'ISH'],
+    ['POWER', 'QUVVAT'],
+    ['MOMENTUM', 'IMPULS'],
+    ['IMPULSE', 'KUCH IMPULSI'],
+    ['EFFICIENCY', 'FIK'],
+    ['ENTROPY', 'ENTROPIYA'],
+    ['HEAT', 'ISSIQLIK'],
+    ['TIME', 'VAQT'],
+    ['RADIUS', 'RADIUS'],
+    ['LENGTH', 'UZUNLIK'],
+    ['WIDTH', 'KENGLIK'],
+    ['AREA', 'YUZA'],
+    ['MAGNIFICATION', 'KATTALASHTIRISH'],
+    ['INTENSITY', 'INTENSIVLIK'],
+    ['PHOTONS', 'FOTONLAR'],
+    ['ELECTRONS', 'ELEKTRONLAR'],
+    ['ORBIT', 'ORBITA'],
+    ['SHOW', 'KO‘RSATISH'],
+    ['HIDE', 'YASHIRISH'],
+    ['ENABLE', 'YOQISH'],
+    ['DISABLE', 'O‘CHIRISH'],
+    ['ADD', 'QO‘SHISH'],
+    ['REMOVE', 'OLIB TASHLASH'],
+    ['CHANGE', 'O‘ZGARTIRISH'],
+    ['GRAPH', 'GRAFIK'],
+    ['DATA', 'MA’LUMOTLAR'],
+    ['RESULT', 'NATIJA'],
+    ['VALUE', 'QIYMAT']
+  ]);
+
+  function translateString(str) {
+    if (!str || typeof str !== 'string') return str;
+    let out = str;
+    for (const [en, uz] of PHRASES) {
+      if (out.includes(en)) {
+        out = out.split(en).join(uz);
+      } else {
+        const re = new RegExp(en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        if (re.test(out)) out = out.replace(re, uz);
+      }
+    }
+    // Single-word whole-token replacements for common labels
+    out = out.replace(/\b([A-Za-z][A-Za-z\s\/]{1,22})\b/g, (m) => {
+      const upper = m.trim().toUpperCase();
+      if (WORDS.has(upper)) return WORDS.get(upper);
+      return m;
+    });
+    return out;
+  }
+
+  let translating = false;
+  function translateDOM(root) {
+    if (translating || !root) return;
+    translating = true;
+    try {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parent = node.parentElement;
+        if (!parent) continue;
+        const tag = parent.tagName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'CODE' || parent.closest('.atomix-skip-translate')) continue;
+        const orig = node.nodeValue;
+        if (!orig || !/[A-Za-z]{2,}/.test(orig)) continue;
+        const next = translateString(orig);
+        if (next !== orig) node.nodeValue = next;
+      }
+
+      // Wire theory button if present
+      const theoryBtn = document.getElementById('theorybutton');
+      if (theoryBtn && !theoryBtn.dataset.atomixWired) {
+        theoryBtn.dataset.atomixWired = '1';
+        theoryBtn.textContent = 'NAZARIYA (1-PUNKT)';
+        theoryBtn.onclick = function (e) {
+          e.preventDefault();
+          window.theorySite();
+        };
+      }
+    } finally {
+      translating = false;
+    }
+  }
+
+  function initBridge() {
+    if (!document.body) return;
+    translateDOM(document.body);
+
+    // Keep anchor links (#section) inside the local localized page instead of following <base href>
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      const hash = a.getAttribute('href');
+      if (hash && hash.length > 1) {
+        const target = document.getElementById(hash.slice(1));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    const observer = new MutationObserver((mutations) => {
+      if (translating) return;
+      for (const m of mutations) {
+        for (const n of m.addedNodes) {
+          if (n.nodeType === 1) translateDOM(n);
+          else if (n.nodeType === 3 && n.parentElement) translateDOM(n.parentElement);
+        }
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: false });
+
+    // Periodic light pass for dynamic table/lil-gui text mutations
+    setInterval(() => translateDOM(document.body), 900);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBridge);
+  } else {
+    initBridge();
+  }
+})();
+</script>
+    <meta charset="utf-8">
+    <title>Total Internal Reflection</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="shortcut icon" href="../files/favicon_white.ico" media="(prefers-color-scheme: dark)" />
+    <link rel="shortcut icon" href="../files/favicon.ico" media="(prefers-color-scheme: light)" />
+    <link rel="stylesheet" type="text/css" href="../css/style-page.css">
+    <style>
+        input[type=data] {
+            border: 2px solid #049EF4;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .label {
+            font-weight: bold;
+            font-size: 16px;
+            margin-left: 0px;
+            ;
+
+        }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    
+    <script>
+        
+    </script>
+    <meta name="google-site-verification" content="mz0TRB59UNqdTxhwzmXmGdgVPh8pB4YqjuUr-aWNGIY">
+
+</head>
+
+<body>
+
+    <div id="container">
+        <div id="topmenu">
+            <div>Total Internal Reflection</div>
+
+        </div>
+
+
+
+        <div id="menu">
+            <a><input type="range" id="incident" name="incident" min="0" max="90" value="45" step=".01"><br>
+                <label for="incident">Angle of Incidence, <em>i</em> = </label><input type="data" id="incidentDisplay"
+                    size="3"> <a><sup>o</sup></a>
+            </a>
+            <br>
+            <a>Refractive Index of <a><select id="material" name="material">
+                        <option value="Ice">Ice</option>
+                        <option value="Water">Water</option>
+                        <option value="Alcohol">Alcohol</option>
+                        <option value="Kerosene">Kerosene</option>
+                        <option value="Quartz">Quartz</option>
+                        <option value="Oil">Oil</option>
+                        <option value="Acrylic" selected>Acrylic</option>
+                        <option value="Benzene">Benzene</option>
+                        <option value="Glass">Glass</option>
+                        <option value="Flint">Flint</option>
+                        <option value="Ruby">Ruby</option>
+                        <option value="Sapphire">Sapphire</option>
+                        <option value="Diamond">Diamond</option>
+
+                    </select></a>, <em>n<sub>d</sub></em> = <a id="materialIndex">1.49</a>
+
+            </a><br>
+            <a id="refract">Angle of Refraction, <em>r</em> = <a id="refractDisplay"></a> <sup>o</sup>
+            </a><br>
+            <button id="theorybutton" onClick="theorySite()">Laws of Refraction</button>
+        </div>
+
+    </div>
+    <script>
+        let sideMenu = document.getElementById('sidemenu');
+        let theoryButton = document.getElementById('theorybutton');
+
+        function displayOn() {
+
+            if (sideMenu.style.display === 'block') {
+                sideMenu.style.display = 'none';
+            } else {
+                sideMenu.style.display = 'block';
+            }
+        };
+
+        function theorySite() {
+
+            window.open("Optics_Refraction_of_Light.html", "_self")
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from '../build/three.module.js';
+        import { OrbitControls } from '../jsm/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from '../jsm/renderers/CSS2DRenderer.js';
+        import Stats from '../jsm/libs/stats.module.js';
+
+        let scene, camera, renderer, controls, labelRenderer;
+        let incidentRay, reflectedRay, refractedRay;
+        let incidentArrow, reflectedArrow, refractedArrow;
+        let iAngle, r1Angle, r2Angle;
+        let normalRay, normalArrow;
+        let rayLine, rayArrow, light, line, slab;
+        const thickness = 5;
+        let pointA, pointB, pointC, pointD, normal;
+        let width = window.innerWidth, height = window.innerHeight;
+        let irayLabel, r1rayLabel, r2rayLabel, normalLabel, medium2Label, originLabel;
+        let iangleLabel, r1angleLabel, r2angleLabel;
+        let itext, r1text, r2text, medium2text;
+        let group = new THREE.Group();
+        let labelGroup = new THREE.Group();
+
+        let params = {
+            i: 0.523,
+            r: 0.847,
+            n: 1.49,
+            ideg: 30,
+            rdeg: 48.5,
+            critical: 41.81
+        }
+
+        let materialIndex = {
+            Air: [1.00, 'white'],
+            Ice: [1.31, 'white'],
+            Water: [1.33, 'aqua'],
+            Alcohol: [1.36, 'orange'],
+            Kerosene: [1.44, 'green'],
+            Quartz: [1.46, 'brown'],
+            Oil: [1.47, 'black'],
+            Acrylic: [1.49, 'yellow'],
+            Benzene: [1.50, 'blue'],
+            Glass: [1.52, 'wheat'],
+            Flint: [1.65, 'indigo'],
+            Ruby: [1.71, 'violet'],
+            Sapphire: [1.77, 'purple'],
+            Diamond: [2.42, 'red']
+        }
+
+        let incident = document.getElementById('incident');
+        let refract = document.getElementById('refract');
+        let incidentDisplay = document.getElementById('incidentDisplay');
+        let refractDisplay = document.getElementById('refractDisplay');
+
+        refractDisplay.innerHTML = params.rdeg;
+        incidentDisplay.value = params.ideg;
+        let incidentAngle = document.getElementById('incidentAngle');
+        let refractedAngle = document.getElementById('refractedAngle');
+
+        let material = document.getElementById('material');
+        let index = document.getElementById('materialIndex');
+
+        function createCamera() {
+            // Create a Camera
+            const fov = 50; // AKA Field of View
+            const aspect = width / height;
+            const near = 0.1; // the near clipping plane
+            const far = 1000; // the far clipping plane
+
+            camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+            camera.position.set(-15, 15, 18);
+            // camera.position.set(-10, 3, 40);
+        }
+
+        function createLights() {
+            // Create a directional light
+            const ambientLight = new THREE.HemisphereLight(0xddeeff, 0x202020, .3);
+            const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            // move the light back and up a bit
+            mainLight.position.set(10, 10, 10);
+
+            // remember to add the light to the scene
+            scene.add(ambientLight, mainLight);
+        }
+
+        function createRenderer() {
+            // create the renderer
+            renderer = new THREE.WebGLRenderer({
+                antialias: true
+            });
+            renderer.alpha = true;
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+
+            labelRenderer = new CSS2DRenderer();
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.domElement.style.position = 'absolute';
+            labelRenderer.domElement.style.top = '0px';
+
+            labelRenderer.domElement.style.pointerEvents = 'none';
+            document.body.appendChild(labelRenderer.domElement);
+        }
+
+        //ray diagram constructor
+        function addRays(length, col) {
+            let rayGeometry = new THREE.CylinderBufferGeometry(.05, .05, length).translate(0, length / 2, 0);
+            // rayGeometry.rotateX(Math.PI / 2);
+
+            rayLine = new THREE.Mesh(rayGeometry, new THREE.MeshBasicMaterial({ color: col }));
+            let coneGeometry = new THREE.ConeGeometry(.3, .5, 6).translate(0, -length / 2, 0);
+            coneGeometry.rotateX(Math.PI);
+            rayArrow = new THREE.Mesh(coneGeometry, new THREE.MeshBasicMaterial({ color: 'red' }));
+
+            return { rayLine, rayArrow }
+        }
+
+        //incident and refracted angle measure and label adjustment with change
+        function adjustAngle(ang, start, end, text, value) {
+            // console.log( angtext, angLabel );
+            ang.geometry.dispose();
+            let newangleGeometry = new THREE.RingBufferGeometry(2.1, 2, 11, 1, start, end);
+            ang.geometry = newangleGeometry;
+            text.innerHTML = value + '&deg;';
+        }
+
+        //refracted ray adjusted for various incidence
+        function adjustRefract() {
+            refractedRay.geometry.dispose();
+            let newangleGeometry = new THREE.CylinderBufferGeometry(.05, .05, -thickness / Math.cos(params.r))
+                .translate(0, (-thickness / Math.cos(params.r)) / 2, 0);
+            refractedRay.geometry = newangleGeometry;
+            refractedRay.rotation.set(0, 0, -params.r);
+        }
+
+
+        function init() {
+            scene = new THREE.Scene;
+            scene.background = new THREE.Color(0xbfd1e5);
+
+            createCamera();
+            createLights();
+            createRenderer();
+
+            pointA = new THREE.Vector3(0, thickness / 2, 10);
+            pointB = new THREE.Vector3(thickness * Math.tan(params.r), 0, 0);
+            pointC = new THREE.Vector3(0, 0, 0);
+            normal = new THREE.Vector3(0, thickness / 2, 0);
+
+            //add incident ray and the corresponding angle measure
+            incidentRay = addRays(15, 'orange').rayLine;
+            incidentArrow = addRays(15, 'orange').rayArrow;
+            incidentRay.position.copy(normal);
+
+            let A = params.i;
+            iAngle = addAngle(1.57, -params.i);
+            iAngle.position.copy(normal)
+            scene.add(iAngle)
+
+            itext = document.createElement('div');
+            itext.className = 'label';
+            itext.innerHTML = params.ideg + '&deg;';
+
+            iangleLabel = new CSS2DObject(itext);
+            iangleLabel.position.copy(new THREE.Vector3(0.3, 1, 0));
+            iAngle.add(iangleLabel);
+
+            //varying the z rotation between -1.57 and 1.57
+            incidentRay.rotation.set(1.57, 0, -params.i);
+            scene.add(incidentRay);
+            incidentRay.add(incidentArrow);
+
+            //add normal to the parallel relecting plane of the denser medium
+            normalRay = addRays(18, 'black').rayLine;
+            normalRay.position.set(0, thickness / 2, -9);
+
+            //varying the z rotation between -1.57 and 1.57
+            normalRay.rotation.set(1.57, 0, 0);
+            scene.add(normalRay);
+
+            //add refracted and reflected ray and corresponding angle measure
+            refractedRay = addRays(-10, 'orange').rayLine;
+            refractedArrow = addRays(-10, 'orange').rayArrow;
+            refractedRay.position.copy(normal);
+            let B = params.r;
+            refractedRay.rotation.set(1.57, 0, -params.r);
+
+            r1Angle = addAngle(-1.57, -params.r);
+            r1Angle.position.copy(normal);
+            scene.add(r1Angle)
+            scene.add(refractedRay);
+            refractedRay.add(refractedArrow);
+
+            r1text = document.createElement('div');
+            r1text.className = 'label';
+            r1text.innerHTML = params.rdeg + '&deg;';
+
+            r1angleLabel = new CSS2DObject(r1text);
+            r1angleLabel.position.copy(new THREE.Vector3(-0.3, -1.4, 0));
+            r1Angle.add(r1angleLabel);
+
+            reflectedRay = addRays(-10, 'orange').rayLine;
+            reflectedArrow = addRays(-10, 'orange').rayArrow;
+            reflectedRay.position.copy(normal);
+
+            reflectedRay.rotation.set(-1.57, 0, -params.i);
+
+            r2Angle = addAngle(1.57, params.i);
+            r2Angle.position.copy(normal);
+            scene.add(r2Angle)
+            scene.add(reflectedRay);
+            reflectedRay.add(reflectedArrow);
+
+            r2text = document.createElement('div');
+            r2text.className = 'label';
+            r2text.innerHTML = params.ideg + '&deg;';
+
+            r2angleLabel = new CSS2DObject(r2text);
+            r2angleLabel.position.copy(new THREE.Vector3(-0.9, 1, 0));
+            r2Angle.add(r2angleLabel);
+            slab = new THREE.Mesh(
+                new THREE.CylinderGeometry(7, 7, thickness, 16, 1, false, 0, 3.14).translate(0, thickness / 2, 0),
+                new THREE.MeshPhongMaterial({
+                    color: 'yellow',
+                    transparent: true,
+                    opacity: 0.55
+                }));
+            scene.add(slab);
+            let plane = new THREE.Mesh(
+                new THREE.PlaneGeometry(14, thickness).translate(0, thickness / 2, 0),
+                new THREE.MeshPhongMaterial({
+                    color: 'yellow',
+                    transparent: true,
+                    opacity: 0.35
+                }));
+            plane.rotation.set(0, -1.57, 0);
+            slab.add(plane)
+            slab.rotation.set(0, -1.57, 0);
+
+            // medium2Label = addLabels();
+            medium2text = document.createElement('div');
+            medium2text.className = 'label';
+            medium2text.innerHTML = 'Acrylic';
+
+            medium2Label = new CSS2DObject(medium2text);
+            medium2Label.position.copy(new THREE.Vector3(3, 3, 0));
+            scene.add(medium2Label);
+
+            const scaleHorizontal = new THREE.GridHelper(70, 70);
+            scene.add(scaleHorizontal);
+            line = addRays(20, 'grey').rayLine;
+            scene.add(line);
+            line.position.set(10, thickness / 2, 0)
+            line.rotation.set(0, 0, 1.57);
+
+            //create external light source
+            light = lightSource()
+            scene.add(light)
+            light.rotation.set(-1.57, 0, params.i);
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enablePan = true;
+            controls.enableZoom = true;
+            controls.target.set(0, 2, -2);
+
+            incident.addEventListener('input', function (e) {
+
+                params.i = (Math.PI / 180) * incident.value;
+                let X = Math.sin(params.i) * params.n;
+                let Y = Math.asin(X);
+
+                params.r = Y;
+                params.ideg = Math.abs(incident.value);
+                params.rdeg = Math.abs(((Y * 180) / Math.PI).toFixed(1));
+                incidentDisplay.value = incident.value;
+                light.rotation.set(-1.57, 0, params.i);
+                displayRefract();
+            })
+
+            incidentDisplay.addEventListener('change', function (e) {
+
+                params.i = (Math.PI / 180) * incidentDisplay.value;
+                let X = Math.sin(params.i) * params.n;
+                let Y = Math.asin(X);
+
+                params.r = Y;
+                params.ideg = Math.abs(incidentDisplay.value);
+                params.rdeg = Math.abs(((Y * 180) / Math.PI).toFixed(1));
+                incident.value = incidentDisplay.value;
+                displayRefract();
+            })
+
+            material.addEventListener('input', function (e) {
+                console.log(material.value)
+                for (const key in materialIndex) {
+
+                    if (key == material.value) {
+
+                        index.innerHTML = materialIndex[key][0];
+                        params.n = materialIndex[key][0];
+                        let X = Math.sin(params.i) * params.n;
+                        let Y = Math.asin(X);
+
+                        params.r = Y;
+                        params.rdeg = Math.abs(((Y * 180) / Math.PI).toFixed(1));
+                        params.critical = (((Math.asin(Math.sin(1.57) / params.n)) * 180) / Math.PI).toFixed(2);
+                        medium2text.innerHTML = key;
+                        let newMaterial = new THREE.MeshPhongMaterial({
+                            color: materialIndex[key][1],
+                            transparent: true,
+                            opacity: 0.35
+                        })
+                        slab.material = newMaterial
+                        // console.log(key, materialIndex[key], params.critical, slab.material)
+                        displayRefract();
+                    }
+                }
+
+
+            })
+            document.body.appendChild(renderer.domElement);
+
+            showLabels();
+            // apparentline();
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function displayRefract() {
+
+            incidentRay.rotation.set(1.57, 0, -params.i);
+            reflectedRay.rotation.set(-1.57, 0, -params.i);
+            refractedRay.rotation.set(1.57, 0, -params.r);
+            if (Number.isNaN(params.rdeg)) {
+                refract.innerHTML = 'Total Internal Reflection and critical angle, <em>i<sub>c</sub></em> = ';
+                refractDisplay.innerHTML = params.critical;
+
+                adjustAngle(iAngle, 1.57, params.i, itext, params.ideg);
+
+                adjustAngle(r2Angle, 1.57, -params.i, r2text, params.ideg);
+                refractedRay.visible = false;
+
+                r1Angle.visible = false;
+                r1angleLabel.visible = false;
+            } else {
+                refract.innerHTML = 'Angle of Refraction, <em>r</em> ='
+                refractDisplay.innerHTML = params.rdeg;
+
+                adjustAngle(iAngle, 1.57, params.i, itext, params.ideg);
+                adjustAngle(r1Angle, -1.57, -params.r, r1text, params.rdeg);
+                adjustAngle(r2Angle, 1.57, -params.i, r2text, params.ideg);
+                refractedRay.visible = true;
+
+                r1Angle.visible = true;
+                r1angleLabel.visible = true;
+            }
+        }
+
+        //the arc representing the incidence and refracted angle
+        function addAngle(start, end, value) {
+            let angleGeometry = new THREE.RingBufferGeometry(2.1, 2, 11, 1, start, end);
+            let angleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide })
+            let angleMeasure = new THREE.Mesh(angleGeometry, angleMaterial);
+            angleMeasure.rotation.set(1.57, 0, 0)
+            return angleMeasure
+        }
+
+
+        function showLabels() {
+            //labels
+            irayLabel = addLabels('Incident Ray');
+            r1rayLabel = addLabels('Refracted Ray');
+            r2rayLabel = addLabels('Reflected Ray');
+            normalLabel = addLabels('Normal');
+
+            originLabel = addLabels('O');
+
+            let medium1Label = addLabels('Air');
+
+
+            irayLabel.position.copy(new THREE.Vector3(1.5, 7.5, 0));
+            incidentRay.add(irayLabel);
+            originLabel.position.copy(new THREE.Vector3(0, thickness / 2, 0));
+
+            r1rayLabel.position.copy(new THREE.Vector3(0, -5, 0));
+            refractedRay.add(r1rayLabel);
+
+            r2rayLabel.position.copy(new THREE.Vector3(0, -5, 0));
+            reflectedRay.add(r2rayLabel);
+
+            normalLabel.position.copy(new THREE.Vector3(0, 0, 0));
+            normalRay.add(normalLabel);
+
+            scene.add(medium1Label);
+            medium1Label.position.copy(new THREE.Vector3(5, 5, -5));
+
+
+            scene.add(originLabel);
+
+        }
+
+        //const label for the diagram
+        function addLabels(name) {
+
+            let text = document.createElement('div');
+            text.className = 'label';
+            // text.textContent = name;
+            text.innerHTML = name;
+            let label = new CSS2DObject(text);
+            group.add(label);
+            return label
+        }
+
+        window.onload = function () {
+
+            init();
+            controls.update()
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.rotateSpeed = 0.1;
+            controls.target.set(-3, 3, 4);
+            animate();
+        }
+
+        function initPoint(data) {
+            let pointGeometry = new THREE.BufferGeometry();
+            pointGeometry.setAttribute('position', new THREE.BufferAttribute(data.vertices, 3));
+            let pointMaterial = data.material;
+            let point = new THREE.Points(pointGeometry, pointMaterial);
+
+            point.position.x = data.x;
+            point.position.y = data.y;
+            point.position.z = data.z;
+            return point;
+        }
+
+        function render() {
+
+
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            render();
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            render();
+
+        }
+
+        function lightSource() {
+            let lightHead = new THREE.Mesh(new THREE.CylinderGeometry(1, .5, 1, 8, 1, false).translate(0, -15.5, thickness / 2), new THREE.MeshBasicMaterial({ color: 'yellow' }));
+            let lightBody = new THREE.Mesh(new THREE.CylinderGeometry(.5, .5, 5).translate(0, -18, thickness / 2), new THREE.MeshPhongMaterial({ color: 'grey' }));
+            lightBody.add(lightHead);
+            // lightBody.rotation.set(-1.57,0,0);
+            // lightBody.position.set(5,thickness/2,10)
+            return lightBody
+        }
+    </script>
+</body>
+
+</html>

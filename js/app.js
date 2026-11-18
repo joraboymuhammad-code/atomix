@@ -1,38 +1,75 @@
-import { SECTIONS, TOPICS, getTopicById, getSectionById } from './data/curriculum.js';
-import { AtomixParametricSim } from './sim-engine.js';
+import {
+  PHYSICS_SECTIONS,
+  PHYSICS_TOPICS,
+  CHEM_SECTIONS,
+  CHEM_TOPICS,
+  SUBJECTS,
+  ALL_TOPICS,
+  getTopicById,
+  getSectionById,
+} from './data/curriculum.js?v=4.0';
+import { AtomixParametricSim } from './sim-engine.js?v=4.0';
+import { AtomixTeamGames } from './team-games.js?v=4.0';
 import {
   ATOMIX_MAIN_LOGO_SVG,
   SECTION_LOGOS,
   ENGINE_LOGOS,
   initQuantumAmbientCanvas,
   initHeroAtomCanvas,
-} from './quantum-bg.js';
+} from './quantum-bg.js?v=4.0';
 
-const STORAGE_KEY = 'atomix_quiz_v1';
+const STORAGE_KEY = 'atomix_quiz_v2';
+
+let SECTIONS = PHYSICS_SECTIONS;
+let TOPICS = PHYSICS_TOPICS;
 
 const state = {
-  topicId: TOPICS[0].id,
-  tab: 'theory', // 'theory' | 'sim' | 'quiz'
+  view: 'landing', // 'landing' | 'workspace'
+  subject: 'physics', // 'physics' | 'chemistry'
+  topicId: PHYSICS_TOPICS[0].id,
+  tab: 'theory', // 'theory' | 'sim' | 'quiz' | 'games'
   simMode: '3d', // '3d' | 'param' | 'split'
-  simUrl: TOPICS[0].simulation.openSourceUrl,
+  simUrl: PHYSICS_TOPICS[0].simulation.openSourceUrl,
   quizFilter: 'all', // 'all' | 'unanswered' | 'wrong'
+  quizIndex: 0, // Active single-question index 0..19
   answers: loadAnswers(),
-  openSections: new Set(['sec-1']),
+  openSections: new Set(['sec-1', 'csec-1']),
   calcValues: {},
   showHero: true,
 };
 
 const els = {
   brandLogoSlot: document.getElementById('brand-logo-slot'),
+  brandHomeLink: document.getElementById('brand-home-link'),
+  navHomeBtn: document.getElementById('nav-home-btn'),
+  topEnterBtn: document.getElementById('top-enter-btn'),
+  landingEnterBtn: document.getElementById('landing-enter-btn'),
+  landingPortal: document.getElementById('landing-portal'),
+  subjectPill: document.getElementById('subject-pill'),
+  subjectPillLabel: document.getElementById('subject-pill-label'),
+  chooserModal: document.getElementById('subject-chooser-modal'),
+  chooserBackdrop: document.getElementById('chooser-backdrop'),
+  chooserCloseBtn: document.getElementById('chooser-close-btn'),
   shell: document.getElementById('app-shell'),
   sidebar: document.getElementById('sidebar'),
   sidebarToggle: document.getElementById('sidebar-toggle'),
   drawerBackdrop: document.getElementById('drawer-backdrop'),
   heroToggleBtn: document.getElementById('hero-toggle-btn'),
   heroObservatory: document.getElementById('hero-observatory'),
+  heroSubjectTag: document.getElementById('hero-subject-tag'),
+  heroEnginesTag: document.getElementById('hero-engines-tag'),
+  heroHeadline: document.getElementById('hero-headline'),
+  heroLead: document.getElementById('hero-lead'),
+  heroMetricsRow: document.getElementById('hero-metrics-row'),
+  hudLeftTitle: document.getElementById('hud-left-title'),
+  hudLeftEq: document.getElementById('hud-left-eq'),
+  hudRightTitle: document.getElementById('hud-right-title'),
+  hudRightEq: document.getElementById('hud-right-eq'),
+  bentoHeading: document.getElementById('bento-heading'),
   heroBentoGrid: document.getElementById('hero-bento-grid'),
   ctaStartStudy: document.getElementById('cta-start-study'),
   ctaOpenSim: document.getElementById('cta-open-sim'),
+  ctaOpenGames: document.getElementById('cta-open-games'),
   ctaCollapseHero: document.getElementById('cta-collapse-hero'),
   topicStage: document.getElementById('topic-stage'),
   topicSecEmblem: document.getElementById('topic-sec-emblem'),
@@ -50,9 +87,11 @@ const els = {
   panelTheory: document.getElementById('tab-panel-theory'),
   panelSim: document.getElementById('tab-panel-sim'),
   panelQuiz: document.getElementById('tab-panel-quiz'),
+  panelGames: document.getElementById('tab-panel-games'),
 };
 
 let paramSim = null;
+let teamGames = null;
 
 function loadAnswers() {
   try {
@@ -174,8 +213,8 @@ function renderInlineMath(text) {
 function formatQuizOption(opt) {
   const raw = String(opt || '').trim();
   if (raw.includes('$')) return renderInlineMath(raw);
-  // Formula options from curriculum.formulas contain LaTeX commands (\frac, \sqrt, etc.)
-  if (raw.includes('\\')) return formatTexExpr(raw, false);
+  // Pure LaTeX expression without spaces
+  if (raw.includes('\\') && !raw.includes(' ')) return formatTexExpr(raw, false);
   return formatHtmlMathFallback(raw);
 }
 
@@ -195,12 +234,12 @@ function getTopicQuizStats(topic) {
 function updateGlobalProgress() {
   let totalCorrect = 0;
   let totalQs = 0;
-  for (const t of TOPICS) {
+  for (const t of ALL_TOPICS) {
     const st = getTopicQuizStats(t);
     totalCorrect += st.correct;
     totalQs += st.total;
   }
-  els.globalScore.textContent = `${totalCorrect} / ${totalQs}`;
+  if (els.globalScore) els.globalScore.textContent = `${totalCorrect} / ${totalQs}`;
   if (els.masteryRing) {
     const circ = 88;
     const ratio = totalQs > 0 ? totalCorrect / totalQs : 0;
@@ -251,7 +290,7 @@ function renderSidebar() {
       for (const t of secTopics) {
         if (t.subsectionTitle && t.subsectionTitle !== lastSub) {
           lastSub = t.subsectionTitle;
-          if (sec.subsections.length > 1) {
+          if ((sec.subsections || []).length > 1) {
             bodyHtml += `<div class="subsec-label">${escapeHtml(t.subsectionTitle)}</div>`;
           }
         }
@@ -531,10 +570,84 @@ function renderQuizTab(topic) {
       return true;
     });
 
+  let pos = visibleIndices.findIndex((item) => item.i === state.quizIndex);
+  if (pos < 0) pos = 0;
+  if (visibleIndices[pos]) state.quizIndex = visibleIndices[pos].i;
+
   const ringOffset = 88 * (1 - stats.correct / stats.total);
 
+  let stageHtml = '';
+  if (visibleIndices.length === 0) {
+    stageHtml = `
+      <div class="quiz-empty-state">
+        Tanlangan filtr bo‘yicha savollar qolmadi. Barcha savollarni ko‘rish uchun <strong>Barchasi (20)</strong> tugmasini bosing.
+      </div>`;
+  } else {
+    const activeItem = visibleIndices[pos];
+    const { q, i } = activeItem;
+    const chosen = ans[i];
+    const isAnswered = typeof chosen === 'number';
+    const isCorrect = isAnswered && chosen === q.answer;
+    const cardCls = isAnswered ? (isCorrect ? 'correct' : 'wrong') : '';
+
+    stageHtml = `
+      <div class="quiz-stepper" role="navigation" aria-label="Savollar raqamlari">
+        ${visibleIndices
+          .map((item) => {
+            const c = ans[item.i];
+            let pillCls = '';
+            if (typeof c === 'number') {
+              pillCls = c === item.q.answer ? 'is-correct' : 'is-wrong';
+            }
+            if (item.i === state.quizIndex) pillCls += ' active';
+            return `<button class="q-stepper-pill ${pillCls.trim()}" data-jump-q="${item.i}" type="button" title="${item.i + 1}-savol">${item.i + 1}</button>`;
+          })
+          .join('')}
+      </div>
+
+      <div class="quiz-single-stage">
+        <article class="q-card book-folio q-card-folio ${cardCls}">
+          <div class="q-head">
+            <span class="q-num tabular">${i + 1} / ${stats.total}</span>
+            <div class="q-text">${renderInlineMath(q.q)}</div>
+          </div>
+          <div class="q-options">
+            ${q.options
+              .map((opt, oi) => {
+                let cls = '';
+                if (isAnswered) {
+                  if (oi === q.answer) cls = 'is-correct';
+                  else if (oi === chosen) cls = 'is-wrong';
+                }
+                return `
+                  <button class="opt-btn ${cls}" data-qidx="${i}" data-oidx="${oi}" ${isAnswered ? 'disabled' : ''} type="button">
+                    <span class="opt-letter">${letters[oi]}</span>
+                    <span>${formatQuizOption(opt)}</span>
+                  </button>`;
+              })
+              .join('')}
+          </div>
+          ${
+            isAnswered
+              ? `<div class="q-explain">
+                  <strong style="color:${isCorrect ? 'var(--success)' : 'var(--danger)'}">
+                    ${isCorrect ? 'To‘g‘ri!' : `Xato — to‘g‘ri javob: ${letters[q.answer]}`}
+                  </strong>
+                  ${q.explain ? ` — ${renderInlineMath(q.explain)}` : ''}
+                </div>`
+              : ''
+          }
+          <div class="quiz-step-nav">
+            <button id="quiz-prev-btn" class="btn-3d btn-3d-sm" type="button" ${pos <= 0 ? 'disabled' : ''}>← Oldingi savol</button>
+            <span class="quiz-step-counter tabular">${pos + 1} / ${visibleIndices.length} ko‘rsatilmoqda</span>
+            <button id="quiz-next-btn" class="btn-3d btn-3d-primary btn-3d-sm" type="button" ${pos >= visibleIndices.length - 1 ? 'disabled' : ''}>Keyingi savol →</button>
+          </div>
+        </article>
+      </div>`;
+  }
+
   els.panelQuiz.innerHTML = `
-    <div class="quiz-header-card glass-card">
+    <div class="quiz-header-card glass-card book-folio">
       <div class="quiz-stats tabular" style="align-items:center">
         <svg class="ring-svg" viewBox="0 0 36 36" width="38" height="38">
           <circle class="ring-track" cx="18" cy="18" r="14" />
@@ -548,79 +661,182 @@ function renderQuizTab(topic) {
         <button class="filter-btn ${state.quizFilter === 'all' ? 'active' : ''}" data-qfilter="all" type="button">Barchasi (20)</button>
         <button class="filter-btn ${state.quizFilter === 'unanswered' ? 'active' : ''}" data-qfilter="unanswered" type="button">Javobsizlar</button>
         <button class="filter-btn ${state.quizFilter === 'wrong' ? 'active' : ''}" data-qfilter="wrong" type="button">Xato javoblar</button>
-        <button id="quiz-reset-btn" class="btn btn-glass" type="button">Qayta boshlash</button>
+        <button id="quiz-reset-btn" class="btn-3d btn-3d-sm" type="button">Qayta boshlash</button>
       </div>
     </div>
-
-    <div class="quiz-list">
-      ${
-        visibleIndices.length === 0
-          ? `<div class="panel" style="text-align:center;color:var(--text-muted)">Tanlangan filtr bo‘yicha savollar yo‘q.</div>`
-          : visibleIndices
-              .map(({ q, i }) => {
-                const chosen = ans[i];
-                const isAnswered = typeof chosen === 'number';
-                const isCorrect = isAnswered && chosen === q.answer;
-                const cardCls = isAnswered ? (isCorrect ? 'correct' : 'wrong') : '';
-                return `
-                  <article class="q-card ${cardCls}">
-                    <div class="q-head">
-                      <span class="q-num tabular">${i + 1}/20</span>
-                      <div class="q-text">${renderInlineMath(q.q)}</div>
-                    </div>
-                    <div class="q-options">
-                      ${q.options
-                        .map((opt, oi) => {
-                          let cls = '';
-                          if (isAnswered) {
-                            if (oi === q.answer) cls = 'is-correct';
-                            else if (oi === chosen) cls = 'is-wrong';
-                          }
-                          return `
-                            <button class="opt-btn ${cls}" data-qidx="${i}" data-oidx="${oi}" ${isAnswered ? 'disabled' : ''} type="button">
-                              <span class="opt-letter">${letters[oi]}</span>
-                              <span>${formatQuizOption(opt)}</span>
-                            </button>`;
-                        })
-                        .join('')}
-                    </div>
-                    ${
-                      isAnswered
-                        ? `<div class="q-explain">
-                            <strong style="color:${isCorrect ? 'var(--success)' : 'var(--danger)'}">
-                              ${isCorrect ? 'To‘g‘ri!' : `Xato — to‘g‘ri javob: ${letters[q.answer]}`}
-                            </strong>
-                            ${q.explain ? ` — ${renderInlineMath(q.explain)}` : ''}
-                          </div>`
-                        : ''
-                    }
-                  </article>`;
-              })
-              .join('')
-      }
-    </div>
+    ${stageHtml}
   `;
 }
 
+function renderGamesTab(topic) {
+  if (teamGames) {
+    teamGames.destroy();
+    teamGames = null;
+  }
+  if (!els.panelGames) return;
+  teamGames = new AtomixTeamGames(els.panelGames, topic, renderInlineMath, formatQuizOption);
+}
+
+function applySubjectLists(subjKey) {
+  const key = subjKey === 'chemistry' ? 'chemistry' : 'physics';
+  state.subject = key;
+  SECTIONS = SUBJECTS[key].sections;
+  TOPICS = SUBJECTS[key].topics;
+  if (!TOPICS.some((t) => t.id === state.topicId)) {
+    state.topicId = TOPICS[0].id;
+    state.simUrl = TOPICS[0].simulation.openSourceUrl;
+    state.quizIndex = 0;
+  }
+  state.openSections.add(SECTIONS[0].id);
+}
+
+function renderHeroObservatoryCopy() {
+  const isChem = state.subject === 'chemistry';
+  if (els.heroSubjectTag) {
+    els.heroSubjectTag.textContent = isChem ? 'Kimyo 3D Laboratoriya' : 'Fizika 3D Laboratoriya';
+  }
+  if (els.heroEnginesTag) {
+    els.heroEnginesTag.textContent = isChem
+      ? '3Dmol.js · MolView · PhET · ChemCollective · OLabs'
+      : 'Effectuall · Cannon-es · Three.js PBF · WebGL2';
+  }
+  if (els.heroHeadline) {
+    els.heroHeadline.textContent = isChem
+      ? 'Oliy Kimyo, Molekulyar 3D va Virtual Tajribalar Akademiyasi'
+      : 'Oliy Fizika va 3D Virtual Tajribalar Koinoti';
+  }
+  if (els.heroLead) {
+    els.heroLead.textContent = isChem
+      ? 'Umumiy va stexiometrik kimyodan organik sintez va biokimyogacha 5 ta fundamental bo‘lim, 55 ta akademik mavzu, 3Dmol/PhET laboratoriyalari, 1 100 ta test va 275 ta jamoaviy o‘yin.'
+      : 'Mexanikadan Kvant va Astrofizikagacha bo‘lgan 8 ta fundamental bo‘lim, 67 ta akademik mavzu, ochiq kodli 3D laboratoriya stendlari, 1 340 ta test va 335 ta jamoaviy o‘yin.';
+  }
+  if (els.heroMetricsRow) {
+    els.heroMetricsRow.innerHTML = isChem
+      ? `
+        <div class="metric-pill"><strong>5</strong><span>Bo‘lim</span></div>
+        <div class="metric-pill"><strong>55</strong><span>Akademik mavzu</span></div>
+        <div class="metric-pill"><strong>275</strong><span>Jamoaviy o‘yin</span></div>
+        <div class="metric-pill"><strong>1 100</strong><span>Test savoli</span></div>`
+      : `
+        <div class="metric-pill"><strong>8</strong><span>Bo‘lim</span></div>
+        <div class="metric-pill"><strong>67</strong><span>Akademik mavzu</span></div>
+        <div class="metric-pill"><strong>335</strong><span>Jamoaviy o‘yin</span></div>
+        <div class="metric-pill"><strong>1 340</strong><span>Test savoli</span></div>`;
+  }
+  if (els.hudLeftTitle && els.hudLeftEq && els.hudRightTitle && els.hudRightEq) {
+    if (isChem) {
+      els.hudLeftTitle.textContent = 'GIBBS ERKIN ENERGIYASI';
+      els.hudLeftEq.textContent = 'ΔG° = ΔH° − TΔS°';
+      els.hudRightTitle.textContent = 'Nernst tenglamasi';
+      els.hudRightEq.textContent = 'E = E° − (RT/nF)·ln Q';
+    } else {
+      els.hudLeftTitle.textContent = 'TO‘LQIN FUNKSIYASI';
+      els.hudLeftEq.textContent = 'iℏ ∂ψ/∂t = Ĥψ';
+      els.hudRightTitle.textContent = 'Nisbiylik energiyasi';
+      els.hudRightEq.textContent = 'E² = (pc)² + (m₀c²)²';
+    }
+  }
+  if (els.bentoHeading) {
+    els.bentoHeading.textContent = isChem
+      ? 'Kimyo Fanining 5 ta Fundamental Bo‘limi Xaritasi'
+      : 'Fundamental Fizika Bo‘limlari Xaritasi';
+  }
+}
+
 function syncRouteHash() {
-  const target = `#topic=${state.topicId}&tab=${state.tab}`;
+  const target =
+    state.view === 'landing'
+      ? '#landing'
+      : `#view=workspace&subject=${state.subject}&topic=${state.topicId}&tab=${state.tab}`;
   if (location.hash !== target) {
     history.replaceState(null, '', target);
   }
 }
 
 function readRouteHash() {
-  const mTopic = location.hash.match(/topic=([^&]+)/);
-  const mTab = location.hash.match(/tab=(theory|sim|quiz)/);
+  const h = location.hash || '';
+  if (!h || h === '#landing') {
+    state.view = 'landing';
+    return;
+  }
+  const mSubj = h.match(/subject=(physics|chemistry)/);
+  const mTopic = h.match(/topic=([^&]+)/);
+  const mTab = h.match(/tab=(theory|sim|quiz|games)/);
+  const mView = h.match(/view=(landing|workspace)/);
+
+  if (mSubj) applySubjectLists(mSubj[1]);
   if (mTopic) {
-    const found = TOPICS.find((t) => t.id === mTopic[1]);
-    if (found) state.topicId = found.id;
+    const found = ALL_TOPICS.find((t) => t.id === mTopic[1]);
+    if (found) {
+      applySubjectLists(found.subject || 'physics');
+      state.topicId = found.id;
+      state.simUrl = found.simulation.openSourceUrl;
+      state.view = 'workspace';
+    }
+  } else if (mView && mView[1] === 'workspace') {
+    state.view = 'workspace';
+  } else if (mSubj) {
+    state.view = 'workspace';
   }
   if (mTab) state.tab = mTab[1];
 }
 
+function openChooser() {
+  if (els.chooserModal) els.chooserModal.hidden = false;
+}
+
+function closeChooser() {
+  if (els.chooserModal) els.chooserModal.hidden = true;
+}
+
+function enterAcademy(subjKey) {
+  closeChooser();
+  applySubjectLists(subjKey);
+  const firstTopic = TOPICS[0];
+  state.topicId = firstTopic.id;
+  state.simUrl = firstTopic.simulation.openSourceUrl;
+  state.quizIndex = 0;
+  state.quizFilter = 'all';
+  state.tab = 'theory';
+  state.view = 'workspace';
+  state.showHero = true;
+  renderActiveView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToLanding() {
+  state.view = 'landing';
+  if (paramSim) paramSim.stop();
+  if (teamGames) {
+    teamGames.destroy();
+    teamGames = null;
+  }
+  renderActiveView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function renderActiveView() {
+  const isWorkspace = state.view === 'workspace';
+  if (els.landingPortal) els.landingPortal.hidden = isWorkspace;
+  if (els.shell) els.shell.hidden = !isWorkspace;
+  if (els.sectionStrip) els.sectionStrip.hidden = !isWorkspace;
+  if (els.subjectPill) els.subjectPill.hidden = !isWorkspace;
+  if (els.heroToggleBtn) els.heroToggleBtn.hidden = !isWorkspace;
+  if (els.sidebarToggle) els.sidebarToggle.hidden = !isWorkspace;
+
+  updateGlobalProgress();
+
+  if (!isWorkspace) {
+    const defaultAccent = state.subject === 'chemistry' ? '#34d399' : '#22d3ee';
+    document.documentElement.style.setProperty('--accent', defaultAccent);
+    syncRouteHash();
+    return;
+  }
+
   const topic = getTopicById(state.topicId);
+  if (topic.subject && topic.subject !== state.subject) {
+    applySubjectLists(topic.subject);
+  }
   const sec = getSectionById(topic.sectionId);
   const idx = TOPICS.findIndex((t) => t.id === topic.id);
 
@@ -629,12 +845,17 @@ function renderActiveView() {
   document.documentElement.style.setProperty('--accent-border', `color-mix(in srgb, ${sec.accent} 42%, transparent)`);
   state.openSections.add(sec.id);
 
+  if (els.subjectPillLabel) {
+    els.subjectPillLabel.textContent = state.subject === 'chemistry' ? 'Kimyo' : 'Fizika';
+  }
   if (els.heroObservatory) {
     els.heroObservatory.hidden = !state.showHero;
   }
   if (els.heroToggleBtn) {
     els.heroToggleBtn.classList.toggle('active', state.showHero);
   }
+  renderHeroObservatoryCopy();
+  renderHeroBento();
 
   if (els.topicSecEmblem) {
     els.topicSecEmblem.innerHTML = SECTION_LOGOS[sec.id] || '';
@@ -655,19 +876,25 @@ function renderActiveView() {
   els.panelTheory.hidden = state.tab !== 'theory';
   els.panelSim.hidden = state.tab !== 'sim';
   els.panelQuiz.hidden = state.tab !== 'quiz';
+  if (els.panelGames) els.panelGames.hidden = state.tab !== 'games';
 
   renderSectionStrip();
   renderSidebar();
-  updateGlobalProgress();
 
   if (state.tab === 'theory') {
     if (paramSim) paramSim.stop();
+    if (teamGames) { teamGames.destroy(); teamGames = null; }
     renderTheoryTab(topic);
   } else if (state.tab === 'sim') {
+    if (teamGames) { teamGames.destroy(); teamGames = null; }
     renderSimTab(topic);
-  } else {
+  } else if (state.tab === 'quiz') {
     if (paramSim) paramSim.stop();
+    if (teamGames) { teamGames.destroy(); teamGames = null; }
     renderQuizTab(topic);
+  } else if (state.tab === 'games') {
+    if (paramSim) paramSim.stop();
+    renderGamesTab(topic);
   }
 
   syncRouteHash();
@@ -675,9 +902,12 @@ function renderActiveView() {
 
 function selectTopic(topicId, tabOverride, scrollTarget = 'stage') {
   const t = getTopicById(topicId);
+  applySubjectLists(t.subject || 'physics');
+  state.view = 'workspace';
   state.topicId = t.id;
   state.simUrl = t.simulation.openSourceUrl;
   state.quizFilter = 'all';
+  state.quizIndex = 0;
   if (tabOverride) state.tab = tabOverride;
   els.shell.classList.remove('mobile-open');
   renderActiveView();
@@ -688,13 +918,38 @@ function selectTopic(topicId, tabOverride, scrollTarget = 'stage') {
   }
 }
 
-// Mount Atomix emblem, Bento Grid & Ambient Canvases
+// Mount Atomix emblem & Ambient/Hero Canvases
 if (els.brandLogoSlot) els.brandLogoSlot.innerHTML = ATOMIX_MAIN_LOGO_SVG;
-renderHeroBento();
 initQuantumAmbientCanvas(document.getElementById('quantum-bg-canvas'));
 initHeroAtomCanvas(document.getElementById('hero-atom-canvas'));
+initHeroAtomCanvas(document.getElementById('landing-atom-canvas'));
 
-// Event Listeners
+// Navigation & Portal Listeners
+els.brandHomeLink?.addEventListener('click', (e) => {
+  e.preventDefault();
+  goToLanding();
+});
+els.navHomeBtn?.addEventListener('click', goToLanding);
+els.topEnterBtn?.addEventListener('click', openChooser);
+els.landingEnterBtn?.addEventListener('click', openChooser);
+els.subjectPill?.addEventListener('click', openChooser);
+els.chooserBackdrop?.addEventListener('click', closeChooser);
+els.chooserCloseBtn?.addEventListener('click', closeChooser);
+
+document.addEventListener('click', (e) => {
+  const chooseBtn = e.target.closest('[data-choose-subject]');
+  if (chooseBtn) {
+    enterAcademy(chooseBtn.getAttribute('data-choose-subject'));
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && els.chooserModal && !els.chooserModal.hidden) {
+    closeChooser();
+  }
+});
+
+// Workspace Event Listeners
 els.sidebarToggle.addEventListener('click', () => {
   if (window.innerWidth <= 980) {
     els.shell.classList.toggle('mobile-open');
@@ -727,6 +982,12 @@ els.ctaStartStudy?.addEventListener('click', () => {
 
 els.ctaOpenSim?.addEventListener('click', () => {
   state.tab = 'sim';
+  renderActiveView();
+  els.topicStage?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+els.ctaOpenGames?.addEventListener('click', () => {
+  state.tab = 'games';
   renderActiveView();
   els.topicStage?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
@@ -775,7 +1036,7 @@ els.nextBtn.addEventListener('click', () => {
   if (idx < TOPICS.length - 1) selectTopic(TOPICS[idx + 1].id, undefined, 'stage');
 });
 
-// Keyboard shortcut Ctrl+K / '/' to focus search
+// Keyboard shortcut Ctrl+K to focus search
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();
@@ -783,11 +1044,11 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Pointer spotlight specular reflection on glass cards
+// Pointer spotlight specular reflection on glass/folio cards
 document.addEventListener(
   'pointermove',
   (e) => {
-    const card = e.target.closest('.glass-card, .bento-card, .formula-card, .law-box');
+    const card = e.target.closest('.glass-card, .bento-card, .formula-card, .law-box, .book-folio');
     if (!card) return;
     const rect = card.getBoundingClientRect();
     card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
@@ -796,19 +1057,19 @@ document.addEventListener(
   { passive: true }
 );
 
-// Search
+// Search across all 122 topics (Fizika + Kimyo)
 els.searchInput.addEventListener('input', () => {
   const q = els.searchInput.value.trim().toLowerCase();
   if (!q) {
     els.searchResults.hidden = true;
     return;
   }
-  const matches = TOPICS.filter(
+  const matches = ALL_TOPICS.filter(
     (t) =>
       t.title.toLowerCase().includes(q) ||
       t.subtitle.toLowerCase().includes(q) ||
       t.code.toLowerCase().includes(q)
-  ).slice(0, 12);
+  ).slice(0, 14);
 
   els.searchResults.hidden = false;
   els.searchResults.innerHTML =
@@ -818,6 +1079,7 @@ els.searchInput.addEventListener('input', () => {
           .map(
             (m) => `
           <button class="search-item" data-search-topic="${m.id}" type="button">
+            <span class="search-subj-badge ${m.subject === 'chemistry' ? 'chem' : 'phys'}">${m.subject === 'chemistry' ? 'Kimyo' : 'Fizika'}</span>
             <span class="search-code">${m.code}</span>
             <span class="search-title">${escapeHtml(m.title)}</span>
           </button>`
@@ -831,7 +1093,7 @@ els.searchResults.addEventListener('click', (e) => {
     els.searchResults.hidden = true;
     els.searchInput.value = '';
     state.showHero = false;
-    selectTopic(item.dataset.searchTopic, undefined, 'top');
+    selectTopic(item.dataset.searchTopic, 'theory', 'top');
   }
 });
 
@@ -905,7 +1167,7 @@ els.panelSim.addEventListener('input', (e) => {
   if (ro) ro.textContent = `${val} ${e.target.dataset.paramUnit || ''}`.trim();
 });
 
-// Tab 3 Quiz delegation
+// Tab 3 Single-Question Stepped Quiz delegation
 els.panelQuiz.addEventListener('click', (e) => {
   const opt = e.target.closest('.opt-btn');
   if (opt) {
@@ -919,9 +1181,34 @@ els.panelQuiz.addEventListener('click', (e) => {
     renderQuizTab(getTopicById(state.topicId));
     return;
   }
+  const jumpBtn = e.target.closest('[data-jump-q]');
+  if (jumpBtn) {
+    state.quizIndex = Number(jumpBtn.dataset.jumpQ);
+    renderQuizTab(getTopicById(state.topicId));
+    return;
+  }
+  if (e.target.id === 'quiz-prev-btn' || e.target.id === 'quiz-next-btn') {
+    const topic = getTopicById(state.topicId);
+    const ans = state.answers[topic.id] || {};
+    const visible = topic.questions
+      .map((q, i) => ({ q, i }))
+      .filter(({ q, i }) => {
+        if (state.quizFilter === 'unanswered') return typeof ans[i] !== 'number';
+        if (state.quizFilter === 'wrong') return typeof ans[i] === 'number' && ans[i] !== q.answer;
+        return true;
+      });
+    const curPos = visible.findIndex((item) => item.i === state.quizIndex);
+    const nextPos = e.target.id === 'quiz-next-btn' ? curPos + 1 : curPos - 1;
+    if (visible[nextPos]) {
+      state.quizIndex = visible[nextPos].i;
+      renderQuizTab(topic);
+    }
+    return;
+  }
   const fBtn = e.target.closest('[data-qfilter]');
   if (fBtn) {
     state.quizFilter = fBtn.dataset.qfilter;
+    state.quizIndex = 0;
     renderQuizTab(getTopicById(state.topicId));
     return;
   }
@@ -929,6 +1216,7 @@ els.panelQuiz.addEventListener('click', (e) => {
     delete state.answers[state.topicId];
     saveAnswers();
     state.quizFilter = 'all';
+    state.quizIndex = 0;
     updateGlobalProgress();
     renderSidebar();
     renderQuizTab(getTopicById(state.topicId));

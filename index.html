@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Atomix — Oliy Ta’lim Fizika va 3D Virtual Laboratoriya Platformasi</title>
+  <title>Atomix — ETHITH Solutions · Fizika va Kimyo 3D Virtual Akademiyasi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="css/atomix.css" />
+  <link rel="stylesheet" href="css/atomix.css?v=4.0" />
 </head>
 <body>
   <canvas id="quantum-bg-canvas" class="quantum-bg-canvas" aria-hidden="true"></canvas>
 
   <header class="topbar">
     <div class="topbar-inner">
-      <button id="sidebar-toggle" class="icon-btn" type="button" title="Mundarija paneli" aria-label="Mundarija panelini yopish yoki ochish">
+      <button id="sidebar-toggle" class="icon-btn btn-3d-subtle" type="button" title="Mundarija paneli" aria-label="Mundarija panelini yopish yoki ochish">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <line x1="3" y1="6" x2="21" y2="6" />
           <line x1="3" y1="12" x2="21" y2="12" />
@@ -24,15 +24,36 @@
         </svg>
       </button>
 
-      <a class="brand" href="#topic=1-1&tab=theory">
+      <a id="brand-home-link" class="brand" href="#landing">
         <span id="brand-logo-slot" class="brand-logo-wrap" aria-hidden="true"></span>
         <span class="brand-text">
-          <strong class="brand-wordmark">ATOMIX <span class="brand-version">LAB</span></strong>
-          <span class="brand-sub">Oliy Fizika &amp; 3D Kvant Observatoriya</span>
+          <strong class="brand-wordmark">ATOMIX <span class="brand-version">4.0</span></strong>
+          <span class="brand-sub">ETHITH Solutions · Oliy Fan Akademiyasi</span>
         </span>
       </a>
 
-      <button id="hero-toggle-btn" class="observatory-pill" type="button" title="Kvant Observatoriya vitrinasini ochish/yopish">
+      <button id="nav-home-btn" class="btn-3d btn-3d-sm nav-home-btn" type="button" title="Kirish sahifasiga qaytish">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+        </svg>
+        <span>Bosh sahifa</span>
+      </button>
+
+      <button id="top-enter-btn" class="btn-3d enter-btn-3d" type="button" title="Fizika yoki Kimyo akademiyasini tanlash">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" y1="12" x2="3" y2="12" />
+        </svg>
+        <span>KIRISH</span>
+      </button>
+
+      <button id="subject-pill" class="observatory-pill btn-3d-subtle" type="button" title="Fan akademiyasini almashtirish" hidden>
+        <span class="pulse-dot"></span>
+        <span id="subject-pill-label">Fizika</span>
+      </button>
+
+      <button id="hero-toggle-btn" class="observatory-pill btn-3d-subtle" type="button" title="Bo‘limlar vitrinasini ochish/yopish" hidden>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="3" width="7" height="7" rx="1.5" />
           <rect x="14" y="3" width="7" height="7" rx="1.5" />
@@ -47,7 +68,7 @@
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
-        <input id="topic-search" class="search-input" type="search" placeholder="Mavzu, qonun yoki formula qidirish..." autocomplete="off" />
+        <input id="topic-search" class="search-input" type="search" placeholder="Fizika yoki Kimyo mavzu, qonun, formula qidirish..." autocomplete="off" />
         <kbd class="kbd-hint">Ctrl K</kbd>
         <div id="search-results" class="search-results" hidden></div>
       </div>
@@ -59,81 +80,193 @@
         </svg>
         <div class="progress-meta">
           <span>Natija</span>
-          <strong id="global-score">0 / 1340</strong>
+          <strong id="global-score">0 / 2440</strong>
         </div>
       </div>
     </div>
 
-    <nav id="section-strip" class="section-strip" aria-label="Fizika bo‘limlari"></nav>
+    <nav id="section-strip" class="section-strip" aria-label="Bo‘limlar navigatsiyasi" hidden></nav>
   </header>
 
-  <div id="app-shell" class="app-shell">
+  <!-- Dedicated Monumental Landing Showcase ("Kirish qismi") -->
+  <main id="landing-portal" class="landing-portal">
+    <section class="landing-hero-book book-folio">
+      <div class="landing-hero-copy">
+        <div class="ethith-monument-banners">
+          <div class="ethith-badge-primary">
+            <span class="pulse-dot"></span>
+            <strong>ETHITH Solutions tomonidan yaratildi</strong>
+          </div>
+          <div class="author-badge-product">
+            ✨ <strong>Muhammadyusuf mahsuloti</strong>
+          </div>
+        </div>
+
+        <h1 class="landing-grand-title">
+          ETHITH Solutions tomonidan yaratildi
+          <span class="landing-grand-sub">Muhammadyusuf mahsuloti — ATOMIX Oliy Fan Koinoti</span>
+        </h1>
+
+        <p class="landing-lead">
+          O‘zbekiston oliy ta’limi va chuqurlashtirilgan maktablar uchun yaratilgan yagona interaktiv 3D laboratoriya, to‘liq akademik darsliklar,
+          2 440 ta intellektual test va 610 ta jamoaviy sinf o‘yini majmuasi. <strong>Fizika</strong> hamda <strong>Kimyo</strong> fanlarini
+          ochiq kodli WebGL simulyatorlarida jonli kuzating va o‘zlashtiring.
+        </p>
+
+        <div class="landing-cta-strip">
+          <button id="landing-enter-btn" class="btn-3d enter-btn-3d btn-3d-lg" type="button">
+            <span>KIRISH — Fanni Tanlash</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn-3d btn-3d-phys" data-choose-subject="physics" type="button">
+            ⚛ Fizika Akademiyasi
+          </button>
+          <button class="btn-3d btn-3d-chem" data-choose-subject="chemistry" type="button">
+            🧪 Kimyo Akademiyasi
+          </button>
+        </div>
+
+        <div class="landing-metrics-bar tabular">
+          <div class="lm-item"><strong>122</strong><span>Akademik mavzu</span></div>
+          <div class="lm-item"><strong>13</strong><span>Fundamental bo‘lim</span></div>
+          <div class="lm-item"><strong>2 440</strong><span>Bosqichli test</span></div>
+          <div class="lm-item"><strong>610</strong><span>3D Jamoaviy o‘yin</span></div>
+        </div>
+      </div>
+
+      <div class="landing-hologram-box">
+        <canvas id="landing-atom-canvas" class="hero-atom-canvas"></canvas>
+        <div class="hud-chip hud-top-left tabular">
+          <span>FIZIKA · KVANT MEXANIKASI</span>
+          <code>iℏ ∂ψ/∂t = Ĥψ</code>
+        </div>
+        <div class="hud-chip hud-bottom-right tabular">
+          <span>KIMYO · TERMODINAMIKA</span>
+          <code>ΔG° = ΔH° − TΔS°</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dual Subject Book-Portals -->
+    <section class="landing-academies-grid">
+      <article class="academy-book-card book-folio phys-card">
+        <div class="ac-top-tag">1-YO‘NALISH · FIZIKA KOINOTI</div>
+        <h2>Fizika Akademiyasi</h2>
+        <p>Kinematika, dinamika, termodinamika, elektr va magnetizm, optika, nisbiylik nazariyasi, kvant va astrofizikaning barcha 67 ta mavzusi.</p>
+        <ul class="ac-specs">
+          <li><strong>8 ta bo‘lim</strong> · 67 ta batafsil nazariya va hisoblagich</li>
+          <li><strong>Effectuall · Cannon-es · Three.js Fluids · WebGL2</strong> 3D stendlari</li>
+          <li><strong>1 340 ta test savoli</strong> · 335 ta 2-jamoaviy 3D duel o‘yini</li>
+        </ul>
+        <button class="btn-3d btn-3d-phys btn-3d-full" data-choose-subject="physics" type="button">
+          Fizikaga Kirish (67 mavzu) →
+        </button>
+      </article>
+
+      <article class="academy-book-card book-folio chem-card">
+        <div class="ac-top-tag">2-YO‘NALISH · KIMYO KOINOTI</div>
+        <h2>Kimyo Akademiyasi</h2>
+        <p>Umumiy va stexiometrik kimyo, VSEPR va davriy qonun, kinetika, muvozanat, eritmalar, pH, elektrokimyo, noorganik, organik va biokimyo.</p>
+        <ul class="ac-specs">
+          <li><strong>5 ta bo‘lim</strong> · 55 ta to‘liq akademik mavzu</li>
+          <li><strong>3Dmol.js · MolView · PhET · ChemCollective · Amrita OLabs</strong></li>
+          <li><strong>1 100 ta test savoli</strong> · 275 ta 2-jamoaviy 3D duel o‘yini</li>
+        </ul>
+        <button class="btn-3d btn-3d-chem btn-3d-full" data-choose-subject="chemistry" type="button">
+          Kimyoga Kirish (55 mavzu) →
+        </button>
+      </article>
+    </section>
+
+    <!-- Open Source Stack Info -->
+    <section class="landing-engines-panel book-folio">
+      <div class="le-head">
+        <span class="tg-tag">OCHIQ KODLI ILMIY SIMULYATSIYA DVIGATELLARI</span>
+        <h3>Platformaga biriktirilgan jahon darajasidagi virtual laboratoriyalar</h3>
+      </div>
+      <div class="le-badges">
+        <div class="le-pill"><strong>Effectuall 3D</strong><span>Interactive WebGL Physics</span></div>
+        <div class="le-pill"><strong>cx20 WebGL Physics</strong><span>Cannon-es Rigid Body</span></div>
+        <div class="le-pill"><strong>Three.js PBF Fluids</strong><span>Particle Hydrodynamics</span></div>
+        <div class="le-pill"><strong>mbsaloka WebGL2</strong><span>Cloth &amp; Soft Body</span></div>
+        <div class="le-pill"><strong>3Dmol.js &amp; MolView</strong><span>3D VSEPR &amp; Kristall</span></div>
+        <div class="le-pill"><strong>PhET · ChemCollective</strong><span>Titrlash, pH &amp; Reaksiyalar</span></div>
+        <div class="le-pill"><strong>Amrita OLabs</strong><span>Alanga va Sifat Analizi</span></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Main Subject Workspace Shell -->
+  <div id="app-shell" class="app-shell" hidden>
     <div id="drawer-backdrop" class="drawer-backdrop"></div>
     <aside id="sidebar" class="sidebar" aria-label="Mavzular mundarijasi"></aside>
 
     <main class="workspace">
-      <!-- Luxury Quantum Observatory Showcase -->
+      <!-- Subject Bento Observatory Deck -->
       <section id="hero-observatory" class="hero-observatory">
-        <div class="hero-deck glass-card">
+        <div class="hero-deck glass-card book-folio">
           <div class="hero-copy">
             <div class="hero-status-row">
               <span class="live-dot-badge">
                 <span class="pulse-dot"></span>
-                WebGL / WebGPU Jonli Laboratoriya
+                <span id="hero-subject-tag">Fizika 3D Laboratoriya</span>
               </span>
-              <span class="open-engines-tag">Effectuall · Cannon-es · Three.js PBF · WebGL2</span>
+              <span class="open-engines-tag" id="hero-engines-tag">Effectuall · Cannon-es · Three.js PBF · WebGL2</span>
             </div>
 
-            <h1 class="hero-headline">
+            <h1 class="hero-headline" id="hero-headline">
               Oliy Fizika va 3D Virtual Tajribalar Koinoti
             </h1>
-            <p class="hero-lead">
-              Mexanikadan Kvant va Astrofizikagacha bo‘lgan 8 ta fundamental bo‘lim, 67 ta akademik mavzu, 70 dan ortiq ochiq kodli 3D laboratoriya stendlari hamda 1 340 ta intellektual test — yagona shaffof tizimda.
+            <p class="hero-lead" id="hero-lead">
+              Mexanikadan Kvant va Astrofizikagacha bo‘lgan 8 ta fundamental bo‘lim, 67 ta akademik mavzu, ochiq kodli 3D laboratoriya stendlari hamda 1 340 ta intellektual test.
             </p>
 
-            <div class="hero-metrics-row tabular">
+            <div class="hero-metrics-row tabular" id="hero-metrics-row">
               <div class="metric-pill"><strong>8</strong><span>Bo‘lim</span></div>
               <div class="metric-pill"><strong>67</strong><span>Akademik mavzu</span></div>
-              <div class="metric-pill"><strong>77+</strong><span>3D Simulyatsiya</span></div>
+              <div class="metric-pill"><strong>335</strong><span>Jamoaviy o‘yin</span></div>
               <div class="metric-pill"><strong>1 340</strong><span>Test savoli</span></div>
             </div>
 
             <div class="hero-cta-row">
-              <button id="cta-start-study" class="btn btn-glow" type="button">
+              <button id="cta-start-study" class="btn-3d btn-3d-primary" type="button">
                 <span>Darsni boshlash</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
               </button>
-              <button id="cta-open-sim" class="btn btn-glass" type="button">
+              <button id="cta-open-sim" class="btn-3d" type="button">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 <span>3D Simulyatsiyaga kirish</span>
               </button>
-              <button id="cta-collapse-hero" class="btn btn-ghost" type="button">Vitrinani yig‘ish</button>
+              <button id="cta-open-games" class="btn-3d" type="button">
+                🎮 <span>Jamoaviy O‘yinlar</span>
+              </button>
+              <button id="cta-collapse-hero" class="btn-3d btn-3d-sm" type="button">Vitrinani yig‘ish</button>
             </div>
           </div>
 
           <div class="hero-hologram-stage">
             <canvas id="hero-atom-canvas" class="hero-atom-canvas"></canvas>
             <div class="hud-chip hud-top-left tabular">
-              <span>TO‘LQIN FUNKSIYASI</span>
-              <code>iℏ ∂ψ/∂t = Ĥψ</code>
+              <span id="hud-left-title">TO‘LQIN FUNKSIYASI</span>
+              <code id="hud-left-eq">iℏ ∂ψ/∂t = Ĥψ</code>
             </div>
             <div class="hud-chip hud-bottom-right tabular">
-              <span>Nisbiylik energiyasi</span>
-              <code>E² = (pc)² + (m₀c²)²</code>
+              <span id="hud-right-title">Nisbiylik energiyasi</span>
+              <code id="hud-right-eq">E² = (pc)² + (m₀c²)²</code>
             </div>
           </div>
         </div>
 
         <div class="bento-header-row">
-          <h2>Fundamental Fizika Bo‘limlari Xaritasi</h2>
-          <span>Kerakli bo‘limni tanlang — darhol mavzu, 3D tajriba va testga o‘tasiz</span>
+          <h2 id="bento-heading">Fundamental Bo‘limlar Xaritasi</h2>
+          <span>Kerakli bo‘limni tanlang — darhol mavzu, 3D tajriba, test va jamoaviy o‘yinlarga o‘tasiz</span>
         </div>
         <div id="hero-bento-grid" class="bento-grid"></div>
       </section>
 
       <!-- Active Topic Workspace -->
       <section id="topic-stage" class="topic-stage">
-        <div class="topic-header glass-card">
+        <div class="topic-header glass-card book-folio">
           <div class="topic-header-main">
             <div id="topic-sec-emblem" class="topic-sec-emblem" aria-hidden="true"></div>
             <div>
@@ -143,36 +276,86 @@
             </div>
           </div>
           <div class="topic-nav-btns">
-            <button id="prev-topic-btn" class="btn btn-glass" type="button">← Oldingi</button>
-            <button id="next-topic-btn" class="btn btn-glow" type="button">Keyingi →</button>
+            <button id="prev-topic-btn" class="btn-3d btn-3d-sm" type="button">← Oldingi</button>
+            <button id="next-topic-btn" class="btn-3d btn-3d-primary btn-3d-sm" type="button">Keyingi →</button>
           </div>
         </div>
 
         <div class="tabs-bar" role="tablist" aria-label="Mavzu bo‘limlari">
-          <button class="tab-btn active" data-tab="theory" role="tab" aria-selected="true" type="button">
+          <button class="tab-btn btn-3d-tab active" data-tab="theory" role="tab" aria-selected="true" type="button">
             <span class="tab-num">01</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
             <span class="tab-text-full">Mavzuga oid ma’lumot</span>
           </button>
-          <button class="tab-btn" data-tab="sim" role="tab" aria-selected="false" type="button">
+          <button class="tab-btn btn-3d-tab" data-tab="sim" role="tab" aria-selected="false" type="button">
             <span class="tab-num">02</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             <span class="tab-text-full">Virtual Simulyatsiya</span>
           </button>
-          <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false" type="button">
+          <button class="tab-btn btn-3d-tab" data-tab="quiz" role="tab" aria-selected="false" type="button">
             <span class="tab-num">03</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             <span class="tab-text-full">Test savollari (20 ta)</span>
+          </button>
+          <button class="tab-btn btn-3d-tab" data-tab="games" role="tab" aria-selected="false" type="button">
+            <span class="tab-num">04</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="4"/><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15.5" cy="11" r="1"/><circle cx="17.5" cy="13" r="1"/></svg>
+            <span class="tab-text-full">Jamoaviy O‘yinlar (5 ta)</span>
           </button>
         </div>
 
         <section id="tab-panel-theory"></section>
         <section id="tab-panel-sim" hidden></section>
         <section id="tab-panel-quiz" hidden></section>
+        <section id="tab-panel-games" hidden></section>
       </section>
     </main>
   </div>
 
-  <script type="module" src="js/app.js"></script>
+  <!-- Dual Subject Chooser Modal (Triggered by Top KIRISH Button) -->
+  <div id="subject-chooser-modal" class="chooser-modal" role="dialog" aria-modal="true" aria-labelledby="chooser-title" hidden>
+    <div id="chooser-backdrop" class="chooser-backdrop"></div>
+    <div class="chooser-dialog book-folio">
+      <div class="chooser-top">
+        <div>
+          <span class="tg-tag">ETHITH Solutions · Muhammadyusuf mahsuloti</span>
+          <h2 id="chooser-title">Akademiya Yo‘nalishini Tanlang</h2>
+        </div>
+        <button id="chooser-close-btn" class="btn-3d btn-3d-sm" type="button" aria-label="Yopish">✕ Yopish</button>
+      </div>
+
+      <div class="chooser-cards">
+        <button class="chooser-card phys btn-3d" data-choose-subject="physics" type="button">
+          <div class="cc-icon">⚛</div>
+          <div class="cc-kicker">1-AKADEMIYA</div>
+          <h3>FIZIKA AKADEMIYASI</h3>
+          <p>8 ta bo‘lim · 67 ta akademik mavzu · Effectuall, Cannon-es, PBF &amp; WebGL2 3D tajribalar · 1 340 ta test · 335 ta o‘yin</p>
+          <span class="cc-go">Fizikani ochish →</span>
+        </button>
+
+        <button class="chooser-card chem btn-3d" data-choose-subject="chemistry" type="button">
+          <div class="cc-icon">🧪</div>
+          <div class="cc-kicker">2-AKADEMIYA</div>
+          <h3>KIMYO AKADEMIYASI</h3>
+          <p>5 ta bo‘lim · 55 ta akademik mavzu · 3Dmol.js, MolView, PhET, ChemCollective &amp; OLabs · 1 100 ta test · 275 ta o‘yin</p>
+          <span class="cc-go">Kimyoni ochish →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Persistent English Attribution Footer -->
+  <footer class="atomix-footer">
+    <div class="atomix-footer-inner">
+      <div class="af-left">
+        <strong>ETHITH Solutions tomonidan yaratildi</strong> · <span>Muhammadyusuf mahsuloti</span>
+      </div>
+      <div class="af-right">
+        Created by Jo'raboyev Muhammadyusuf
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/app.js?v=4.0"></script>
 </body>
 </html>

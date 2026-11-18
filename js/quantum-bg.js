@@ -149,13 +149,88 @@ export const SECTION_LOGOS = {
     <circle cx="10" cy="11" r="1.6" fill="#f8fafc"/>
     <circle cx="39" cy="36" r="1.4" fill="#38bdf8"/>
   </svg>`,
+
+  // Chemistry 1. Umumiy va Nazariy Kimyo — Flask + VSEPR Electron Orbit
+  'csec-1': `
+  <svg viewBox="0 0 48 48" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 8H29M21 8V18L11.5 34.5C10.5 36.3 11.8 38.5 13.9 38.5H34.1C36.2 38.5 37.5 36.3 36.5 34.5L27 18V8" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M14.5 29.5H33.5L36 34.2C36.4 35.1 35.8 36 34.8 36H13.2C12.2 36 11.6 35.1 12 34.2L14.5 29.5Z" fill="rgba(16,185,129,0.28)"/>
+    <circle cx="21" cy="25" r="2.1" fill="#34d399"/>
+    <circle cx="27" cy="21" r="1.7" fill="#22d3ee"/>
+    <circle cx="24" cy="14" r="1.5" fill="#facc15"/>
+  </svg>`,
+
+  // Chemistry 2. Fizik Kimyo — Gibbs Activation Curve & Galvanic Electrode
+  'csec-2': `
+  <svg viewBox="0 0 48 48" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 10V38H41" stroke="rgba(148,163,184,0.55)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M10 30C15 30 18 13 24 13C30 13 33 34 39 34" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M10 30C16 30 19 21 24 21C29 21 33 34 39 34" stroke="#facc15" stroke-width="1.7" stroke-dasharray="3 2.5" stroke-linecap="round"/>
+    <circle cx="24" cy="13" r="2.6" fill="#06b6d4"/>
+    <circle cx="24" cy="21" r="2.4" fill="#facc15"/>
+  </svg>`,
+
+  // Chemistry 3. Noorganik Kimyo — Cubic Crystal Lattice & Flame Spectrum
+  'csec-3': `
+  <svg viewBox="0 0 48 48" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="24,8 38,16 38,32 24,40 10,32 10,16" stroke="#f59e0b" stroke-width="1.7" fill="rgba(245,158,11,0.12)" stroke-linejoin="round"/>
+    <path d="M10 16L24 24L38 16M24 24V40" stroke="#fbbf24" stroke-width="1.5"/>
+    <circle cx="24" cy="8" r="2.6" fill="#fbbf24"/>
+    <circle cx="24" cy="24" r="3" fill="#38bdf8"/>
+    <circle cx="10" cy="32" r="2.4" fill="#34d399"/>
+    <circle cx="38" cy="32" r="2.4" fill="#f472b6"/>
+  </svg>`,
+
+  // Chemistry 4. Organik Kimyo — Aromatic Benzene Hexagon & Resonance Ring
+  'csec-4': `
+  <svg viewBox="0 0 48 48" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="24,8 38,16 38,32 24,40 10,32 10,16" stroke="#ec4899" stroke-width="2.1" fill="rgba(236,72,153,0.14)" stroke-linejoin="round"/>
+    <circle cx="24" cy="24" r="7.5" stroke="#f472b6" stroke-width="1.7" stroke-dasharray="3.5 2"/>
+    <line x1="24" y1="3" x2="24" y2="8" stroke="#f9a8d4" stroke-width="2" stroke-linecap="round"/>
+    <line x1="38" y1="32" x2="43" y2="35" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="24" cy="24" r="2.3" fill="#fdf2f8"/>
+  </svg>`,
+
+  // Chemistry 5. Amaliy, Sanoat va Bioorganik Kimyo — DNA Helix & Bio-Reactor
+  'csec-5': `
+  <svg viewBox="0 0 48 48" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 8C14 16 34 16 34 24C34 32 14 32 14 40" stroke="#8b5cf6" stroke-width="2.1" stroke-linecap="round"/>
+    <path d="M34 8C34 16 14 16 14 24C14 32 34 32 34 40" stroke="#22d3ee" stroke-width="2.1" stroke-linecap="round"/>
+    <line x1="16" y1="12" x2="32" y2="12" stroke="#a78bfa" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="18" y1="20" x2="30" y2="20" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="18" y1="28" x2="30" y2="28" stroke="#34d399" stroke-width="1.6" stroke-linecap="round"/>
+    <line x1="16" y1="36" x2="32" y2="36" stroke="#f472b6" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>`,
 };
+
+const ICON_3DMOL = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#10b981" stroke-width="1.9"><circle cx="12" cy="7" r="3"/><circle cx="6.5" cy="16.5" r="2.7"/><circle cx="17.5" cy="16.5" r="2.7"/><path d="M10.4 9.5L7.9 14.1M13.6 9.5L16.1 14.1"/></svg>`;
+const ICON_CHEM_BENCH = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#34d399" stroke-width="1.9"><path d="M9 3H15M10 3V9L5.5 17.5A2 2 0 0 0 7.2 20.5H16.8A2 2 0 0 0 18.5 17.5L14 9V3"/><path d="M7.5 15H16.5"/></svg>`;
+const ICON_PHET = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f59e0b" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(35 12 12)"/><circle cx="12" cy="12" r="2" fill="#f59e0b"/></svg>`;
 
 export const ENGINE_LOGOS = {
   'Effectuall 3D Lab': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="1.9"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z"/><path d="M12 22V12M21 7L12 12L3 7"/></svg>`,
   'cx20 Cannon-es 3D': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#34d399" stroke-width="1.9"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4"/></svg>`,
   'Three.js Particle Fluids (PBF)': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#38bdf8" stroke-width="1.9"><path d="M12 2.5C12 2.5 5 10.2 5 15a7 7 0 0 0 14 0c0-4.8-7-12.5-7-12.5Z"/></svg>`,
   'mbsaloka WebGL2': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fb923c" stroke-width="1.9"><circle cx="8.5" cy="12" r="4.5"/><circle cx="16.5" cy="12" r="3.5"/></svg>`,
+  '3Dmol.js': ICON_3DMOL,
+  '3Dmol.js · MolView': ICON_3DMOL,
+  '3Dmol.js · PhET': ICON_3DMOL,
+  '3Dmol.js · ChemCollective': ICON_3DMOL,
+  'ChemCollective': ICON_CHEM_BENCH,
+  'ChemCollective · PhET': ICON_CHEM_BENCH,
+  'ChemCollective · Amrita OLabs': ICON_CHEM_BENCH,
+  'Amrita OLabs · PhET': ICON_CHEM_BENCH,
+  'Amrita OLabs · VLab': ICON_CHEM_BENCH,
+  'VLab': ICON_CHEM_BENCH,
+  'OLabs': ICON_CHEM_BENCH,
+  'PhET': ICON_PHET,
+  'PhET Interactive Sims': ICON_PHET,
+  'PhET · VLab': ICON_PHET,
+  'PhET Interactive Sims · VLab': ICON_PHET,
+  'PhET · ChemCollective': ICON_PHET,
+  'PhET · Amrita OLabs': ICON_PHET,
+  'PhET · 3Dmol.js': ICON_PHET,
+  'Effectuall 3D Lab · PhET': ICON_PHET,
 };
 
 // Living Cosmic Quantum Canvas (sits behind Liquid Glass layers so blur samples live color & motion)

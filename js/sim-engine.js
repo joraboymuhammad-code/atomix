@@ -1,6 +1,7 @@
 import { drawGrid, drawScope } from './sim-primitives.js';
 import { renderMechThermoMode } from './sim-renderers-mech.js';
 import { renderModernEmOptMode } from './sim-renderers-modern.js';
+import { renderChemMode } from './sim-renderers-chem.js';
 
 export class AtomixParametricSim {
   constructor(canvasEl, telemetryEl) {
@@ -122,7 +123,6 @@ export class AtomixParametricSim {
 
     drawGrid(this.ctx, w, h, 36);
 
-    // Clip physics stage
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.rect(0, 0, w, stageH);
@@ -130,7 +130,8 @@ export class AtomixParametricSim {
 
     const res =
       renderMechThermoMode(this.ctx, this.mode, this.params, this.simTime, w, stageH, this.state) ||
-      renderModernEmOptMode(this.ctx, this.mode, this.params, this.simTime, w, stageH, this.state);
+      renderModernEmOptMode(this.ctx, this.mode, this.params, this.simTime, w, stageH, this.state) ||
+      renderChemMode(this.ctx, this.mode, this.params, this.simTime, w, stageH, this.state);
 
     this.ctx.restore();
 

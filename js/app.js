@@ -76,16 +76,44 @@ function escapeHtml(str) {
     .replaceAll('"', '&quot;');
 }
 
+// Normalize mixed Unicode/LaTeX strings before passing to KaTeX
+function normalizeTexForKatex(expr) {
+  let s = String(expr || '')
+    .replaceAll('\u2212', '-')
+    .replaceAll('·', ' \\cdot ')
+    .replaceAll('×', ' \\times ')
+    .replaceAll('±', ' \\pm ')
+    .replaceAll('≤', ' \\le ')
+    .replaceAll('≥', ' \\ge ')
+    .replaceAll('≠', ' \\neq ')
+    .replaceAll('≈', ' \\approx ')
+    .replaceAll('∝', ' \\propto ')
+    .replaceAll('∞', ' \\infty ')
+    .replaceAll('²', '^2')
+    .replaceAll('³', '^3')
+    .replaceAll('₀', '_0').replaceAll('₁', '_1').replaceAll('₂', '_2')
+    .replaceAll('₃', '_3').replaceAll('₄', '_4').replaceAll('₅', '_5');
+  // Fix bare multi-char exponents like 2^(-t/T) -> 2^{-t/T}
+  s = s.replace(/\^\(([^)]+)\)/g, '^{$1}');
+  // Support Uzbek word subscripts like x_o‘rt, E_chiq -> x_{\text{o‘rt}}
+  s = s.replace(/_([A-Za-z‘’ʻ']{2,})/g, '_{\\text{$1}}');
+  return s;
+}
+
 // Render math using KaTeX when available, with crisp HTML fallback
 function formatTexExpr(expr, displayMode = false) {
   const raw = String(expr || '');
   if (typeof window !== 'undefined' && window.katex && typeof window.katex.renderToString === 'function') {
     try {
-      return window.katex.renderToString(raw, { throwOnError: false, displayMode });
+      return window.katex.renderToString(normalizeTexForKatex(raw), { throwOnError: false, displayMode });
     } catch {
       // Fallback below
     }
   }
+  return formatHtmlMathFallback(raw);
+}
+
+function formatHtmlMathFallback(raw) {
   let s = escapeHtml(raw);
   for (let i = 0; i < 4; i++) {
     s = s.replace(
@@ -120,25 +148,35 @@ function formatTexExpr(expr, displayMode = false) {
     s = s.replaceAll(k, v);
   }
   s = s.replace(/\^\{([^{}]+)\}/g, '<sup>$1</sup>');
+  s = s.replace(/\^\(([^)]+)\)/g, '<sup>($1)</sup>');
   s = s.replace(/\^([A-Za-z0-9\-+′*]+)/g, '<sup>$1</sup>');
   s = s.replace(/_\{([^{}]+)\}/g, '<sub>$1</sub>');
-  s = s.replace(/_([A-Za-z0-9]+)/g, '<sub>$1</sub>');
+  s = s.replace(/_([A-Za-z0-9‘’ʻ']+)/g, '<sub>$1</sub>');
   s = s.replace(/\{|\}/g, '');
   return s;
 }
 
 function renderInlineMath(text) {
   const str = String(text || '');
+  if (!str.includes('$')) return formatHtmlMathFallback(str);
   const parts = str.split('$');
   let out = '';
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 1 && i < parts.length - 1) {
       out += `<span class="inline-math">${formatTexExpr(parts[i], false)}</span>`;
     } else {
-      out += escapeHtml(parts[i]);
+      out += formatHtmlMathFallback(parts[i]);
     }
   }
   return out;
+}
+
+function formatQuizOption(opt) {
+  const raw = String(opt || '').trim();
+  if (raw.includes('$')) return renderInlineMath(raw);
+  // Formula options from curriculum.formulas contain LaTeX commands (\frac, \sqrt, etc.)
+  if (raw.includes('\\')) return formatTexExpr(raw, false);
+  return formatHtmlMathFallback(raw);
 }
 
 function getTopicQuizStats(topic) {
@@ -297,7 +335,7 @@ function renderTheoryTab(topic) {
             <div class="formula-card">
               <div class="formula-math">${formatTexExpr(f.latex, true)}</div>
               <div class="formula-name">${escapeHtml(f.name)}</div>
-              <div class="formula-symbols">${formatTexExpr(f.symbols, false)}</div>
+              <div class="formula-symbols">${renderInlineMath(f.symbols)}</div>
             </div>`
             )
             .join('')}
@@ -541,7 +579,7 @@ function renderQuizTab(topic) {
                           return `
                             <button class="opt-btn ${cls}" data-qidx="${i}" data-oidx="${oi}" ${isAnswered ? 'disabled' : ''} type="button">
                               <span class="opt-letter">${letters[oi]}</span>
-                              <span>${formatTexExpr(opt, false)}</span>
+                              <span>${formatQuizOption(opt)}</span>
                             </button>`;
                         })
                         .join('')}

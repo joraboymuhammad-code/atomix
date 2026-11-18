@@ -1,5 +1,12 @@
 import { SECTIONS, TOPICS, getTopicById, getSectionById } from './data/curriculum.js';
 import { AtomixParametricSim } from './sim-engine.js';
+import {
+  ATOMIX_MAIN_LOGO_SVG,
+  SECTION_LOGOS,
+  ENGINE_LOGOS,
+  initQuantumAmbientCanvas,
+  initHeroAtomCanvas,
+} from './quantum-bg.js';
 
 const STORAGE_KEY = 'atomix_quiz_v1';
 
@@ -12,17 +19,28 @@ const state = {
   answers: loadAnswers(),
   openSections: new Set(['sec-1']),
   calcValues: {},
+  showHero: true,
 };
 
 const els = {
+  brandLogoSlot: document.getElementById('brand-logo-slot'),
   shell: document.getElementById('app-shell'),
   sidebar: document.getElementById('sidebar'),
   sidebarToggle: document.getElementById('sidebar-toggle'),
   drawerBackdrop: document.getElementById('drawer-backdrop'),
+  heroToggleBtn: document.getElementById('hero-toggle-btn'),
+  heroObservatory: document.getElementById('hero-observatory'),
+  heroBentoGrid: document.getElementById('hero-bento-grid'),
+  ctaStartStudy: document.getElementById('cta-start-study'),
+  ctaOpenSim: document.getElementById('cta-open-sim'),
+  ctaCollapseHero: document.getElementById('cta-collapse-hero'),
+  topicStage: document.getElementById('topic-stage'),
+  topicSecEmblem: document.getElementById('topic-sec-emblem'),
   sectionStrip: document.getElementById('section-strip'),
   searchInput: document.getElementById('topic-search'),
   searchResults: document.getElementById('search-results'),
   globalScore: document.getElementById('global-score'),
+  masteryRing: document.getElementById('mastery-ring'),
   breadcrumb: document.getElementById('topic-breadcrumb'),
   title: document.getElementById('topic-title'),
   subtitle: document.getElementById('topic-subtitle'),
@@ -58,10 +76,17 @@ function escapeHtml(str) {
     .replaceAll('"', '&quot;');
 }
 
-// Convert LaTeX snippets into crisp accessible HTML math without external CDN failure
-function formatTexExpr(expr) {
-  let s = escapeHtml(expr);
-  // Replace \frac{a}{b} iteratively (supports single-level braces cleanly)
+// Render math using KaTeX when available, with crisp HTML fallback
+function formatTexExpr(expr, displayMode = false) {
+  const raw = String(expr || '');
+  if (typeof window !== 'undefined' && window.katex && typeof window.katex.renderToString === 'function') {
+    try {
+      return window.katex.renderToString(raw, { throwOnError: false, displayMode });
+    } catch {
+      // Fallback below
+    }
+  }
+  let s = escapeHtml(raw);
   for (let i = 0; i < 4; i++) {
     s = s.replace(
       /\\frac\{([^{}]+)\}\{([^{}]+)\}/g,
@@ -83,7 +108,7 @@ function formatTexExpr(expr) {
     '\\theta': 'θ', '\\Theta': 'Θ', '\\lambda': 'λ', '\\Lambda': 'Λ',
     '\\mu': 'μ', '\\nu': 'ν', '\\xi': 'ξ', '\\pi': 'π', '\\rho': 'ρ',
     '\\sigma': 'σ', '\\Sigma': '∑', '\\tau': 'τ', '\\phi': 'φ', '\\varphi': 'φ',
-    '\\Phi': 'Φ', '\\omega': 'ω', '\\Omega': 'Ω', '\\hbar': 'ℏ',
+    '\\Phi': 'Φ', '\\omega': 'ω', '\\Omega': 'Ω', '\\hbar': 'ℏ', '\\odot': '☉',
     '\\cdot': '·', '\\times': '×', '\\pm': '±', '\\le': '≤', '\\ge': '≥',
     '\\neq': '≠', '\\approx': '≈', '\\propto': '∝', '\\infty': '∞',
     '\\to': '→', '\\Rightarrow': '⇒', '\\perp': '⊥', '\\parallel': '∥',
@@ -108,7 +133,7 @@ function renderInlineMath(text) {
   let out = '';
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 1 && i < parts.length - 1) {
-      out += `<span class="inline-math">${formatTexExpr(parts[i])}</span>`;
+      out += `<span class="inline-math">${formatTexExpr(parts[i], false)}</span>`;
     } else {
       out += escapeHtml(parts[i]);
     }
@@ -138,6 +163,28 @@ function updateGlobalProgress() {
     totalQs += st.total;
   }
   els.globalScore.textContent = `${totalCorrect} / ${totalQs}`;
+  if (els.masteryRing) {
+    const circ = 88;
+    const ratio = totalQs > 0 ? totalCorrect / totalQs : 0;
+    els.masteryRing.setAttribute('stroke-dashoffset', String(circ * (1 - ratio)));
+  }
+}
+
+function renderHeroBento() {
+  if (!els.heroBentoGrid) return;
+  els.heroBentoGrid.innerHTML = SECTIONS.map((sec) => {
+    const secTopics = TOPICS.filter((t) => t.sectionId === sec.id);
+    const firstTopic = secTopics[0];
+    return `
+      <button class="bento-card" style="--card-accent:${sec.accent}" data-bento-topic="${firstTopic.id}" type="button">
+        <div class="bento-top">
+          <div class="bento-icon">${SECTION_LOGOS[sec.id] || ''}</div>
+          <span class="bento-badge tabular">${sec.num}-BO‘LIM · ${secTopics.length} MAVZU</span>
+        </div>
+        <h3 class="bento-title">${escapeHtml(sec.title)}</h3>
+        <p class="bento-desc">${escapeHtml(sec.description)}</p>
+      </button>`;
+  }).join('');
 }
 
 function renderSectionStrip() {
@@ -150,7 +197,8 @@ function renderSectionStrip() {
               style="--sec-color:${sec.accent}"
               data-first-topic="${firstTopic.id}"
               type="button">
-        ${sec.num}. ${sec.shortTitle}
+        ${SECTION_LOGOS[sec.id] || ''}
+        <span>${sec.num}. ${sec.shortTitle}</span>
       </button>`;
   }).join('');
 }
@@ -182,9 +230,9 @@ function renderSidebar() {
     return `
       <div class="sidebar-sec">
         <button class="sec-toggle" data-toggle-sec="${sec.id}" type="button">
-          <span class="sec-dot" style="background:${sec.accent}"></span>
+          <span class="sec-mini-svg">${SECTION_LOGOS[sec.id] || ''}</span>
           <span class="sec-toggle-title">${sec.num}. ${escapeHtml(sec.title)}</span>
-          <span class="sec-count">${secTopics.length}</span>
+          <span class="sec-count tabular">${secTopics.length}</span>
         </button>
         ${isOpen ? `<div class="sec-body">${bodyHtml}</div>` : ''}
       </div>`;
@@ -221,12 +269,12 @@ function renderTheoryTab(topic) {
   els.panelTheory.innerHTML = `
     <div class="theory-stack">
       <div class="panel">
-        <h2 class="panel-title">Nazariy asoslar va fizik mazmun</h2>
+        <h3 class="panel-title"><span class="panel-title-dot"></span>Nazariy asoslar va fizik mazmun</h3>
         <p class="overview-text">${renderInlineMath(th.overview)}</p>
       </div>
 
       <div class="panel">
-        <h2 class="panel-title">Asosiy qonunlar va tamoyillar</h2>
+        <h3 class="panel-title"><span class="panel-title-dot"></span>Asosiy qonunlar va tamoyillar</h3>
         <div class="laws-grid">
           ${th.keyLaws
             .map(
@@ -241,15 +289,15 @@ function renderTheoryTab(topic) {
       </div>
 
       <div class="panel">
-        <h2 class="panel-title">Matematik apparat va asosiy formulalar</h2>
+        <h3 class="panel-title"><span class="panel-title-dot"></span>Matematik apparat va asosiy formulalar</h3>
         <div class="formulas-grid">
           ${th.formulas
             .map(
               (f) => `
             <div class="formula-card">
-              <div class="formula-math">${formatTexExpr(f.latex)}</div>
+              <div class="formula-math">${formatTexExpr(f.latex, true)}</div>
               <div class="formula-name">${escapeHtml(f.name)}</div>
-              <div class="formula-symbols">${formatTexExpr(f.symbols)}</div>
+              <div class="formula-symbols">${formatTexExpr(f.symbols, false)}</div>
             </div>`
             )
             .join('')}
@@ -258,7 +306,7 @@ function renderTheoryTab(topic) {
 
       <div class="two-col-grid">
         <div class="panel">
-          <h2 class="panel-title">Fundamental doimiylar va birliklar</h2>
+          <h3 class="panel-title"><span class="panel-title-dot"></span>Fundamental doimiylar va birliklar</h3>
           <table class="constants-table">
             <thead>
               <tr><th>Kattalik</th><th>Belgi</th><th>Qiymati</th><th>Birlik</th></tr>
@@ -280,7 +328,7 @@ function renderTheoryTab(topic) {
         </div>
 
         <div class="panel">
-          <h2 class="panel-title">Muhandislik va ilmiy qo‘llanilishi</h2>
+          <h3 class="panel-title"><span class="panel-title-dot"></span>Muhandislik va ilmiy qo‘llanilishi</h3>
           <ul class="apps-list">
             ${th.applications.map((a) => `<li>${renderInlineMath(a)}</li>`).join('')}
           </ul>
@@ -291,7 +339,7 @@ function renderTheoryTab(topic) {
         calc
           ? `
       <div class="panel">
-        <h2 class="panel-title">${escapeHtml(calc.title)}</h2>
+        <h3 class="panel-title"><span class="panel-title-dot"></span>${escapeHtml(calc.title)}</h3>
         <div class="calc-formula">${escapeHtml(calc.formulaDisplay)}</div>
         <div class="calc-grid">${calcInputsHtml}</div>
         <div class="calc-result" id="calc-result-box"></div>
@@ -334,6 +382,7 @@ function renderSimTab(topic) {
 
   const show3d = state.simMode === '3d' || state.simMode === 'split';
   const showParam = state.simMode === 'param' || state.simMode === 'split';
+  const engIcon = ENGINE_LOGOS[activeEntry.source] || '';
 
   els.panelSim.innerHTML = `
     <div class="sim-toolbar">
@@ -342,10 +391,10 @@ function renderSimTab(topic) {
         <button class="mode-btn ${state.simMode === 'param' ? 'active' : ''}" data-sim-mode="param" type="button">Parametrik Stend</button>
         <button class="mode-btn ${state.simMode === 'split' ? 'active' : ''}" data-sim-mode="split" type="button">Yonma-yon (Split View)</button>
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <span class="source-badge">${escapeHtml(activeEntry.source)}</span>
-        <button id="sim-reload-btn" class="btn" type="button" ${!show3d ? 'disabled' : ''}>Qayta yuklash</button>
-        <button id="sim-full-btn" class="btn" type="button" ${!show3d ? 'disabled' : ''}>To‘liq ekran</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="source-badge">${engIcon} ${escapeHtml(activeEntry.source)}</span>
+        <button id="sim-reload-btn" class="btn btn-glass" type="button" ${!show3d ? 'disabled' : ''}>Qayta yuklash</button>
+        <button id="sim-full-btn" class="btn btn-glow" type="button" ${!show3d ? 'disabled' : ''}>To‘liq ekran</button>
       </div>
     </div>
 
@@ -365,15 +414,18 @@ function renderSimTab(topic) {
         : ''
     }
 
-    <p style="margin:0 0 14px;font-size:13.8px;color:var(--text-secondary)">${escapeHtml(sim.openSourceNote || '')}</p>
+    <p style="margin:0 0 14px;font-size:14px;color:var(--text-secondary)">${escapeHtml(sim.openSourceNote || '')}</p>
 
     <div class="sim-stage-wrap ${state.simMode === 'split' ? 'split' : ''}">
       ${
         show3d
           ? `<div class="iframe-panel">
               <div class="iframe-head">
-                <span>${escapeHtml(activeEntry.label)}</span>
-                <span style="color:var(--text-muted)">${escapeHtml(activeEntry.url)}</span>
+                <span style="display:inline-flex;align-items:center;gap:8px">
+                  <span class="pulse-dot"></span>
+                  ${escapeHtml(activeEntry.label)}
+                </span>
+                <span style="color:var(--text-muted);font-family:var(--font-mono);font-size:11.5px">${escapeHtml(activeEntry.url)}</span>
               </div>
               <iframe id="sim-iframe" class="sim-iframe" src="${escapeHtml(state.simUrl)}" title="${escapeHtml(activeEntry.label)}" allow="fullscreen; accelerometer; gyroscope"></iframe>
             </div>`
@@ -384,12 +436,12 @@ function renderSimTab(topic) {
           ? `<div class="param-panel">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
                 <div>
-                  <h3 style="margin:0;font-size:15.5px">${escapeHtml(sim.parametric.title)}</h3>
-                  <p style="margin:3px 0 0;font-size:12.5px;color:var(--text-muted)">${escapeHtml(sim.parametric.description)}</p>
+                  <h3 style="margin:0;font-size:16px">${escapeHtml(sim.parametric.title)}</h3>
+                  <p style="margin:3px 0 0;font-size:12.8px;color:var(--text-muted)">${escapeHtml(sim.parametric.description)}</p>
                 </div>
                 <div style="display:flex;gap:8px">
-                  <button id="param-play-btn" class="btn btn-primary" type="button">Pauza / Davom</button>
-                  <button id="param-reset-btn" class="btn" type="button">Qayta boshlash</button>
+                  <button id="param-play-btn" class="btn btn-glow" type="button">Pauza / Davom</button>
+                  <button id="param-reset-btn" class="btn btn-glass" type="button">Qayta boshlash</button>
                 </div>
               </div>
               <div class="param-canvas-box">
@@ -441,18 +493,24 @@ function renderQuizTab(topic) {
       return true;
     });
 
+  const ringOffset = 88 * (1 - stats.correct / stats.total);
+
   els.panelQuiz.innerHTML = `
-    <div class="quiz-header-card">
-      <div class="quiz-stats tabular">
+    <div class="quiz-header-card glass-card">
+      <div class="quiz-stats tabular" style="align-items:center">
+        <svg class="ring-svg" viewBox="0 0 36 36" width="38" height="38">
+          <circle class="ring-track" cx="18" cy="18" r="14" />
+          <circle class="ring-fill" cx="18" cy="18" r="14" stroke-dasharray="88" stroke-dashoffset="${ringOffset}" />
+        </svg>
         <span>Javob berildi: <strong>${stats.answered} / ${stats.total}</strong></span>
         <span>To‘g‘ri javoblar: <strong style="color:var(--success)">${stats.correct}</strong></span>
-        <span>Natija: <strong>${pct}%</strong></span>
+        <span>O‘zlashtirish: <strong>${pct}%</strong></span>
       </div>
       <div class="quiz-filters">
         <button class="filter-btn ${state.quizFilter === 'all' ? 'active' : ''}" data-qfilter="all" type="button">Barchasi (20)</button>
         <button class="filter-btn ${state.quizFilter === 'unanswered' ? 'active' : ''}" data-qfilter="unanswered" type="button">Javobsizlar</button>
         <button class="filter-btn ${state.quizFilter === 'wrong' ? 'active' : ''}" data-qfilter="wrong" type="button">Xato javoblar</button>
-        <button id="quiz-reset-btn" class="btn" type="button">Testni qayta boshlash</button>
+        <button id="quiz-reset-btn" class="btn btn-glass" type="button">Qayta boshlash</button>
       </div>
     </div>
 
@@ -483,7 +541,7 @@ function renderQuizTab(topic) {
                           return `
                             <button class="opt-btn ${cls}" data-qidx="${i}" data-oidx="${oi}" ${isAnswered ? 'disabled' : ''} type="button">
                               <span class="opt-letter">${letters[oi]}</span>
-                              <span>${formatTexExpr(opt)}</span>
+                              <span>${formatTexExpr(opt, false)}</span>
                             </button>`;
                         })
                         .join('')}
@@ -529,11 +587,22 @@ function renderActiveView() {
   const idx = TOPICS.findIndex((t) => t.id === topic.id);
 
   document.documentElement.style.setProperty('--accent', sec.accent);
-  document.documentElement.style.setProperty('--accent-soft', `color-mix(in srgb, ${sec.accent} 13%, transparent)`);
-  document.documentElement.style.setProperty('--accent-border', `color-mix(in srgb, ${sec.accent} 38%, transparent)`);
+  document.documentElement.style.setProperty('--accent-soft', `color-mix(in srgb, ${sec.accent} 14%, transparent)`);
+  document.documentElement.style.setProperty('--accent-border', `color-mix(in srgb, ${sec.accent} 42%, transparent)`);
   state.openSections.add(sec.id);
 
-  els.breadcrumb.textContent = `${sec.num}. ${sec.title} · ${topic.code}`;
+  if (els.heroObservatory) {
+    els.heroObservatory.hidden = !state.showHero;
+  }
+  if (els.heroToggleBtn) {
+    els.heroToggleBtn.classList.toggle('active', state.showHero);
+  }
+
+  if (els.topicSecEmblem) {
+    els.topicSecEmblem.innerHTML = SECTION_LOGOS[sec.id] || '';
+  }
+
+  els.breadcrumb.textContent = `${sec.num}-BO‘LIM · ${sec.title.toUpperCase()} · ${topic.code}`;
   els.title.textContent = topic.title;
   els.subtitle.textContent = topic.subtitle;
   els.prevBtn.disabled = idx <= 0;
@@ -566,7 +635,7 @@ function renderActiveView() {
   syncRouteHash();
 }
 
-function selectTopic(topicId, tabOverride) {
+function selectTopic(topicId, tabOverride, scrollTarget = 'stage') {
   const t = getTopicById(topicId);
   state.topicId = t.id;
   state.simUrl = t.simulation.openSourceUrl;
@@ -574,8 +643,18 @@ function selectTopic(topicId, tabOverride) {
   if (tabOverride) state.tab = tabOverride;
   els.shell.classList.remove('mobile-open');
   renderActiveView();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (scrollTarget === 'stage' && els.topicStage) {
+    els.topicStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
+
+// Mount Atomix emblem, Bento Grid & Ambient Canvases
+if (els.brandLogoSlot) els.brandLogoSlot.innerHTML = ATOMIX_MAIN_LOGO_SVG;
+renderHeroBento();
+initQuantumAmbientCanvas(document.getElementById('quantum-bg-canvas'));
+initHeroAtomCanvas(document.getElementById('hero-atom-canvas'));
 
 // Event Listeners
 els.sidebarToggle.addEventListener('click', () => {
@@ -590,9 +669,40 @@ els.drawerBackdrop.addEventListener('click', () => {
   els.shell.classList.remove('mobile-open');
 });
 
+els.heroToggleBtn?.addEventListener('click', () => {
+  state.showHero = !state.showHero;
+  renderActiveView();
+  if (state.showHero) window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+els.ctaCollapseHero?.addEventListener('click', () => {
+  state.showHero = false;
+  renderActiveView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+els.ctaStartStudy?.addEventListener('click', () => {
+  state.tab = 'theory';
+  renderActiveView();
+  els.topicStage?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+els.ctaOpenSim?.addEventListener('click', () => {
+  state.tab = 'sim';
+  renderActiveView();
+  els.topicStage?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+els.heroBentoGrid?.addEventListener('click', (e) => {
+  const card = e.target.closest('[data-bento-topic]');
+  if (card) {
+    selectTopic(card.dataset.bentoTopic, 'theory', 'stage');
+  }
+});
+
 els.sectionStrip.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-first-topic]');
-  if (btn) selectTopic(btn.dataset.firstTopic);
+  if (btn) selectTopic(btn.dataset.firstTopic, undefined, 'stage');
 });
 
 els.sidebar.addEventListener('click', (e) => {
@@ -605,7 +715,10 @@ els.sidebar.addEventListener('click', (e) => {
     return;
   }
   const topBtn = e.target.closest('[data-topic]');
-  if (topBtn) selectTopic(topBtn.dataset.topic);
+  if (topBtn) {
+    state.showHero = false;
+    selectTopic(topBtn.dataset.topic, undefined, 'top');
+  }
 });
 
 els.tabBtns.forEach((btn) => {
@@ -617,12 +730,33 @@ els.tabBtns.forEach((btn) => {
 
 els.prevBtn.addEventListener('click', () => {
   const idx = TOPICS.findIndex((t) => t.id === state.topicId);
-  if (idx > 0) selectTopic(TOPICS[idx - 1].id);
+  if (idx > 0) selectTopic(TOPICS[idx - 1].id, undefined, 'stage');
 });
 els.nextBtn.addEventListener('click', () => {
   const idx = TOPICS.findIndex((t) => t.id === state.topicId);
-  if (idx < TOPICS.length - 1) selectTopic(TOPICS[idx + 1].id);
+  if (idx < TOPICS.length - 1) selectTopic(TOPICS[idx + 1].id, undefined, 'stage');
 });
+
+// Keyboard shortcut Ctrl+K / '/' to focus search
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    els.searchInput.focus();
+  }
+});
+
+// Pointer spotlight specular reflection on glass cards
+document.addEventListener(
+  'pointermove',
+  (e) => {
+    const card = e.target.closest('.glass-card, .bento-card, .formula-card, .law-box');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+    card.style.setProperty('--my', `${e.clientY - rect.top}px`);
+  },
+  { passive: true }
+);
 
 // Search
 els.searchInput.addEventListener('input', () => {
@@ -641,7 +775,7 @@ els.searchInput.addEventListener('input', () => {
   els.searchResults.hidden = false;
   els.searchResults.innerHTML =
     matches.length === 0
-      ? `<div style="padding:10px;color:var(--text-muted);font-size:13px">Mos mavzu topilmadi.</div>`
+      ? `<div style="padding:12px;color:var(--text-muted);font-size:13px">Mos mavzu topilmadi.</div>`
       : matches
           .map(
             (m) => `
@@ -658,7 +792,8 @@ els.searchResults.addEventListener('click', (e) => {
   if (item) {
     els.searchResults.hidden = true;
     els.searchInput.value = '';
-    selectTopic(item.dataset.searchTopic);
+    state.showHero = false;
+    selectTopic(item.dataset.searchTopic, undefined, 'top');
   }
 });
 
@@ -773,6 +908,13 @@ window.addEventListener('message', (e) => {
 window.addEventListener('hashchange', () => {
   readRouteHash();
   renderActiveView();
+});
+
+// Re-render math once deferred KaTeX script finishes loading
+window.addEventListener('load', () => {
+  if (window.katex) {
+    renderActiveView();
+  }
 });
 
 // Boot

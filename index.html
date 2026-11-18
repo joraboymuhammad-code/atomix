@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Atomix — Oliy Ta’lim Fizika va Virtual 3D Simulyatsiyalar Platformasi</title>
+  <title>Atomix — Oliy Ta’lim Fizika va 3D Virtual Laboratoriya Platformasi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="css/atomix.css" />
 </head>
 <body>
+  <canvas id="quantum-bg-canvas" class="quantum-bg-canvas" aria-hidden="true"></canvas>
+
   <header class="topbar">
     <div class="topbar-inner">
-      <button id="sidebar-toggle" class="icon-btn" type="button" title="Mundarija panelini yopish/ochish" aria-label="Mundarija paneli">
+      <button id="sidebar-toggle" class="icon-btn" type="button" title="Mundarija paneli" aria-label="Mundarija panelini yopish yoki ochish">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <line x1="3" y1="6" x2="21" y2="6" />
           <line x1="3" y1="12" x2="21" y2="12" />
@@ -21,31 +25,42 @@
       </button>
 
       <a class="brand" href="#topic=1-1&tab=theory">
-        <span class="brand-logo" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(35 12 12)" />
-            <ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(-35 12 12)" />
-            <circle cx="12" cy="12" r="2.2" fill="currentColor" />
-          </svg>
-        </span>
+        <span id="brand-logo-slot" class="brand-logo-wrap" aria-hidden="true"></span>
         <span class="brand-text">
-          <strong>Atomix</strong>
-          <span>Oliy Fizika &amp; 3D Laboratoriya</span>
+          <strong class="brand-wordmark">ATOMIX <span class="brand-version">LAB</span></strong>
+          <span class="brand-sub">Oliy Fizika &amp; 3D Kvant Observatoriya</span>
         </span>
       </a>
 
-      <div class="search-wrap">
+      <button id="hero-toggle-btn" class="observatory-pill" type="button" title="Kvant Observatoriya vitrinasini ochish/yopish">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1.5" />
+          <rect x="14" y="3" width="7" height="7" rx="1.5" />
+          <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          <rect x="14" y="14" width="7" height="7" rx="1.5" />
+        </svg>
+        <span>Observatoriya</span>
+      </button>
+
+      <div class="search-wrap">
+        <svg class="search-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
-        <input id="topic-search" class="search-input" type="search" placeholder="67 ta mavzu, formula yoki qonun bo‘yicha qidirish..." autocomplete="off" />
+        <input id="topic-search" class="search-input" type="search" placeholder="Mavzu, qonun yoki formula qidirish..." autocomplete="off" />
+        <kbd class="kbd-hint">Ctrl K</kbd>
         <div id="search-results" class="search-results" hidden></div>
       </div>
 
-      <div class="global-progress tabular" title="Umumiy test natijalari">
-        <span>Testlar:</span>
-        <strong id="global-score">0 / 1340</strong>
+      <div class="global-progress tabular" title="Umumiy test o‘zlashtirish darajasi">
+        <svg class="ring-svg" viewBox="0 0 36 36" width="28" height="28">
+          <circle class="ring-track" cx="18" cy="18" r="14" />
+          <circle id="mastery-ring" class="ring-fill" cx="18" cy="18" r="14" stroke-dasharray="88" stroke-dashoffset="88" />
+        </svg>
+        <div class="progress-meta">
+          <span>Natija</span>
+          <strong id="global-score">0 / 1340</strong>
+        </div>
       </div>
     </div>
 
@@ -57,36 +72,104 @@
     <aside id="sidebar" class="sidebar" aria-label="Mavzular mundarijasi"></aside>
 
     <main class="workspace">
-      <div class="topic-header">
-        <div>
-          <div id="topic-breadcrumb" class="topic-breadcrumb tabular"></div>
-          <h1 id="topic-title" class="topic-title"></h1>
-          <p id="topic-subtitle" class="topic-subtitle"></p>
-        </div>
-        <div class="topic-nav-btns">
-          <button id="prev-topic-btn" class="btn" type="button">← Oldingi mavzu</button>
-          <button id="next-topic-btn" class="btn btn-primary" type="button">Keyingi mavzu →</button>
-        </div>
-      </div>
+      <!-- Luxury Quantum Observatory Showcase -->
+      <section id="hero-observatory" class="hero-observatory">
+        <div class="hero-deck glass-card">
+          <div class="hero-copy">
+            <div class="hero-status-row">
+              <span class="live-dot-badge">
+                <span class="pulse-dot"></span>
+                WebGL / WebGPU Jonli Laboratoriya
+              </span>
+              <span class="open-engines-tag">Effectuall · Cannon-es · Three.js PBF · WebGL2</span>
+            </div>
 
-      <div class="tabs-bar" role="tablist" aria-label="Mavzu bo‘limlari">
-        <button class="tab-btn active" data-tab="theory" role="tab" aria-selected="true" type="button">
-          <span class="tab-num">1</span>
-          <span class="tab-text-full">Mavzuga oid ma’lumot</span>
-        </button>
-        <button class="tab-btn" data-tab="sim" role="tab" aria-selected="false" type="button">
-          <span class="tab-num">2</span>
-          <span class="tab-text-full">Virtual Simulyatsiya</span>
-        </button>
-        <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false" type="button">
-          <span class="tab-num">3</span>
-          <span class="tab-text-full">Test savollari (20 ta)</span>
-        </button>
-      </div>
+            <h1 class="hero-headline">
+              Oliy Fizika va 3D Virtual Tajribalar Koinoti
+            </h1>
+            <p class="hero-lead">
+              Mexanikadan Kvant va Astrofizikagacha bo‘lgan 8 ta fundamental bo‘lim, 67 ta akademik mavzu, 70 dan ortiq ochiq kodli 3D laboratoriya stendlari hamda 1 340 ta intellektual test — yagona shaffof tizimda.
+            </p>
 
-      <section id="tab-panel-theory"></section>
-      <section id="tab-panel-sim" hidden></section>
-      <section id="tab-panel-quiz" hidden></section>
+            <div class="hero-metrics-row tabular">
+              <div class="metric-pill"><strong>8</strong><span>Bo‘lim</span></div>
+              <div class="metric-pill"><strong>67</strong><span>Akademik mavzu</span></div>
+              <div class="metric-pill"><strong>77+</strong><span>3D Simulyatsiya</span></div>
+              <div class="metric-pill"><strong>1 340</strong><span>Test savoli</span></div>
+            </div>
+
+            <div class="hero-cta-row">
+              <button id="cta-start-study" class="btn btn-glow" type="button">
+                <span>Darsni boshlash</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </button>
+              <button id="cta-open-sim" class="btn btn-glass" type="button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>3D Simulyatsiyaga kirish</span>
+              </button>
+              <button id="cta-collapse-hero" class="btn btn-ghost" type="button">Vitrinani yig‘ish</button>
+            </div>
+          </div>
+
+          <div class="hero-hologram-stage">
+            <canvas id="hero-atom-canvas" class="hero-atom-canvas"></canvas>
+            <div class="hud-chip hud-top-left tabular">
+              <span>TO‘LQIN FUNKSIYASI</span>
+              <code>iℏ ∂ψ/∂t = Ĥψ</code>
+            </div>
+            <div class="hud-chip hud-bottom-right tabular">
+              <span>Nisbiylik energiyasi</span>
+              <code>E² = (pc)² + (m₀c²)²</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-header-row">
+          <h2>Fundamental Fizika Bo‘limlari Xaritasi</h2>
+          <span>Kerakli bo‘limni tanlang — darhol mavzu, 3D tajriba va testga o‘tasiz</span>
+        </div>
+        <div id="hero-bento-grid" class="bento-grid"></div>
+      </section>
+
+      <!-- Active Topic Workspace -->
+      <section id="topic-stage" class="topic-stage">
+        <div class="topic-header glass-card">
+          <div class="topic-header-main">
+            <div id="topic-sec-emblem" class="topic-sec-emblem" aria-hidden="true"></div>
+            <div>
+              <div id="topic-breadcrumb" class="topic-breadcrumb tabular"></div>
+              <h2 id="topic-title" class="topic-title"></h2>
+              <p id="topic-subtitle" class="topic-subtitle"></p>
+            </div>
+          </div>
+          <div class="topic-nav-btns">
+            <button id="prev-topic-btn" class="btn btn-glass" type="button">← Oldingi</button>
+            <button id="next-topic-btn" class="btn btn-glow" type="button">Keyingi →</button>
+          </div>
+        </div>
+
+        <div class="tabs-bar" role="tablist" aria-label="Mavzu bo‘limlari">
+          <button class="tab-btn active" data-tab="theory" role="tab" aria-selected="true" type="button">
+            <span class="tab-num">01</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <span class="tab-text-full">Mavzuga oid ma’lumot</span>
+          </button>
+          <button class="tab-btn" data-tab="sim" role="tab" aria-selected="false" type="button">
+            <span class="tab-num">02</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span class="tab-text-full">Virtual Simulyatsiya</span>
+          </button>
+          <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false" type="button">
+            <span class="tab-num">03</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span class="tab-text-full">Test savollari (20 ta)</span>
+          </button>
+        </div>
+
+        <section id="tab-panel-theory"></section>
+        <section id="tab-panel-sim" hidden></section>
+        <section id="tab-panel-quiz" hidden></section>
+      </section>
     </main>
   </div>
 

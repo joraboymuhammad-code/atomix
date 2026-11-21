@@ -32,12 +32,11 @@
     }
     a.ext-btn:hover { border-color: #fbbf24; color: #fff; }
     .frame-wrap { position: relative; flex: 1; background: #050814; }
-    iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: #050814; }
+    iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: transparent; z-index: 2; }
     .loader {
       position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
-      font-size: 13.5px; color: #94a3b8; z-index: 1;
+      font-size: 13.5px; color: #94a3b8; z-index: 1; background: #050814;
     }
-    iframe { z-index: 2; }
   </style>
 </head>
 <body>
@@ -106,13 +105,25 @@
     const params = new URLSearchParams(location.search);
     let cur = CATALOG[params.get('sim')] ? params.get('sim') : 'circuit-construction-kit-dc';
 
+    const frameEl = document.getElementById('ext-frame');
+    const loaderEl = document.querySelector('.loader');
+    let loaderTimer = null;
+    function hideLoader() {
+      if (loaderTimer) { clearTimeout(loaderTimer); loaderTimer = null; }
+      if (loaderEl) loaderEl.style.display = 'none';
+    }
+    frameEl.addEventListener('load', hideLoader);
+
     function load(k) {
       cur = k; sel.value = k;
       const item = CATALOG[k];
       document.getElementById('sim-src').textContent = item.src;
       document.getElementById('sim-title').textContent = item.title;
       document.getElementById('ext-link').href = item.url;
-      document.getElementById('ext-frame').src = item.url;
+      if (loaderEl) loaderEl.style.display = 'grid';
+      if (loaderTimer) clearTimeout(loaderTimer);
+      loaderTimer = setTimeout(hideLoader, 3500);
+      frameEl.src = item.url;
     }
 
     sel.addEventListener('change', () => load(sel.value));

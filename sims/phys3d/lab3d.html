@@ -509,12 +509,13 @@
           g.add(e); return { m: e, off: i / 18 };
         });
         updater = (t) => {
-          const I = values.volt / values.res;
-          resMat.emissiveIntensity = Math.min(2.2, (I * values.volt) / 30);
+          const I = (values.volt || 12) / Math.max(0.1, values.res || 6);
+          resMat.emissiveIntensity = Math.min(2.2, (I * (values.volt || 12)) / 30);
           electrons.forEach((e) => {
-            const u = (e.off + t * I * 0.08) % 1;
-            const seg = Math.floor(u * 4), f = (u * 4) - seg;
-            e.m.position.copy(pts[seg]).lerp(pts[(seg+1)%4], f);
+            const u = ((e.off + t * I * 0.08) % 1 + 1) % 1;
+            const seg = Math.floor(u * 4) % 4;
+            const f = (u * 4) - Math.floor(u * 4);
+            e.m.position.copy(pts[seg]).lerp(pts[(seg + 1) % 4], f);
           });
         };
       } else if (key === 'em_wave_3d') {
@@ -715,7 +716,7 @@
     let lastTs = performance.now();
     function animate(ts) {
       requestAnimationFrame(animate);
-      const dt = Math.min(0.05, (ts - lastTs) / 1000);
+      const dt = Math.max(0, Math.min(0.05, (ts - lastTs) / 1000));
       lastTs = ts;
       if (!paused) elapsed += dt;
       if (updater) updater(elapsed);

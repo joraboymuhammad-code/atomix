@@ -17,7 +17,7 @@ import { CHEM_SEC4_TOPICS } from './chem-sec4.js';
 import { CHEM_SEC5_TOPICS } from './chem-sec5.js';
 import { CHEM_SIM_PROFILES } from './chem-sims-map.js';
 import { PHYSICS_SIM_PROFILES } from './physics-sims-map.js';
-import { PHYSICS_BOOKS_DB } from './physics-books-db.js';
+import { PHYSICS_BOOKS_DB } from './physics-books-db.js?v=7.0';
 
 export const PHYSICS_SECTIONS = [
   {

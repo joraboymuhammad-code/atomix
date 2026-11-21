@@ -7,9 +7,9 @@ import {
   ALL_TOPICS,
   getTopicById,
   getSectionById,
-} from './data/curriculum.js?v=5.0';
-import { AtomixParametricSim } from './sim-engine.js?v=5.0';
-import { AtomixTeamGames } from './team-games.js?v=5.0';
+} from './data/curriculum.js?v=6.0';
+import { AtomixParametricSim } from './sim-engine.js?v=6.0';
+import { AtomixTeamGames } from './team-games.js?v=6.0';
 import {
   ATOMIX_MAIN_LOGO_SVG,
   SECTION_LOGOS,
@@ -17,7 +17,7 @@ import {
   initQuantumAmbientCanvas,
   initHeroAtomCanvas,
   initMiniAcademyCanvases,
-} from './quantum-bg.js?v=5.0';
+} from './quantum-bg.js?v=6.0';
 
 const STORAGE_KEY = 'atomix_quiz_v2';
 
@@ -89,6 +89,12 @@ const els = {
   panelSim: document.getElementById('tab-panel-sim'),
   panelQuiz: document.getElementById('tab-panel-quiz'),
   panelGames: document.getElementById('tab-panel-games'),
+  figLightbox: document.getElementById('figure-lightbox'),
+  figLbBackdrop: document.getElementById('fig-lb-backdrop'),
+  figLbClose: document.getElementById('fig-lb-close'),
+  figLbImg: document.getElementById('fig-lb-img'),
+  figLbCaption: document.getElementById('fig-lb-caption'),
+  figLbMeta: document.getElementById('fig-lb-meta'),
 };
 
 let paramSim = null;
@@ -344,12 +350,69 @@ function renderTheoryTab(topic) {
         .join('')
     : '';
 
+  const tb = topic.textbook;
+  const bookFiguresHtml =
+    tb && Array.isArray(tb.figures) && tb.figures.length > 0
+      ? `
+      <div class="panel book-figures-panel">
+        <div class="bf-head">
+          <h3 class="panel-title" style="margin:0"><span class="panel-title-dot"></span>Darslikdagi original chizmalar va rasmlar (${tb.figures.length} ta)</h3>
+          <span class="bf-source-tag">📖 ${escapeHtml(tb.book)} · Kattalashtirish uchun rasmga bosing</span>
+        </div>
+        <div class="book-figures-grid">
+          ${tb.figures
+            .map(
+              (f, idx) => `
+            <button type="button" class="book-fig-card" data-zoom-src="${escapeHtml(f.src)}" data-zoom-cap="${escapeHtml(f.caption)}" data-zoom-meta="${escapeHtml(f.book)} · ${f.page}-bet">
+              <div class="bf-img-stage">
+                <img src="${escapeHtml(f.src)}" alt="${escapeHtml(f.caption)}" loading="lazy" />
+              </div>
+              <div class="bf-caption-bar">
+                <span class="bf-idx">Rasm ${idx + 1} · ${f.page}-bet</span>
+                <strong>${escapeHtml(f.caption)}</strong>
+                <span class="bf-book-name">${escapeHtml(f.book)}</span>
+              </div>
+            </button>`
+            )
+            .join('')}
+        </div>
+      </div>`
+      : '';
+
+  const bookReaderHtml =
+    tb && Array.isArray(tb.paragraphs) && tb.paragraphs.length > 0
+      ? `
+      <div class="panel book-reader-panel">
+        <div class="br-header">
+          <div>
+            <span class="tg-tag">DARSLIK MA’LUMOTLAR BAZASI · ${escapeHtml(tb.pages)}</span>
+            <h3 class="panel-title" style="margin:6px 0 2px"><span class="panel-title-dot"></span>${escapeHtml(tb.chapter)}</h3>
+            <div class="br-book-citation">Manba: <strong>${escapeHtml(tb.book)}</strong></div>
+          </div>
+        </div>
+        <div class="br-paragraphs">
+          ${tb.paragraphs
+            .map(
+              (p) => `
+            <div class="br-para-card">
+              <span class="br-page-pill tabular">${p.page}-bet</span>
+              <p>${escapeHtml(p.text)}</p>
+            </div>`
+            )
+            .join('')}
+        </div>
+      </div>`
+      : '';
+
   els.panelTheory.innerHTML = `
     <div class="theory-stack">
       <div class="panel">
         <h3 class="panel-title"><span class="panel-title-dot"></span>Nazariy asoslar va fizik mazmun</h3>
         <p class="overview-text">${renderInlineMath(th.overview)}</p>
       </div>
+
+      ${bookFiguresHtml}
+      ${bookReaderHtml}
 
       <div class="panel">
         <h3 class="panel-title"><span class="panel-title-dot"></span>Asosiy qonunlar va tamoyillar</h3>
@@ -709,7 +772,7 @@ function renderHeroObservatoryCopy() {
   if (els.heroEnginesTag) {
     els.heroEnginesTag.textContent = isChem
       ? '3Dmol.js · MolView · PhET · ChemCollective · OLabs'
-      : 'Effectuall · Cannon-es · Three.js PBF · WebGL2';
+      : 'Three.js PBR 3D · PhET · Falstad · Effectuall · Cannon-es · PBF';
   }
   if (els.heroHeadline) {
     els.heroHeadline.textContent = isChem
@@ -951,16 +1014,32 @@ els.subjectPill?.addEventListener('click', openChooser);
 els.chooserBackdrop?.addEventListener('click', closeChooser);
 els.chooserCloseBtn?.addEventListener('click', closeChooser);
 
+function closeFigureLightbox() {
+  if (els.figLightbox) els.figLightbox.hidden = true;
+}
+els.figLbBackdrop?.addEventListener('click', closeFigureLightbox);
+els.figLbClose?.addEventListener('click', closeFigureLightbox);
+
 document.addEventListener('click', (e) => {
   const chooseBtn = e.target.closest('[data-choose-subject]');
   if (chooseBtn) {
     enterAcademy(chooseBtn.getAttribute('data-choose-subject'));
+    return;
+  }
+  const figBtn = e.target.closest('[data-zoom-src]');
+  if (figBtn && els.figLightbox) {
+    els.figLbImg.src = figBtn.getAttribute('data-zoom-src');
+    els.figLbImg.alt = figBtn.getAttribute('data-zoom-cap') || 'Darslik rasmi';
+    els.figLbCaption.textContent = figBtn.getAttribute('data-zoom-cap') || 'Darslik chizmasi';
+    els.figLbMeta.textContent = figBtn.getAttribute('data-zoom-meta') || 'Darslik manbasi';
+    els.figLightbox.hidden = false;
   }
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && els.chooserModal && !els.chooserModal.hidden) {
-    closeChooser();
+  if (e.key === 'Escape') {
+    if (els.chooserModal && !els.chooserModal.hidden) closeChooser();
+    if (els.figLightbox && !els.figLightbox.hidden) closeFigureLightbox();
   }
 });
 

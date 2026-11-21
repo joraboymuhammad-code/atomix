@@ -208,6 +208,8 @@ const ICON_CHEM_BENCH = `<svg viewBox="0 0 24 24" width="16" height="16" fill="n
 const ICON_PHET = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f59e0b" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(35 12 12)"/><circle cx="12" cy="12" r="2" fill="#f59e0b"/></svg>`;
 
 export const ENGINE_LOGOS = {
+  'Three.js PBR 3D': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#38bdf8" stroke-width="1.9"><polygon points="12 2 22 8 22 16 12 22 2 16 2 8"/><path d="M12 22V12M22 8L12 12L2 8"/></svg>`,
+  'Falstad Open-Source': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#facc15" stroke-width="1.9"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>`,
   'Effectuall 3D Lab': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22d3ee" stroke-width="1.9"><path d="M12 2L21 7V17L12 22L3 17V7L12 2Z"/><path d="M12 22V12M21 7L12 12L3 7"/></svg>`,
   'cx20 Cannon-es 3D': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#34d399" stroke-width="1.9"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4"/></svg>`,
   'Three.js Particle Fluids (PBF)': `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#38bdf8" stroke-width="1.9"><path d="M12 2.5C12 2.5 5 10.2 5 15a7 7 0 0 0 14 0c0-4.8-7-12.5-7-12.5Z"/></svg>`,

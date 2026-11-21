@@ -16,6 +16,8 @@ import { CHEM_SEC3_TOPICS } from './chem-sec3.js';
 import { CHEM_SEC4_TOPICS } from './chem-sec4.js';
 import { CHEM_SEC5_TOPICS } from './chem-sec5.js';
 import { CHEM_SIM_PROFILES } from './chem-sims-map.js';
+import { PHYSICS_SIM_PROFILES } from './physics-sims-map.js';
+import { PHYSICS_BOOKS_DB } from './physics-books-db.js';
 
 export const PHYSICS_SECTIONS = [
   {
@@ -153,12 +155,28 @@ const RAW_CHEM = [
   ...CHEM_SEC4_TOPICS, ...CHEM_SEC5_TOPICS,
 ];
 
-export const PHYSICS_TOPICS = RAW_PHYSICS.map((topic, index) => ({
-  ...topic,
-  subject: 'physics',
-  order: index + 1,
-  questions: buildTopicQuestions(topic),
-}));
+export const PHYSICS_TOPICS = RAW_PHYSICS.map((topic, index) => {
+  const simProf = PHYSICS_SIM_PROFILES[topic.id];
+  const merged = simProf
+    ? {
+        ...topic,
+        simulation: {
+          ...topic.simulation,
+          title: simProf.title,
+          openSourceUrl: simProf.openSourceUrl,
+          openSourceSource: simProf.openSourceSource,
+          alternateSims: simProf.alternateSims,
+        },
+      }
+    : topic;
+  return {
+    ...merged,
+    subject: 'physics',
+    order: index + 1,
+    textbook: PHYSICS_BOOKS_DB[topic.id] || null,
+    questions: buildTopicQuestions(merged),
+  };
+});
 
 export const CHEM_TOPICS = RAW_CHEM.map((topic, index) => {
   const profile = CHEM_SIM_PROFILES[topic.id];

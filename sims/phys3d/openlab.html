@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atomix Open-Source PhET &amp; Falstad Jonli Fizika Laboratoriyasi</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: #040711; color: #f8fafc;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+    }
+    .wrap { display: flex; flex-direction: column; height: 100%; }
+    .top {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 8px 14px;
+      background: linear-gradient(180deg, rgba(13, 21, 44, 0.96), rgba(6, 10, 24, 0.96));
+      border-bottom: 1px solid rgba(245, 158, 11, 0.32);
+    }
+    .left { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 700; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 10.5px; padding: 3px 8px; border-radius: 6px;
+      background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.45); color: #fbbf24;
+    }
+    .right { display: flex; gap: 7px; align-items: center; }
+    select, a.ext-btn {
+      background: linear-gradient(180deg, rgba(22, 34, 64, 0.94), rgba(10, 17, 36, 0.98));
+      color: #e2e8f0; border: 1px solid rgba(148, 163, 184, 0.28); border-bottom: 3px solid #020617;
+      border-radius: 8px; padding: 5px 10px; font-size: 11.8px; font-weight: 600; text-decoration: none; cursor: pointer;
+    }
+    a.ext-btn:hover { border-color: #fbbf24; color: #fff; }
+    .frame-wrap { position: relative; flex: 1; background: #050814; }
+    iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: #050814; }
+    .loader {
+      position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+      font-size: 13.5px; color: #94a3b8; z-index: 1;
+    }
+    iframe { z-index: 2; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="left">
+        <span class="tag" id="sim-src">PhET Interactive Sims</span>
+        <span id="sim-title">Open-Source Fizika Laboratoriyasi</span>
+      </div>
+      <div class="right">
+        <select id="sim-sel"></select>
+        <a id="ext-link" class="ext-btn" target="_blank" rel="noopener noreferrer">↗ Yangi oynada</a>
+      </div>
+    </div>
+    <div class="frame-wrap">
+      <div class="loader">Ochiq kodli interaktiv laboratoriya yuklanmoqda...</div>
+      <iframe id="ext-frame" allow="fullscreen; accelerometer; gyroscope"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const PHET = (slug) => `https://phet.colorado.edu/sims/html/${slug}/latest/${slug}_en.html`;
+    const CATALOG = {
+      'vector-addition': { title: 'PhET: Vektorlarni Qo‘shish va Proyeksiyalash', src: 'PhET Interactive Sims', url: PHET('vector-addition') },
+      'projectile-motion': { title: 'PhET: Ballistika — Burchak Ostida Otilgan Jism', src: 'PhET Interactive Sims', url: PHET('projectile-motion') },
+      'forces-and-motion-basics': { title: 'PhET: Nyuton Qonunlari, Kuchlar va Harakat', src: 'PhET Interactive Sims', url: PHET('forces-and-motion-basics') },
+      'gravity-force-lab': { title: 'PhET: Butun Olam Tortishish Qonuni (Gravitatsiya)', src: 'PhET Interactive Sims', url: PHET('gravity-force-lab') },
+      'hookes-law': { title: 'PhET: Guk Qonuni, Elastiklik va Bikrlik', src: 'PhET Interactive Sims', url: PHET('hookes-law') },
+      'friction': { title: 'PhET: Sirpanish Ishqalanishi va Issiqlik', src: 'PhET Interactive Sims', url: PHET('friction') },
+      'collision-lab': { title: 'PhET: Impuls Saqlanishi va Elastik/Noelastik To‘qnashuvlar', src: 'PhET Interactive Sims', url: PHET('collision-lab') },
+      'energy-skate-park': { title: 'PhET: Mexanik Energiyaning Saqlanish Qonuni', src: 'PhET Interactive Sims', url: PHET('energy-skate-park') },
+      'balancing-act': { title: 'PhET: Statika, Richag va Kuch Momenti Muvozanati', src: 'PhET Interactive Sims', url: PHET('balancing-act') },
+      'under-pressure': { title: 'PhET: Gidrostatik Bosim va Paskal Qonuni', src: 'PhET Interactive Sims', url: PHET('under-pressure') },
+      'buoyancy': { title: 'PhET: Arximed Qonuni va Jismlarning Suzishi', src: 'PhET Interactive Sims', url: PHET('buoyancy') },
+      'pendulum-lab': { title: 'PhET: Matematik Mayatnik va Garmonik Tebranish', src: 'PhET Interactive Sims', url: PHET('pendulum-lab') },
+      'masses-and-springs': { title: 'PhET: Prujinali Mayatnik va So‘nuvchi Tebranishlar', src: 'PhET Interactive Sims', url: PHET('masses-and-springs') },
+      'wave-on-a-string': { title: 'PhET: Mexanik To‘lqinlar va To‘lqin Uzunligi', src: 'PhET Interactive Sims', url: PHET('wave-on-a-string') },
+      'wave-interference': { title: 'PhET: To‘lqin Interferensiyasi, Difraksiya va Tovush', src: 'PhET Interactive Sims', url: PHET('wave-interference') },
+      'sound-waves': { title: 'PhET: Akustika — Tovush To‘lqinlari va Chastota', src: 'PhET Interactive Sims', url: PHET('sound-waves') },
+      'states-of-matter': { title: 'PhET: Agregat Holatlar va Faza O‘tishlari', src: 'PhET Interactive Sims', url: PHET('states-of-matter') },
+      'gas-properties': { title: 'PhET: Ideal Gaz Qonunlari, MKN va Izoprotsesslar', src: 'PhET Interactive Sims', url: PHET('gas-properties') },
+      'energy-forms-and-changes': { title: 'PhET: Ichki Energiya, Issiqlik O‘tkazuvchanlik va Mashinalar', src: 'PhET Interactive Sims', url: PHET('energy-forms-and-changes') },
+      'coulombs-law': { title: 'PhET: Kulon Qonuni va Nuqtaviy Zaryadlar', src: 'PhET Interactive Sims', url: PHET('coulombs-law') },
+      'charges-and-fields': { title: 'PhET: Elektr Maydon Kuchlanganligi va Ekvipotensial Sirtlar', src: 'PhET Interactive Sims', url: PHET('charges-and-fields') },
+      'capacitor-lab-basics': { title: 'PhET: Kondensator Sig‘imi va Elektr Maydon Energiyasi', src: 'PhET Interactive Sims', url: PHET('capacitor-lab-basics') },
+      'ohms-law': { title: 'PhET: Zanjirning Bir Qismi Uchun Om Qonuni', src: 'PhET Interactive Sims', url: PHET('ohms-law') },
+      'resistance-in-a-wire': { title: 'PhET: O‘tkazgich Qarshiligi R = ρ·l/S', src: 'PhET Interactive Sims', url: PHET('resistance-in-a-wire') },
+      'circuit-construction-kit-dc': { title: 'PhET: O‘zgarmas Tok Zanjirlari, Kirxgof va Quvvat Laboratoriyasi', src: 'PhET Interactive Sims', url: PHET('circuit-construction-kit-dc') },
+      'circuit-construction-kit-ac': { title: 'PhET: O‘zgaruvchan Tok (AC), RLC va Tebranish Konturi', src: 'PhET Interactive Sims', url: PHET('circuit-construction-kit-ac') },
+      'faradays-electromagnetic-lab': { title: 'PhET: Magnit Maydon, Elektromagnit Induksiya va Generator', src: 'PhET Interactive Sims', url: PHET('faradays-electromagnetic-lab') },
+      'bending-light': { title: 'PhET: Yorug‘likning Sinishi, Prizma Dispersiyasi va To‘la Qaytish', src: 'PhET Interactive Sims', url: PHET('bending-light') },
+      'geometric-optics': { title: 'PhET: Ko‘zgular va Linzalar Geometrik Optikasi', src: 'PhET Interactive Sims', url: PHET('geometric-optics') },
+      'blackbody-spectrum': { title: 'PhET: Mutlaq Qora Jism Nurlanishi va Plank Qonuni', src: 'PhET Interactive Sims', url: PHET('blackbody-spectrum') },
+      'rutherford-scattering': { title: 'PhET: Rezerford Tajribasi va Atom Yadrosi Sochilishi', src: 'PhET Interactive Sims', url: PHET('rutherford-scattering') },
+      'models-of-the-hydrogen-atom': { title: 'PhET: Vodorod Atomi Kvant Modellari va Bor Spektri', src: 'PhET Interactive Sims', url: PHET('models-of-the-hydrogen-atom') },
+      'gravity-and-orbits': { title: 'PhET: Quyosh Sistemasi, Kepler Orbitalari va Gravitatsiya', src: 'PhET Interactive Sims', url: PHET('gravity-and-orbits') },
+      'falstad-circuit': { title: 'Falstad CircuitJS1: Jonli Elektr, Diod, Tranzistor va RLC Sxemalar', src: 'Falstad Open-Source', url: 'https://www.falstad.com/circuit/circuitjs.html' },
+      'falstad-ripple': { title: 'Falstad Ripple Tank: 2D To‘lqin Interferensiyasi va Dopler', src: 'Falstad Open-Source', url: 'https://www.falstad.com/ripple/' },
+    };
+
+    const sel = document.getElementById('sim-sel');
+    Object.entries(CATALOG).forEach(([k, v]) => {
+      const o = document.createElement('option'); o.value = k; o.textContent = v.title; sel.appendChild(o);
+    });
+
+    const params = new URLSearchParams(location.search);
+    let cur = CATALOG[params.get('sim')] ? params.get('sim') : 'circuit-construction-kit-dc';
+
+    function load(k) {
+      cur = k; sel.value = k;
+      const item = CATALOG[k];
+      document.getElementById('sim-src').textContent = item.src;
+      document.getElementById('sim-title').textContent = item.title;
+      document.getElementById('ext-link').href = item.url;
+      document.getElementById('ext-frame').src = item.url;
+    }
+
+    sel.addEventListener('change', () => load(sel.value));
+    load(cur);
+  </script>
+</body>
+</html>
